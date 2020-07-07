@@ -4,7 +4,6 @@
 #include <string>
 
 #include "SDK.hpp"
-#include "Global.h"
 
 using namespace SDK;
 

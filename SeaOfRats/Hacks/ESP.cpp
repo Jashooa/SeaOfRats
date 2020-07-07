@@ -6,7 +6,6 @@
 
 #include "Drawing.h"
 #include "SDK.hpp"
-#include "Global.h"
 
 using namespace SDK;
 
@@ -14,6 +13,13 @@ namespace Hacks
 {
     void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
+        auto player = reinterpret_cast<AAthenaPlayerCharacter*>(actor);
+
+        bool enemy = !UCrewFunctions::AreCharactersInSameCrew(localPlayer, player);
+
+        
     }
 
     void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -118,7 +124,7 @@ namespace Hacks
         {
             auto pin = pins[i];
             //FVector location((pin.X * 100.0f), (pin.Y * 100.0f), localPlayer->K2_GetActorLocation().Z);
-            FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 1000.0f);
+            FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 100.0f);
 
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))

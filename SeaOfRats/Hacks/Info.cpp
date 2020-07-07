@@ -2,7 +2,6 @@
 
 #include "spdlog/spdlog.h"
 
-#include "Global.h"
 #include "SDK.hpp"
 
 using namespace SDK;

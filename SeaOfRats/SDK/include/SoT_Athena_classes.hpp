@@ -13130,7 +13130,7 @@ public:
 	void STATIC_ClearCrewSpawnProgressOverrideId(class UWorld* World, const struct FGuid& CrewId);
 	void STATIC_ClearCrewShipProgressionSpawnLocations(class UObject* WorldContext, const struct FGuid& CrewId);
 	bool STATIC_AreInSameCrew(const struct FGuid& CrewId1, const struct FGuid& CrewId2);
-	bool STATIC_AreCharactersInSameCrew(class AAthenaCharacter* Player1, class AAthenaCharacter* Player2);
+	static bool AreCharactersInSameCrew(class AAthenaCharacter* Player1, class AAthenaCharacter* Player2);
 	void STATIC_AddShipToCrew(class UObject* WorldContext, class AShip* Ship, const struct FGuid& CrewId);
 	void STATIC_AddCharacterToCrew(class UObject* WorldContext, class AAthenaCharacter* Player, const struct FGuid& CrewId);
 };

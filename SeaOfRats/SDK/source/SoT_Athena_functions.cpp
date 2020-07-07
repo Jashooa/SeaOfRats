@@ -22672,7 +22672,7 @@ bool UCrewFunctions::STATIC_AreInSameCrew(const struct FGuid& CrewId1, const str
 // class AAthenaCharacter*        Player2                        (ConstParm, Parm, ZeroConstructor, IsPlainOldData)
 // bool                           ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-bool UCrewFunctions::STATIC_AreCharactersInSameCrew(class AAthenaCharacter* Player1, class AAthenaCharacter* Player2)
+bool UCrewFunctions::AreCharactersInSameCrew(class AAthenaCharacter* Player1, class AAthenaCharacter* Player2)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Athena.CrewFunctions.AreCharactersInSameCrew");
 
@@ -22688,7 +22688,8 @@ bool UCrewFunctions::STATIC_AreCharactersInSameCrew(class AAthenaCharacter* Play
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
