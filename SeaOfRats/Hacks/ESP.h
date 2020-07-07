@@ -6,5 +6,5 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void RenderESP(UGameViewportClient* client, UCanvas* canvas);
+    void RenderESP(UGameViewportClient* client, AHUD* hud);
 }

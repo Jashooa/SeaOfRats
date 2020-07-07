@@ -6,5 +6,5 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void RenderCrosshair(UCanvas* canvas);
+    void RenderCrosshair(AHUD* canvas);
 }

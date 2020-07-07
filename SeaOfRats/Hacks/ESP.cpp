@@ -12,11 +12,11 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void DrawPlayer(UGameViewportClient* client, UCanvas* canvas, AActor* actor)
+    void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
     }
 
-    void DrawShip(UGameViewportClient* client, UCanvas* canvas, AActor* actor)
+    void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
         auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
         auto localPlayer = playerController->Pawn;
@@ -58,10 +58,10 @@ namespace Hacks
         }
 
         std::wstring shipText = shipType + L" " + std::to_wstring(distance) + L"m";
-        Drawing::DrawActorString(canvas, shipText, screen, Drawing::Colour::White);
+        Drawing::DrawActorString(hud, shipText, screen, Drawing::Colour::White);
     }
 
-    void DrawShipFar(UGameViewportClient* client, UCanvas* canvas, AActor* actor)
+    void DrawShipFar(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
         auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
         auto localPlayer = playerController->Pawn;
@@ -103,26 +103,22 @@ namespace Hacks
         }
 
         std::wstring shipText = shipType + L" " + std::to_wstring(distance) + L"m";
-        Drawing::DrawActorString(canvas, shipText, screen, Drawing::Colour::White);
+        Drawing::DrawActorString(hud, shipText, screen, Drawing::Colour::White);
     }
 
-    void DrawMapPins(UGameViewportClient* client, UCanvas* canvas, AActor* actor)
+    void DrawMapPins(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
         auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
         auto localPlayer = playerController->Pawn;
         auto table = reinterpret_cast<AMapTable*>(actor);
-        spdlog::info("Table Address: {:p}", reinterpret_cast<void*>(table));
 
         auto pins = table->MapPins;
-        spdlog::info("Table->MapPins Address: {:p}", reinterpret_cast<void*>(&(table->MapPins)));
-        spdlog::info("table pins {}", pins.Num());
 
         for (int32_t i = 0; i < pins.Num(); ++i)
         {
-            spdlog::info("Drawing map pin1");
             auto pin = pins[i];
-            FVector location((pin.X * 100.0f), (pin.Y * 100.0f), localPlayer->K2_GetActorLocation().Z);
-            //FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 1000.0f);
+            //FVector location((pin.X * 100.0f), (pin.Y * 100.0f), localPlayer->K2_GetActorLocation().Z);
+            FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 1000.0f);
 
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
@@ -130,14 +126,13 @@ namespace Hacks
                 continue;
             }
 
-            spdlog::info("Drawing map pin");
             int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
             std::wstring pinText = L"Map Pin " + std::to_wstring(distance) + L"m";
-            Drawing::DrawActorString(canvas, pinText, screen, Drawing::Colour::White);
+            Drawing::DrawActorString(hud, pinText, screen, Drawing::Colour::White);
         }
     }
 
-    void RenderESP(UGameViewportClient* client, UCanvas* canvas)
+    void RenderESP(UGameViewportClient* client, AHUD* hud)
     {
         UWorld* world = client->World;
         if (!world)
@@ -187,25 +182,25 @@ namespace Hacks
 
             if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
             {
-                DrawPlayer(client, canvas, actor);
+                DrawPlayer(client, hud, actor);
                 continue;
             }
 
             if (actor->IsA(AShip::StaticClass()))
             {
-                DrawShip(client, canvas, actor);
+                DrawShip(client, hud, actor);
                 continue;
             }
 
             if (actor->IsA(AShipNetProxy::StaticClass()))
             {
-                DrawShipFar(client, canvas, actor);
+                DrawShipFar(client, hud, actor);
                 continue;
             }
 
             if (actor->IsA(AMapTable::StaticClass()))
             {
-                DrawMapPins(client, canvas, actor);
+                DrawMapPins(client, hud, actor);
                 continue;
             }
         }

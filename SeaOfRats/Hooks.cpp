@@ -98,18 +98,56 @@ HRESULT hookD3D11(HWND window)
     return S_OK;
 }
 
+bool NullChecks(UGameViewportClient* client)
+{
+    if (!client->GameInstance)
+    {
+        spdlog::warn("GameInstance null");
+        return false;
+    }
+    if (client->GameInstance->LocalPlayers.Num() < 1)
+    {
+        spdlog::warn("LocalPlayers < 1");
+        return false;
+    }
+    if (!client->GameInstance->LocalPlayers[0]->PlayerController)
+    {
+        spdlog::warn("PlayerController null");
+        return false;
+    }
+    if (!client->GameInstance->LocalPlayers[0]->PlayerController->Pawn)
+    {
+        spdlog::warn("Pawn null");
+        return false;
+    }
+    if (!client->World)
+    {
+        spdlog::warn("World null");
+        return false;
+    }
+    if (!client->World->PersistentLevel)
+    {
+        spdlog::warn("PersistentLevel null");
+        return false;
+    }
+    return true;
+}
+
 void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
 {
-    if (client->GameInstance->LocalPlayers[0]->PlayerController->Pawn)
+    //if (client->GameInstance->LocalPlayers[0]->PlayerController->Pawn)
+    if (NullChecks(client))
     {
-        Hacks::RenderCrosshair(canvas);
-        Hacks::RenderESP(client, canvas);
+        AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
+        hud->Canvas = canvas;
+        Hacks::RenderCrosshair(hud);
+        Hacks::RenderESP(client, hud);
     }
 
     originalPostRender(client, canvas);
 }
 
-void hookedProcessEvent(UObject* object, UFunction* function, void* parms)
+/*void hookedProcessEvent(UObject* object, UFunction* function, void* parms)
 {
     spdlog::info("test");
     if (object->IsA(AHUD::StaticClass()))
@@ -119,7 +157,7 @@ void hookedProcessEvent(UObject* object, UFunction* function, void* parms)
     }
 
     originalProcessEvent(object, function, parms);
-}
+}*/
 
 void hookGame()
 {

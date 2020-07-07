@@ -29,19 +29,18 @@ namespace Drawing
         const FLinearColor Purple = colour(142, 68, 173);
     }
 
-    void DrawActorString(UCanvas* canvas, const std::wstring string, const FVector2D& position, const FLinearColor& color)
+    void DrawActorString(AHUD* hud, const std::wstring string, const FVector2D& position, const FLinearColor& color)
     {
-        FVector2D newPosition;
-        newPosition.X = std::trunc(position.X);
-        newPosition.Y = std::trunc(position.Y);
-        canvas->K2_DrawText(RobotoFont, static_cast<FString>(string.c_str()), newPosition, color, 1.0f, Colour::Black, FVector2D(0.0f, 0.0f), true, true, true, Colour::Black);
+        FVector2D newPosition(std::trunc(position.X), std::trunc(position.Y));
+        hud->Canvas->K2_DrawText(RobotoFont, static_cast<FString>(string.c_str()), newPosition, color, 1.0f, Colour::Black, FVector2D(0.0f, 0.0f), true, true, true, Colour::Black);
+        //hud->DrawText(static_cast<FString>(string.c_str()), color, newPosition.X, newPosition.Y, RobotoFont, 1.0f, false);
     }
 
-    void DrawRect(UCanvas* canvas, const FVector2D& minPosition, const FVector2D& maxPosition, const FLinearColor& color, const float thickness = 1.0f)
+    void DrawRect(AHUD* hud, const FVector2D& minPosition, const FVector2D& maxPosition, const FLinearColor& color, const float thickness = 1.0f)
     {
-        canvas->K2_DrawLine(minPosition, FVector2D(maxPosition.X, minPosition.Y), thickness, color);
-        canvas->K2_DrawLine(minPosition, FVector2D(minPosition.X, maxPosition.Y), thickness, color);
-        canvas->K2_DrawLine(FVector2D(minPosition.X, maxPosition.Y), maxPosition, thickness, color);
-        canvas->K2_DrawLine(FVector2D(maxPosition.X, minPosition.Y), maxPosition, thickness, color);
+        hud->Canvas->K2_DrawLine(minPosition, FVector2D(maxPosition.X, minPosition.Y), thickness, color);
+        hud->Canvas->K2_DrawLine(minPosition, FVector2D(minPosition.X, maxPosition.Y), thickness, color);
+        hud->Canvas->K2_DrawLine(FVector2D(minPosition.X, maxPosition.Y), maxPosition, thickness, color);
+        hud->Canvas->K2_DrawLine(FVector2D(maxPosition.X, minPosition.Y), maxPosition, thickness, color);
     }
 }

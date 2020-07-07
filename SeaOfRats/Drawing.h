@@ -23,6 +23,6 @@ namespace Drawing
         extern const FLinearColor Purple;
     }
 
-    void DrawActorString(UCanvas* canvas, const std::wstring string, const FVector2D& position, const FLinearColor& color);
-    void DrawRect(UCanvas* canvas, const FVector2D& minPosition, const FVector2D& maxPosition, const FLinearColor& color, const float thickness);
+    void DrawActorString(AHUD* hud, const std::wstring string, const FVector2D& position, const FLinearColor& color);
+    void DrawRect(AHUD* hud, const FVector2D& minPosition, const FVector2D& maxPosition, const FLinearColor& color, const float thickness);
 }
