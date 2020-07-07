@@ -15,7 +15,6 @@
 
 #include "Config.h"
 #include "Drawing.h"
-#include "Global.h"
 #include "GUI.h"
 #include "SDK.hpp"
 #include "Hacks/ESP.h"
@@ -30,15 +29,14 @@ using Present = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT);
 static Present originalPresent = nullptr;
 const size_t presentIndex = 8;
 
+using ResizeBuffers = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT, UINT, DXGI_FORMAT, UINT);
+static ResizeBuffers originalResizeBuffers = nullptr;
+const size_t resizeBuffersIndex = 13;
+
 static void** clientVTable = nullptr;
 using PostRender = void(__thiscall*)(UGameViewportClient*, UCanvas*);
 static PostRender originalPostRender = nullptr;
 const size_t postRenderIndex = 88;
-
-static void** objectVTable = nullptr;
-using ProcessEvent = void(__thiscall*)(UObject*, UFunction*, void*);
-static ProcessEvent originalProcessEvent = nullptr;
-const size_t processEventIndex = 58;
 
 static std::once_flag isInitialised;
 
@@ -51,6 +49,15 @@ HRESULT __stdcall hookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UI
     gui->Render();
 
     return originalPresent(swapChain, syncInterval, flags);
+}
+
+HRESULT __stdcall hookedResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
+{
+    gui->BeforeResize();
+    HRESULT result = originalResizeBuffers(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
+    gui->AfterResize(swapChain);
+
+    return result;
 }
 
 HRESULT hookD3D11(HWND window)
@@ -85,6 +92,7 @@ HRESULT hookD3D11(HWND window)
 
     swapChainVTable = *reinterpret_cast<void***>(swapChain);
     originalPresent = reinterpret_cast<Present>(Utilities::HookMethod(swapChainVTable, presentIndex, hookedPresent));
+    originalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, hookedResizeBuffers));
 
     swapChain->Release();
     swapChain = nullptr;
@@ -120,6 +128,11 @@ bool NullChecks(UGameViewportClient* client)
         spdlog::warn("Pawn null");
         return false;
     }
+    if (!client->GameInstance->LocalPlayers[0]->PlayerController->AcknowledgedPawn)
+    {
+        spdlog::warn("AcknowledgedPawn null");
+        return false;
+    }
     if (!client->World)
     {
         spdlog::warn("World null");
@@ -147,18 +160,6 @@ void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
     originalPostRender(client, canvas);
 }
 
-/*void hookedProcessEvent(UObject* object, UFunction* function, void* parms)
-{
-    spdlog::info("test");
-    if (object->IsA(AHUD::StaticClass()))
-    {
-        auto hud = reinterpret_cast<AHUD*>(object);
-        
-    }
-
-    originalProcessEvent(object, function, parms);
-}*/
-
 void hookGame()
 {
     MODULEINFO modInfo{ 0 };
@@ -180,19 +181,13 @@ void hookGame()
     spdlog::info("GNames Address: {:p}", reinterpret_cast<void*>(FName::GNames));
     spdlog::info("GNames.Num(): {}", FName::GetGlobalNames().Num());
 
-    Global::GameViewportClient = UObject::FindObject<UAthenaGameViewportClient>("AthenaGameViewportClient Transient.AthenaGameEngine_1.AthenaGameViewportClient_1");
-    spdlog::info("AthenaGameViewportClient Address: {:p}", reinterpret_cast<void*>(Global::GameViewportClient));
+    const auto gameViewportClient = UObject::FindObject<UAthenaGameViewportClient>("AthenaGameViewportClient Transient.AthenaGameEngine_1.AthenaGameViewportClient_1");
+    spdlog::info("AthenaGameViewportClient Address: {:p}", reinterpret_cast<void*>(gameViewportClient));
 
     Drawing::RobotoFont = UObject::FindObject<UFont>("Font Roboto.Roboto");
     Drawing::RobotoTinyFont = UObject::FindObject<UFont>("Font RobotoTiny.RobotoTiny");
 
-    /*UObject* obj = UObject::FindObject<UObject>("Class CoreUObject.Object");
-    spdlog::info("UObject Address: {:p}", reinterpret_cast<void*>(obj));
-
-    objectVTable = *reinterpret_cast<void***>(obj);
-    originalProcessEvent = reinterpret_cast<ProcessEvent>(Utilities::HookMethod(objectVTable, processEventIndex, hookedProcessEvent));*/
-
-    clientVTable = *reinterpret_cast<void***>(Global::GameViewportClient);
+    clientVTable = *reinterpret_cast<void***>(gameViewportClient);
     originalPostRender = reinterpret_cast<PostRender>(Utilities::HookMethod(clientVTable, postRenderIndex, hookedPostRender));
 }
 
@@ -257,10 +252,10 @@ static DWORD WINAPI Unload(HMODULE module)
 
     spdlog::info("Unhooking Game");
     Utilities::HookMethod(clientVTable, postRenderIndex, originalPostRender);
-    //Utilities::HookMethod(objectVTable, processEventIndex, originalProcessEvent);
 
     spdlog::info("Unhooking DirectX");
     Utilities::HookMethod(swapChainVTable, presentIndex, originalPresent);
+    Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, originalResizeBuffers);
 
     gui->Destroy();
 

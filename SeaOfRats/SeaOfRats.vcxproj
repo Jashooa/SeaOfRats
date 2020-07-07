@@ -203,7 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drawing.h" />
-    <ClInclude Include="Global.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP.h" />

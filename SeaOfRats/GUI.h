@@ -10,13 +10,15 @@ class GUI
 public:
     GUI();
     void Initialise(IDXGISwapChain* swapChain);
+    void BeforeResize();
+    void AfterResize(IDXGISwapChain* swapChain);
     void Destroy();
     void Render();
 
     bool isOpen = true;
-
 private:
-    ID3D11RenderTargetView* mainRenderTargetView = nullptr;
+    void CreateRenderTarget(IDXGISwapChain* swapChain, ID3D11Device* device);
+    ID3D11RenderTargetView* renderTargetView = nullptr;
     ID3D11DeviceContext* context = nullptr;
 
     HWND window = NULL;
