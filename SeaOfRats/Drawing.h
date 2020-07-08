@@ -24,5 +24,7 @@ namespace Drawing
     }
 
     void DrawActorString(AHUD* hud, const std::wstring string, const FVector2D& position, const FLinearColor& color);
+    void DrawInterfaceString(AHUD* hud, const std::wstring string, const FVector2D& position, const FLinearColor& color, bool centreX = true, bool centreY = true);
     void DrawRect(AHUD* hud, const FVector2D& minPosition, const FVector2D& maxPosition, const FLinearColor& color, const float thickness);
+    void DrawBoundingBox(UGameViewportClient* client, AHUD* hud, AActor* actor, const FLinearColor& color);
 }

@@ -13,20 +13,39 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void DrawPlayerList(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-
-    }
-
     void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
         auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
         auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
         auto player = reinterpret_cast<AAthenaPlayerCharacter*>(actor);
 
-        bool enemy = !UCrewFunctions::AreCharactersInSameCrew(localPlayer, player);
+        //bool enemy = !UCrewFunctions::AreCharactersInSameCrew(localPlayer, player);
 
-        
+        auto location = player->RootComponent->K2_GetComponentLocation();
+
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+    }
+
+    void DrawSkeleton(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
+
+        auto location = skeleton->RootComponent->K2_GetComponentLocation();
+
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
     }
 
     void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -72,6 +91,7 @@ namespace Hacks
 
         std::wstring shipText = shipType + L" " + std::to_wstring(distance) + L"m";
         Drawing::DrawActorString(hud, shipText, screen, Drawing::Colour::White);
+        //Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
     }
 
     void DrawShipFar(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -165,6 +185,7 @@ namespace Hacks
 
         std::wstring itemText = itemName + L" " + std::to_wstring(distance) + L"m";
         Drawing::DrawActorString(hud, itemText, screen, colour);
+        //Drawing::DrawBoundingBox(client, hud, actor, colour);
     }
 
     void DrawMapPins(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -203,9 +224,9 @@ namespace Hacks
             return;
         }
 
-        std::string name = actor->GetName();
-        if (name.find("_") != std::string::npos)
-            return;
+        std::string name = actor->GetFullName();
+        /*if (name.find("_") != std::string::npos)
+            return;*/
         if (name.find("cmn") != std::string::npos)
             return;
         if (name.find("wsp") != std::string::npos)
@@ -247,48 +268,9 @@ namespace Hacks
         if (name.find("FishCreature") != std::string::npos)
             return;
 
-        name = actor->GetFullName();
+        name = actor->GetName();
         std::wstring namew(name.begin(), name.end());
         Drawing::DrawActorString(hud, namew, screen, Drawing::Colour::Red);
-    }
-
-    void DrawCompass(UGameViewportClient* client, AHUD* hud)
-    {
-        static std::vector<const wchar_t*> compassDirections = {
-            L"North",
-            L"North North East",
-            L"North East",
-            L"East North East",
-            L"East",
-            L"East South East",
-            L"South East",
-            L"South South East",
-            L"South",
-            L"South South West",
-            L"South West",
-            L"West South West",
-            L"West",
-            L"West North West",
-            L"North West",
-            L"North North West"
-        };
-
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto cameraManager = playerController->PlayerCameraManager;
-
-        if (!cameraManager)
-        {
-            spdlog::warn("CameraManager null");
-            return;
-        }
-
-        auto rotation = cameraManager->GetCameraRotation();
-        int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
-        int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) / 22.5f);
-
-        float centerX = static_cast<float>(hud->Canvas->SizeX) / 2.0f;
-        Drawing::DrawActorString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
-        Drawing::DrawActorString(hud, compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
     }
 
     void RenderESP(UGameViewportClient* client, AHUD* hud)
@@ -340,14 +322,15 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(ACrewService::StaticClass()))
-            {
-
-            }
-
             if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
             {
-                //DrawPlayer(client, hud, actor);
+                DrawPlayer(client, hud, actor);
+                continue;
+            }
+
+            if (actor->IsA(AAthenaAICharacter::StaticClass()))
+            {
+                DrawSkeleton(client, hud, actor);
                 continue;
             }
 
@@ -375,9 +358,7 @@ namespace Hacks
                 continue;
             }
 
-            DrawDebug(client, hud, actor);
+            //DrawDebug(client, hud, actor);
         }
-
-        DrawCompass(client, hud);
     }
 }

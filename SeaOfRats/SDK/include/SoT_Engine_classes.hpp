@@ -9761,7 +9761,7 @@ public:
 	unsigned char STATIC_Subtract_ByteByte(unsigned char A, unsigned char B);
 	float STATIC_Square(float A);
 	float STATIC_Sqrt(float A);
-	float STATIC_Sin(float A);
+	static float Sin(float A);
 	int STATIC_SignOfInteger(int A);
 	float STATIC_SignOfFloat(float A);
 	void STATIC_SetRandomStreamSeed(int NewSeed, struct FRandomStream* Stream);
@@ -9996,7 +9996,7 @@ public:
 	unsigned char STATIC_Divide_ByteByte(unsigned char A, unsigned char B);
 	float STATIC_DegTan(float A);
 	float STATIC_DegSin(float A);
-	float STATIC_DegreesToRadians(float A);
+	static float DegreesToRadians(float A);
 	float STATIC_DegCos(float A);
 	float STATIC_DegAtan2(float A, float B);
 	float STATIC_DegAtan(float A);
@@ -10011,7 +10011,7 @@ public:
 	float STATIC_CrossProduct2D(const struct FVector2D& A, const struct FVector2D& B);
 	struct FVector STATIC_Cross_VectorVector(const struct FVector& A, const struct FVector& B);
 	struct FVector STATIC_CreateVectorFromYawPitch(float Yaw, float Pitch, float Length);
-	float STATIC_Cos(float A);
+	static float Cos(float A);
 	struct FTransform STATIC_ConvertTransformToRelative(const struct FTransform& Transform, const struct FTransform& ParentTransform);
 	struct FVector2D STATIC_Conv_VectorToVector2D(const struct FVector& InVector);
 	struct FTransform STATIC_Conv_VectorToTransform(const struct FVector& InLocation);
@@ -10328,7 +10328,7 @@ public:
 	void STATIC_DrawDebugCircle(class UObject* WorldContextObject, const struct FVector& Center, float Radius, int NumSegments, const struct FLinearColor& LineColor, float Duration, float Thickness, const struct FVector& YAxis, const struct FVector& ZAxis, bool bDrawAxis);
 	void STATIC_DrawDebugCapsule(class UObject* WorldContextObject, const struct FVector& Center, float HalfHeight, float Radius, const struct FRotator& Rotation, const struct FLinearColor& LineColor, float Duration);
 	void STATIC_DrawDebugCamera(class ACameraActor* CameraActor, const struct FLinearColor& CameraColor, float Duration);
-	void STATIC_DrawDebugBox(class UObject* WorldContextObject, const struct FVector& Center, const struct FVector& Extent, const struct FLinearColor& LineColor, const struct FRotator& Rotation, float Duration);
+	static void DrawDebugBox(class UObject* WorldContextObject, const struct FVector& Center, const struct FVector& Extent, const struct FLinearColor& LineColor, const struct FRotator& Rotation, float Duration);
 	void STATIC_DrawDebugArrow(class UObject* WorldContextObject, const struct FVector& LineStart, const struct FVector& LineEnd, float ArrowSize, const struct FLinearColor& LineColor, float Duration);
 	bool STATIC_DoesImplementInterface(class UObject* TestObject, class UClass* Interface);
 	void STATIC_Delay(class UObject* WorldContextObject, float Duration, const struct FLatentActionInfo& LatentInfo);

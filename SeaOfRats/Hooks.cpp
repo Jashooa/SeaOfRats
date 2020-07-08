@@ -108,6 +108,20 @@ HRESULT hookD3D11(HWND window)
 
 bool NullChecks(UGameViewportClient* client)
 {
+    if (!client->World)
+    {
+        spdlog::warn("World null");
+        return false;
+    }
+    if (!reinterpret_cast<AAthenaGameState*>(client->World->GameState)->CrewService)
+    {
+        return false;
+    }
+    if (!client->World->PersistentLevel)
+    {
+        spdlog::warn("PersistentLevel null");
+        return false;
+    }
     if (!client->GameInstance)
     {
         spdlog::warn("GameInstance null");
@@ -128,16 +142,6 @@ bool NullChecks(UGameViewportClient* client)
         spdlog::warn("Pawn null");
         return false;
     }
-    if (!client->World)
-    {
-        spdlog::warn("World null");
-        return false;
-    }
-    if (!client->World->PersistentLevel)
-    {
-        spdlog::warn("PersistentLevel null");
-        return false;
-    }
     return true;
 }
 
@@ -149,7 +153,7 @@ void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
         AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
         hud->Canvas = canvas;
         Hacks::RenderESP(client, hud);
-        Hacks::RenderCrosshair(hud);
+        Hacks::RenderInfo(client, hud);
     }
 
     originalPostRender(client, canvas);

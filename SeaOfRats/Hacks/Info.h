@@ -6,5 +6,5 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void RenderCrosshair(AHUD* canvas);
+    void RenderInfo(UGameViewportClient* client, AHUD* hud);
 }

@@ -42010,7 +42010,7 @@ float UKismetMathLibrary::STATIC_Sqrt(float A)
 // float                          A                              (Parm, ZeroConstructor, IsPlainOldData)
 // float                          ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-float UKismetMathLibrary::STATIC_Sin(float A)
+float UKismetMathLibrary::Sin(float A)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.Sin");
 
@@ -42024,7 +42024,8 @@ float UKismetMathLibrary::STATIC_Sin(float A)
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
@@ -49355,7 +49356,7 @@ float UKismetMathLibrary::STATIC_DegSin(float A)
 // float                          A                              (Parm, ZeroConstructor, IsPlainOldData)
 // float                          ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-float UKismetMathLibrary::STATIC_DegreesToRadians(float A)
+float UKismetMathLibrary::DegreesToRadians(float A)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.DegreesToRadians");
 
@@ -49369,7 +49370,8 @@ float UKismetMathLibrary::STATIC_DegreesToRadians(float A)
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
@@ -49797,7 +49799,7 @@ struct FVector UKismetMathLibrary::STATIC_CreateVectorFromYawPitch(float Yaw, fl
 // float                          A                              (Parm, ZeroConstructor, IsPlainOldData)
 // float                          ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-float UKismetMathLibrary::STATIC_Cos(float A)
+float UKismetMathLibrary::Cos(float A)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.Cos");
 
@@ -49811,7 +49813,8 @@ float UKismetMathLibrary::STATIC_Cos(float A)
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
@@ -58481,7 +58484,7 @@ void UKismetSystemLibrary::STATIC_DrawDebugCamera(class ACameraActor* CameraActo
 // struct FRotator                Rotation                       (ConstParm, Parm, ZeroConstructor, IsPlainOldData)
 // float                          Duration                       (Parm, ZeroConstructor, IsPlainOldData)
 
-void UKismetSystemLibrary::STATIC_DrawDebugBox(class UObject* WorldContextObject, const struct FVector& Center, const struct FVector& Extent, const struct FLinearColor& LineColor, const struct FRotator& Rotation, float Duration)
+void UKismetSystemLibrary::DrawDebugBox(class UObject* WorldContextObject, const struct FVector& Center, const struct FVector& Extent, const struct FLinearColor& LineColor, const struct FRotator& Rotation, float Duration)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetSystemLibrary.DrawDebugBox");
 
@@ -58504,7 +58507,8 @@ void UKismetSystemLibrary::STATIC_DrawDebugBox(class UObject* WorldContextObject
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 }
