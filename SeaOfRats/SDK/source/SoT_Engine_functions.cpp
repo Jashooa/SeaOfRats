@@ -60479,7 +60479,7 @@ bool UKismetTextLibrary::STATIC_EqualEqual_IgnoreCase_TextText(const struct FTex
 // struct FText                   InText                         (ConstParm, Parm, OutParm, ReferenceParm)
 // struct FString                 ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm)
 
-struct FString UKismetTextLibrary::STATIC_Conv_TextToString(const struct FText& InText)
+struct FString UKismetTextLibrary::Conv_TextToString(const struct FText& InText)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetTextLibrary.Conv_TextToString");
 
@@ -60493,7 +60493,8 @@ struct FString UKismetTextLibrary::STATIC_Conv_TextToString(const struct FText& 
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 

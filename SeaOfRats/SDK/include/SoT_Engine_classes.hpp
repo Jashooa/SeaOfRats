@@ -10392,7 +10392,7 @@ public:
 	bool STATIC_FindTextInLocalizationTable(const struct FString& Namespace, const struct FString& Key, struct FText* OutText);
 	bool STATIC_EqualEqual_TextText(const struct FText& A, const struct FText& B);
 	bool STATIC_EqualEqual_IgnoreCase_TextText(const struct FText& A, const struct FText& B);
-	struct FString STATIC_Conv_TextToString(const struct FText& InText);
+	static struct FString Conv_TextToString(const struct FText& InText);
 	struct FText STATIC_Conv_StringToText(const struct FString& InString);
 	struct FText STATIC_Conv_NameToText(const struct FName& InName);
 	struct FText STATIC_Conv_IntToText(int Value, bool bUseGrouping, int MinimumIntegralDigits, int MaximumIntegralDigits);

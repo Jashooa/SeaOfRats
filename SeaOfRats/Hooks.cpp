@@ -128,11 +128,6 @@ bool NullChecks(UGameViewportClient* client)
         spdlog::warn("Pawn null");
         return false;
     }
-    if (!client->GameInstance->LocalPlayers[0]->PlayerController->AcknowledgedPawn)
-    {
-        spdlog::warn("AcknowledgedPawn null");
-        return false;
-    }
     if (!client->World)
     {
         spdlog::warn("World null");
@@ -153,8 +148,8 @@ void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
     {
         AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
         hud->Canvas = canvas;
-        Hacks::RenderCrosshair(hud);
         Hacks::RenderESP(client, hud);
+        Hacks::RenderCrosshair(hud);
     }
 
     originalPostRender(client, canvas);
