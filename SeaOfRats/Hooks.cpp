@@ -40,6 +40,8 @@ const size_t postRenderIndex = 88;
 
 static std::once_flag isInitialised;
 
+std::mutex hookLock;
+
 HRESULT __stdcall hookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)
 {
     std::call_once(isInitialised, [&](){
@@ -147,7 +149,7 @@ bool NullChecks(UGameViewportClient* client)
 
 void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
 {
-    //if (client->GameInstance->LocalPlayers[0]->PlayerController->Pawn)
+    hookLock.lock();
     if (NullChecks(client))
     {
         AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
@@ -155,8 +157,9 @@ void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
         Hacks::RenderESP(client, hud);
         Hacks::RenderInfo(client, hud);
     }
+    hookLock.unlock();
 
-    originalPostRender(client, canvas);
+    return originalPostRender(client, canvas);
 }
 
 void hookGame()
@@ -249,8 +252,10 @@ static DWORD WINAPI Unload(HMODULE module)
 
     Sleep(50);
 
+    hookLock.lock();
     spdlog::info("Unhooking Game");
     Utilities::HookMethod(clientVTable, postRenderIndex, originalPostRender);
+    hookLock.unlock();
 
     spdlog::info("Unhooking DirectX");
     Utilities::HookMethod(swapChainVTable, presentIndex, originalPresent);
