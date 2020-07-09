@@ -117,6 +117,7 @@ bool NullChecks(UGameViewportClient* client)
     }
     if (!reinterpret_cast<AAthenaGameState*>(client->World->GameState)->CrewService)
     {
+        spdlog::warn("CrewService null");
         return false;
     }
     if (!client->World->PersistentLevel)
@@ -212,7 +213,7 @@ Hooks::Hooks(HMODULE module)
     auto directory = dataDirectory + "\\SeaOfRats\\";
 
     spdlog::set_default_logger(spdlog::basic_logger_mt("SeaOfRats", directory + "log.txt"));
-    spdlog::flush_on(spdlog::level::debug);
+    spdlog::flush_on(spdlog::level::info);
 
 #if _DEBUG
     spdlog::set_level(spdlog::level::debug);
@@ -264,6 +265,7 @@ static DWORD WINAPI Unload(HMODULE module)
     gui->Destroy();
 
     spdlog::info("Done Unloading");
+    spdlog::shutdown();
     FreeLibraryAndExitThread(module, 0);
 }
 

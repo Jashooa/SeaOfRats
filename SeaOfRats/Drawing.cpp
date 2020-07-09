@@ -69,7 +69,7 @@ namespace Drawing
         actor->GetActorBounds(true, &origin, &extent);
 
         FRotator rotation = actor->K2_GetActorRotation();
-        float yaw = UKismetMathLibrary::DegreesToRadians(std::fmodf(rotation.Yaw + 450.0f, 360));
+        float yaw = UKismetMathLibrary::DegreesToRadians(std::fmodf(rotation.Yaw + 450.0f, 360.0f));
 
         FVector t1 = origin, t2 = origin, t3 = origin, t4 = origin, b1 = origin, b2 = origin, b3 = origin, b4 = origin;
         t1.X -= extent.X;

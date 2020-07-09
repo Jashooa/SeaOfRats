@@ -13121,7 +13121,7 @@ public:
 	void STATIC_RemoveCharacterFromCrew(class UObject* WorldContext, class AAthenaCharacter* Player);
 	bool STATIC_QueueNewShipForRespawnAndSetCrewSpawnLocation(class UObject* WorldContext, const struct FGuid& CrewId);
 	bool STATIC_IsCharacterMemberOfCrew(class AAthenaCharacter* Player, const struct FGuid& CrewId);
-	bool STATIC_IsActorMemberOfCharactersCrew(class AActor* Actor, class AAthenaCharacter* Player);
+	static bool IsActorMemberOfCharactersCrew(class AActor* Actor, class AAthenaCharacter* Player);
 	class UClass* STATIC_GetShipSizeForCrewId(class UObject* WorldContext, const struct FGuid& CrewId);
 	class UClass* STATIC_GetShipSizeForActorsCrew(class UObject* WorldContext, class AActor* Actor);
 	TArray<class AAthenaPlayerController*> STATIC_GetPlayerControllersFromCrew(class UObject* WorldContext, const struct FGuid& CrewId);

@@ -22399,7 +22399,7 @@ bool UCrewFunctions::STATIC_IsCharacterMemberOfCrew(class AAthenaCharacter* Play
 // class AAthenaCharacter*        Player                         (ConstParm, Parm, ZeroConstructor, IsPlainOldData)
 // bool                           ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-bool UCrewFunctions::STATIC_IsActorMemberOfCharactersCrew(class AActor* Actor, class AAthenaCharacter* Player)
+bool UCrewFunctions::IsActorMemberOfCharactersCrew(class AActor* Actor, class AAthenaCharacter* Player)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Athena.CrewFunctions.IsActorMemberOfCharactersCrew");
 
@@ -22415,7 +22415,8 @@ bool UCrewFunctions::STATIC_IsActorMemberOfCharactersCrew(class AActor* Actor, c
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
