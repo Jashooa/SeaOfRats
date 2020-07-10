@@ -9631,7 +9631,7 @@ public:
 	bool STATIC_IsValid_Guid(const struct FGuid& InGuid);
 	void STATIC_Invalidate_Guid(struct FGuid* InGuid);
 	bool STATIC_EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B);
-	struct FString STATIC_Conv_GuidToString(const struct FGuid& InGuid);
+	static struct FString Conv_GuidToString(const struct FGuid& InGuid);
 };
 
 
@@ -9995,9 +9995,9 @@ public:
 	float STATIC_Divide_FloatFloat(float A, float B);
 	unsigned char STATIC_Divide_ByteByte(unsigned char A, unsigned char B);
 	float STATIC_DegTan(float A);
-	float STATIC_DegSin(float A);
+	static float DegSin(float A);
 	static float DegreesToRadians(float A);
-	float STATIC_DegCos(float A);
+	static float DegCos(float A);
 	float STATIC_DegAtan2(float A, float B);
 	float STATIC_DegAtan(float A);
 	float STATIC_DegAsin(float A);
@@ -10015,7 +10015,7 @@ public:
 	struct FTransform STATIC_ConvertTransformToRelative(const struct FTransform& Transform, const struct FTransform& ParentTransform);
 	struct FVector2D STATIC_Conv_VectorToVector2D(const struct FVector& InVector);
 	struct FTransform STATIC_Conv_VectorToTransform(const struct FVector& InLocation);
-	struct FRotator STATIC_Conv_VectorToRotator(const struct FVector& InVec);
+	static struct FRotator Conv_VectorToRotator(const struct FVector& InVec);
 	struct FLinearColor STATIC_Conv_VectorToLinearColor(const struct FVector& InVec);
 	struct FVector STATIC_Conv_Vector2DToVector(const struct FVector2D& InVector2D, float Z);
 	struct FVector STATIC_Conv_RotatorToVector(const struct FRotator& InRot);

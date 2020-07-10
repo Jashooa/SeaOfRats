@@ -8,4 +8,4 @@ public:
 
 };
 
-inline std::unique_ptr<Config> config;
+inline std::shared_ptr<Config> config;

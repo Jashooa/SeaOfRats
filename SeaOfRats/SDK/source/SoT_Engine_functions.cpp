@@ -39569,7 +39569,7 @@ bool UKismetGuidLibrary::STATIC_EqualEqual_GuidGuid(const struct FGuid& A, const
 // struct FGuid                   InGuid                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData)
 // struct FString                 ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm)
 
-struct FString UKismetGuidLibrary::STATIC_Conv_GuidToString(const struct FGuid& InGuid)
+struct FString UKismetGuidLibrary::Conv_GuidToString(const struct FGuid& InGuid)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetGuidLibrary.Conv_GuidToString");
 
@@ -39583,7 +39583,8 @@ struct FString UKismetGuidLibrary::STATIC_Conv_GuidToString(const struct FGuid& 
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
@@ -49328,7 +49329,7 @@ float UKismetMathLibrary::STATIC_DegTan(float A)
 // float                          A                              (Parm, ZeroConstructor, IsPlainOldData)
 // float                          ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-float UKismetMathLibrary::STATIC_DegSin(float A)
+float UKismetMathLibrary::DegSin(float A)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.DegSin");
 
@@ -49342,7 +49343,8 @@ float UKismetMathLibrary::STATIC_DegSin(float A)
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);;
 
 	fn->FunctionFlags = flags;
 
@@ -49385,7 +49387,7 @@ float UKismetMathLibrary::DegreesToRadians(float A)
 // float                          A                              (Parm, ZeroConstructor, IsPlainOldData)
 // float                          ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-float UKismetMathLibrary::STATIC_DegCos(float A)
+float UKismetMathLibrary::DegCos(float A)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.DegCos");
 
@@ -49399,7 +49401,8 @@ float UKismetMathLibrary::STATIC_DegCos(float A)
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
@@ -49915,7 +49918,7 @@ struct FTransform UKismetMathLibrary::STATIC_Conv_VectorToTransform(const struct
 // struct FVector                 InVec                          (Parm, ZeroConstructor, IsPlainOldData)
 // struct FRotator                ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-struct FRotator UKismetMathLibrary::STATIC_Conv_VectorToRotator(const struct FVector& InVec)
+struct FRotator UKismetMathLibrary::Conv_VectorToRotator(const struct FVector& InVec)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.Conv_VectorToRotator");
 
@@ -49929,7 +49932,8 @@ struct FRotator UKismetMathLibrary::STATIC_Conv_VectorToRotator(const struct FVe
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 

@@ -96,6 +96,7 @@ namespace Hacks
                     shipType = L"";
                     break;
             }
+            //shipType = shipType + L" " + UKismetGuidLibrary::Conv_GuidToString(crew.CrewId).c_str();
             Drawing::DrawInterfaceString(hud, shipType, FVector2D(positionX, positionY), Drawing::Colour::White, false, false);
             positionY += 15.0f;
             for (int32_t j = 0; j < players.Num(); ++j)
