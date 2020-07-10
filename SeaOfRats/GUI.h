@@ -14,7 +14,6 @@ public:
     void AfterResize(IDXGISwapChain* swapChain);
     void Destroy();
     void Render();
-
     bool isOpen = true;
 private:
     void CreateRenderTarget(IDXGISwapChain* swapChain, ID3D11Device* device);

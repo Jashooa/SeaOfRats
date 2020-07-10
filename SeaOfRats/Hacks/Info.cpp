@@ -2,6 +2,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "Config.h"
 #include "Drawing.h"
 #include "SDK.hpp"
 
@@ -113,8 +114,19 @@ namespace Hacks
 
     void RenderInfo(UGameViewportClient* client, AHUD* hud)
     {
-        DrawCrosshair(hud);
-        DrawCompass(client, hud);
-        DrawPlayerList(client, hud);
+        if (config->crosshair)
+        {
+            DrawCrosshair(hud);
+        }
+
+        if (config->compass)
+        {
+            DrawCompass(client, hud);
+        }
+
+        if (config->playerList)
+        {
+            DrawPlayerList(client, hud);
+        }
     }
 }

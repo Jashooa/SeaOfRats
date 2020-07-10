@@ -6,6 +6,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "Config.h"
 #include "Drawing.h"
 #include "SDK.hpp"
 
@@ -515,7 +516,7 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
+            if (actor->IsA(AAthenaPlayerCharacter::StaticClass()) && config->playerESP)
             {
                 spdlog::debug("DrawPlayer Before");
                 DrawPlayer(client, hud, actor);
@@ -523,7 +524,7 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AAthenaAICharacter::StaticClass()))
+            if (actor->IsA(AAthenaAICharacter::StaticClass()) && config->skeletonESP)
             {
                 spdlog::debug("DrawSkeleton Before");
                 DrawSkeleton(client, hud, actor);
@@ -531,7 +532,7 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AShip::StaticClass()))
+            if (actor->IsA(AShip::StaticClass()) && config->shipESP)
             {
                 spdlog::debug("DrawShip Before");
                 DrawShip(client, hud, actor);
@@ -539,7 +540,7 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AShipNetProxy::StaticClass()))
+            if (actor->IsA(AShipNetProxy::StaticClass()) && config->farShipESP)
             {
                 spdlog::debug("DrawShipFar Before");
                 DrawShipFar(client, hud, actor);
@@ -547,7 +548,7 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(ABootyProxy::StaticClass()))
+            if (actor->IsA(ABootyProxy::StaticClass()) && config->itemESP)
             {
                 spdlog::debug("DrawItem Before");
                 DrawItem(client, hud, actor);
@@ -555,7 +556,7 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AMapTable::StaticClass()))
+            if (actor->IsA(AMapTable::StaticClass()) && config->mapESP)
             {
                 spdlog::debug("DrawMapPins Before");
                 DrawMap(client, hud, actor);
@@ -563,7 +564,10 @@ namespace Hacks
                 continue;
             }
 
-            //DrawDebug(client, hud, actor);
+            if (config->debugESP)
+            {
+                DrawDebug(client, hud, actor);
+            }
         }
     }
 }

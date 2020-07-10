@@ -117,7 +117,6 @@ bool NullChecks(UGameViewportClient* client)
     }
     if (!reinterpret_cast<AAthenaGameState*>(client->World->GameState)->CrewService)
     {
-        spdlog::warn("CrewService null");
         return false;
     }
     if (!client->World->PersistentLevel)
@@ -226,7 +225,7 @@ static DWORD WINAPI Load(HWND window)
 {
     spdlog::info("Loading Hooks");
 
-    config = std::make_unique<Config>();
+    config = std::make_shared<Config>();
     gui = std::make_unique<GUI>();
 
     spdlog::info("Hooking DirectX");

@@ -9,17 +9,11 @@
 #include "include/imgui/imgui_impl_dx11.h"
 #include "include/imgui/imgui_impl_win32.h"
 
+#include "Config.h"
 #include "Hooks.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static WNDPROC originalWndProcHandler = nullptr;
-
-GUI::GUI()
-{
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.IniFilename = NULL;
-}
 
 bool shouldImGuiHandle(const UINT message)
 {
@@ -64,6 +58,17 @@ LRESULT CALLBACK hookWndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lP
     }
 
     return CallWindowProc(originalWndProcHandler, handle, message, wParam, lParam);
+}
+
+GUI::GUI()
+{
+    ImGui::CreateContext();
+
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.IniFilename = nullptr;
+    io.LogFilename = nullptr;
 }
 
 void GUI::Initialise(IDXGISwapChain* swapChain)
@@ -119,20 +124,51 @@ void GUI::Destroy()
 
 void GUI::Render()
 {
+    static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize;
+
     ImGui_ImplWin32_NewFrame();
     ImGui_ImplDX11_NewFrame();
     ImGui::NewFrame();
 
     if (isOpen)
     {
-        ImGui::Begin("Test");
+        ImGui::Begin("SeaOfRats", nullptr, windowFlags);
 
-        ImGui::Text("Hello");
+        if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_NoTooltip))
+        {
+            if (ImGui::BeginTabItem("ESP"))
+            {
+                ImGui::Checkbox("Player", &config->playerESP);
+                ImGui::Checkbox("Skeleton", &config->skeletonESP);
+                ImGui::Checkbox("Ship", &config->shipESP);
+                ImGui::Checkbox("Far Ship", &config->farShipESP);
+                ImGui::Checkbox("Item", &config->itemESP);
+                ImGui::Checkbox("Map", &config->mapESP);
+                ImGui::Checkbox("Debug", &config->debugESP);
+                ImGui::EndTabItem();
+            }
 
-        if (ImGui::Button("Unhook"))
+            if (ImGui::BeginTabItem("Info"))
+            {
+                ImGui::Checkbox("Crosshair", &config->crosshair);
+                ImGui::Checkbox("Compass", &config->compass);
+                ImGui::Checkbox("Playerlist", &config->playerList);
+                ImGui::EndTabItem();
+            }
+
+            if (ImGui::BeginTabItem("Aimbot"))
+            {
+
+                ImGui::EndTabItem();
+            }
+        }
+        
+        ImGui::SameLine();
+        if (ImGui::Button("Unload"))
         {
             hooks->Uninstall();
         }
+        ImGui::EndTabBar();
 
         ImGui::End();
     }
