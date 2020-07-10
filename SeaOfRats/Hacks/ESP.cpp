@@ -64,14 +64,14 @@ namespace Hacks
         if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
         {
             // Draw health bar
-            /*auto healthComponent = player->HealthComponent;
+            auto healthComponent = player->HealthComponent;
             if (healthComponent)
             {
                 FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
                 FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                 FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
                 Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-            }*/
+            }
 
             // Draw item info
             auto wieldedItem = reinterpret_cast<AWieldableItem*>(player->WieldedItemComponent->CurrentlyWieldedItem);
@@ -82,7 +82,7 @@ namespace Hacks
                 {
                     std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
 
-                    FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                    FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
                     Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
                 }
             }
@@ -173,14 +173,14 @@ namespace Hacks
         {
 
             // Draw health bar
-            auto healthComponent = skeleton->HealthComponent;
+            /*auto healthComponent = skeleton->HealthComponent;
             if (healthComponent)
             {
                 FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
                 FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                 FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
                 Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-            }
+            }*/
 
             // Draw item info
             auto wieldedItem = reinterpret_cast<AWieldableItem*>(skeleton->WieldedItemComponent->CurrentlyWieldedItem);
@@ -191,7 +191,7 @@ namespace Hacks
                 {
                     std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
 
-                    FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
+                    FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
                     Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
                 }
             }
