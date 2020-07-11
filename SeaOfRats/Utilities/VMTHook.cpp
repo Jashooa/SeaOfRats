@@ -2,8 +2,6 @@
 
 #include "VMTHook.h"
 
-#include "spdlog/spdlog.h"
-
 namespace Utilities
 {
 	/*uintptr_t HookMethod(uintptr_t virtualTable, uintptr_t hookMethod, size_t offset)
