@@ -23,7 +23,6 @@ namespace Hacks
 
     void DrawCompass(UGameViewportClient* client, AHUD* hud)
     {
-        spdlog::debug("DrawCompass Before");
         static std::vector<const wchar_t*> compassDirections = {
             L"North",
             L"North North East",
@@ -59,16 +58,30 @@ namespace Hacks
         float centerX = static_cast<float>(hud->Canvas->SizeX) / 2.0f;
         Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
         Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
-        spdlog::debug("DrawCompass After");
     }
 
     void DrawPlayerList(UGameViewportClient* client, AHUD* hud)
     {
-        spdlog::debug("DrawPlayerList Before");
-        auto gameState = reinterpret_cast<AAthenaGameState*>(client->World->GameState);
-        auto crewService = gameState->CrewService;
+        auto world = client->World;
+        if (!world)
+        {
+            return;
+        }
 
-        if (crewService == nullptr)
+        auto gameState = client->World->GameState;
+        if (!gameState)
+        {
+            return;
+        }
+
+        if (!gameState->IsA(AAthenaGameState::StaticClass()))
+        {
+            return;
+        }
+
+        auto athenaGameState = reinterpret_cast<AAthenaGameState*>(gameState);
+        auto crewService = athenaGameState->CrewService;
+        if (!crewService)
         {
             return;
         }
@@ -109,7 +122,6 @@ namespace Hacks
             }
             positionY += 10.0f;
         }
-        spdlog::debug("DrawPlayerList After");
     }
 
     void RenderInfo(UGameViewportClient* client, AHUD* hud)
@@ -121,12 +133,16 @@ namespace Hacks
 
         if (config->compass)
         {
+            spdlog::debug("DrawCompass Before");
             DrawCompass(client, hud);
+            spdlog::debug("DrawCompass After");
         }
 
         if (config->playerList)
         {
+            spdlog::debug("DrawPlayerList Before");
             DrawPlayerList(client, hud);
+            spdlog::debug("DrawPlayerList After");
         }
     }
 }

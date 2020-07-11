@@ -22524,7 +22524,7 @@ TArray<class AAthenaPlayerController*> UCrewFunctions::STATIC_GetPlayerControlle
 // class AActor*                  Actor                          (ConstParm, Parm, ZeroConstructor, IsPlainOldData)
 // struct FGuid                   ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-struct FGuid UCrewFunctions::STATIC_GetCrewIdFromActor(class UObject* WorldContext, class AActor* Actor)
+struct FGuid UCrewFunctions::GetCrewIdFromActor(class UObject* WorldContext, class AActor* Actor)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Athena.CrewFunctions.GetCrewIdFromActor");
 
@@ -22540,7 +22540,8 @@ struct FGuid UCrewFunctions::STATIC_GetCrewIdFromActor(class UObject* WorldConte
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 

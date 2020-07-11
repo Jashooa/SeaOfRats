@@ -9630,7 +9630,7 @@ public:
 	struct FGuid STATIC_NewGuid();
 	bool STATIC_IsValid_Guid(const struct FGuid& InGuid);
 	void STATIC_Invalidate_Guid(struct FGuid* InGuid);
-	bool STATIC_EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B);
+	static bool EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B);
 	static struct FString Conv_GuidToString(const struct FGuid& InGuid);
 };
 
@@ -10383,7 +10383,7 @@ public:
 	struct FText STATIC_TextTrimPrecedingAndTrailing(const struct FText& InText);
 	struct FText STATIC_TextTrimPreceding(const struct FText& InText);
 	bool STATIC_TextIsTransient(const struct FText& InText);
-	bool STATIC_TextIsEmpty(const struct FText& InText);
+	static bool TextIsEmpty(const struct FText& InText);
 	bool STATIC_TextIsCultureInvariant(const struct FText& InText);
 	bool STATIC_NotEqual_TextText(const struct FText& A, const struct FText& B);
 	bool STATIC_NotEqual_IgnoreCase_TextText(const struct FText& A, const struct FText& B);

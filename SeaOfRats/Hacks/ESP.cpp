@@ -27,7 +27,7 @@ namespace Hacks
         }
 
         // Check if on-screen
-        auto location = player->K2_GetActorLocation();
+        auto location = actor->K2_GetActorLocation();
         FVector2D screen;
         if (!playerController->ProjectWorldLocationToScreen(location, &screen))
         {
@@ -43,20 +43,23 @@ namespace Hacks
         }
         Drawing::DrawBoundingBox(client, hud, actor, colour);
 
-        // Get top coordinates
+        // Get bounds
         FVector origin, extent;
         actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
         auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
         FVector2D topScreen;
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
         {
-            // Draw name
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            // Get name
             std::wstring playerName = player->PlayerState->PlayerName.c_str();
-            std::wstring playerNameText = playerName + L" [" + std::to_wstring(distance) + L"m]";
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            playerName += L" [" + std::to_wstring(distance) + L"m]";
 
+            // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, playerNameText, nameScreen, colour);
+            Drawing::DrawActorString(hud, playerName, nameScreen, colour);
         }
 
         // Get bottom coordinates
@@ -97,7 +100,7 @@ namespace Hacks
         auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
 
         // Check if on-screen
-        auto location = skeleton->K2_GetActorLocation();
+        auto location = actor->K2_GetActorLocation();
         FVector2D screen;
         if (!playerController->ProjectWorldLocationToScreen(location, &screen))
         {
@@ -105,6 +108,7 @@ namespace Hacks
         }
         Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
 
+        // Get bounds
         FVector origin, extent;
         actor->GetActorBounds(true, &origin, &extent);
 
@@ -151,6 +155,10 @@ namespace Hacks
                         }
                     }
                 }
+                else if (meshName.find("nme_skellyash") != std::string::npos)
+                {
+                    skeletonName = L"Ashen " + skeletonName;
+                }
 
                 if (meshName.find("_cap_") != std::string::npos)
                 {
@@ -159,12 +167,24 @@ namespace Hacks
 
                 skeletonName += L" " + std::wstring(meshName.begin(), meshName.end());
             }
+            //float worldDistance = localPlayer->GetDistanceTo(actor);
+            
+
+            auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
+            //bool isNameplateShown = false;
+            if (!UKismetTextLibrary::TextIsEmpty(namePlate->DisplayNameAsText))
+            {
+                //isNameplateShown = worldDistance < namePlate->VisibleUntilWorldDistance;
+                std::wstring namePlateText = UKismetTextLibrary::Conv_TextToString(namePlate->DisplayNameAsText).c_str();
+                skeletonName = namePlateText + L" " + skeletonName;
+            }
+
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            std::wstring skeletonText = skeletonName + L" [" + std::to_wstring(distance) + L"m]";
+            skeletonName += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, skeletonText, nameScreen, Drawing::Colour::White);
+            Drawing::DrawActorString(hud, skeletonName, nameScreen, Drawing::Colour::White);
         }
 
         // Get bottom coordinates
@@ -199,13 +219,106 @@ namespace Hacks
         }
     }
 
+    void DrawShark(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto shark = reinterpret_cast<ASharkPawn*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring sharkName = L"Shark ";
+            std::string sharkActorName = shark->GetName();
+            sharkName += L" " + std::wstring(sharkActorName.begin(), sharkActorName.end());
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            sharkName += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
+            Drawing::DrawActorString(hud, sharkName, nameScreen, Drawing::Colour::White);
+
+            // Draw health bar
+            auto healthComponent = shark->HealthComponent;
+            if (healthComponent)
+            {
+                FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
+                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+            }
+        }
+    }
+
+    void DrawMermaid(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto mermaid = reinterpret_cast<AMermaid*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring mermaidName = L"Mermaid ";
+
+            // Check if my mermaid
+            auto localCrewId = UCrewFunctions::GetCrewIdFromActor(client->World, localPlayer);
+            auto crewIds = mermaid->GetCrewIdsResponsibleForSavingAsCopy();
+            for (int32_t i = 0; i < crewIds.Num(); ++i)
+            {
+                if (UKismetGuidLibrary::EqualEqual_GuidGuid(crewIds[i], localCrewId))
+                {
+                    mermaidName = L"My " + mermaidName;
+                }
+            }
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            mermaidName += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+            Drawing::DrawActorString(hud, mermaidName, nameScreen, Drawing::Colour::White);
+        }
+    }
+
     void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
         auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
         auto localPlayer = playerController->Pawn;
         auto ship = reinterpret_cast<AShip*>(actor);
 
-        auto location = ship->K2_GetActorLocation();
+        auto location = actor->K2_GetActorLocation();
         location.Z += 25 * 100;
 
         FVector2D screen;
@@ -220,22 +333,22 @@ namespace Hacks
             return;
         }
 
-        std::string name = actor->GetName();
+        std::string actorName = actor->GetName();
         std::wstring shipText;
-        if (name.find("Large") != std::string::npos)
+        if (actorName.find("Large") != std::string::npos)
         {
             shipText = L"Galleon";
         }
-        else if (name.find("Medium") != std::string::npos)
+        else if (actorName.find("Medium") != std::string::npos)
         {
             shipText = L"Brigantine";
         }
-        else if (name.find("Small") != std::string::npos)
+        else if (actorName.find("Small") != std::string::npos)
         {
             shipText = L"Sloop";
         }
 
-        if (name.find("AI") != std::string::npos)
+        if (actorName.find("AI") != std::string::npos)
         {
             shipText = L"Skeleton " + shipText;
         }
@@ -246,20 +359,20 @@ namespace Hacks
         }
 
         shipText += L" [" + std::to_wstring(distance) + L"m]";
-        Drawing::DrawActorString(hud, shipText, screen, Drawing::Colour::White);
+
+        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
+        Drawing::DrawActorString(hud, shipText, nameScreen, Drawing::Colour::White);
 
         auto waterInfo = ship->GetInternalWater();
         if (waterInfo)
         {
-            FVector2D healthScreen = FVector2D(screen.X, screen.Y + 10.0f);
+            FVector2D healthScreen = FVector2D(screen.X, screen.Y - 10.0f);
             FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
             FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
             float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
             float waterLevel = waterMax - waterInfo->WaterAmount;
             Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, waterLevel, waterMax);
         }
-
-        FVector2D testScreen = FVector2D(screen.X, screen.Y + 25.0f);
     }
 
     void DrawShipFar(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -268,7 +381,7 @@ namespace Hacks
         auto localPlayer = playerController->Pawn;
         auto ship = reinterpret_cast<AShipNetProxy*>(actor);
 
-        auto location = ship->K2_GetActorLocation();
+        auto location = actor->K2_GetActorLocation();
         location.Z += 25 * 100;
 
         FVector2D screen;
@@ -283,22 +396,22 @@ namespace Hacks
             return;
         }
 
-        std::string name = actor->GetName();
+        std::string actorName = actor->GetName();
         std::wstring shipType;
-        if (name.find("Large") != std::string::npos)
+        if (actorName.find("Large") != std::string::npos)
         {
             shipType = L"Galleon";
         }
-        else if (name.find("Medium") != std::string::npos)
+        else if (actorName.find("Medium") != std::string::npos)
         {
             shipType = L"Brigantine";
         }
-        else if (name.find("Small") != std::string::npos)
+        else if (actorName.find("Small") != std::string::npos)
         {
             shipType = L"Sloop";
         }
 
-        if (name.find("AI") != std::string::npos)
+        if (actorName.find("AI") != std::string::npos)
         {
             shipType = L"Skeleton " + shipType;
         }
@@ -309,14 +422,59 @@ namespace Hacks
         }
 
         std::wstring shipText = shipType + L" [" + std::to_wstring(distance) + L"m]";
-        Drawing::DrawActorString(hud, shipText, screen, Drawing::Colour::White);
+
+        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+        Drawing::DrawActorString(hud, shipText, nameScreen, Drawing::Colour::White);
+    }
+
+    void DrawRowboat(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto rowboat = reinterpret_cast<ARowboat*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring rowboatName = L"Rowboat ";
+
+            std::string actorName = actor->GetName();
+            if (actorName.find("Harpoon") != std::string::npos)
+            {
+                rowboatName = L"Harpoon " + rowboatName;
+            }
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            rowboatName += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+            Drawing::DrawActorString(hud, rowboatName, nameScreen, Drawing::Colour::White);
+        }
     }
 
     void DrawItem(UGameViewportClient* client, AHUD* hud, AActor* actor)
     {
         auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
         auto localPlayer = playerController->Pawn;
+        auto item = reinterpret_cast<ABootyProxy*>(actor);
 
+        // Check if on-screen
         auto location = actor->K2_GetActorLocation();
         FVector2D screen;
         if (!playerController->ProjectWorldLocationToScreen(location, &screen))
@@ -325,16 +483,18 @@ namespace Hacks
         }
 
         // Get item info
-        auto item = reinterpret_cast<ABootyProxy*>(actor);
         auto itemInfo = reinterpret_cast<ABootyItemInfo*>(item->ItemInfo);
         if (!itemInfo)
         {
-            spdlog::warn("iteminfo null");
+            spdlog::warn("ItemInfo null");
             return;
         }
 
+        // Get bounds
         FVector origin, extent;
         actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
         auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
         FVector2D topScreen;
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
@@ -419,8 +579,8 @@ namespace Hacks
         }
 
         std::string name = actor->GetName();
-        /*if (name.find("_") != std::string::npos)
-            return;*/
+        if (name.find("_") != std::string::npos)
+            return;
         if (name.find("cmn") != std::string::npos)
             return;
         if (name.find("wsp") != std::string::npos)
@@ -472,7 +632,7 @@ namespace Hacks
         UWorld* world = client->World;
         if (!world)
         {
-            spdlog::warn("World Null");
+            spdlog::warn("World null");
             return;
         }
 
@@ -496,7 +656,7 @@ namespace Hacks
         ULevel* level = world->PersistentLevel;
         if (!level)
         {
-            spdlog::warn("Level Null");
+            spdlog::warn("PersistentLevel null");
             return;
         }
 
@@ -532,6 +692,22 @@ namespace Hacks
                 continue;
             }
 
+            if (actor->IsA(ASharkPawn::StaticClass()) && config->sharkESP)
+            {
+                spdlog::debug("DrawShark Before");
+                DrawShark(client, hud, actor);
+                spdlog::debug("DrawShark After");
+                continue;
+            }
+
+            if (actor->IsA(AMermaid::StaticClass()) && config->mermaidESP)
+            {
+                spdlog::debug("DrawMermaid Before");
+                DrawMermaid(client, hud, actor);
+                spdlog::debug("DrawMermaid After");
+                continue;
+            }
+
             if (actor->IsA(AShip::StaticClass()) && config->shipESP)
             {
                 spdlog::debug("DrawShip Before");
@@ -540,11 +716,19 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AShipNetProxy::StaticClass()) && config->farShipESP)
+            if (actor->IsA(AShipNetProxy::StaticClass()) && config->shipFarESP)
             {
                 spdlog::debug("DrawShipFar Before");
                 DrawShipFar(client, hud, actor);
                 spdlog::debug("DrawShipFar After");
+                continue;
+            }
+
+            if (actor->IsA(ARowboat::StaticClass()) && config->rowboatESP)
+            {
+                spdlog::debug("DrawRowboat Before");
+                DrawRowboat(client, hud, actor);
+                spdlog::debug("DrawRowboat After");
                 continue;
             }
 

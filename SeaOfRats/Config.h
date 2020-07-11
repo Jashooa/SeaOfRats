@@ -8,8 +8,11 @@ public:
     Config();
     bool playerESP;
     bool skeletonESP;
+    bool sharkESP;
+    bool mermaidESP;
     bool shipESP;
-    bool farShipESP;
+    bool shipFarESP;
+    bool rowboatESP;
     bool itemESP;
     bool mapESP;
     bool debugESP;
@@ -19,4 +22,4 @@ public:
     bool playerList;
 };
 
-inline std::shared_ptr<Config> config;
+inline std::unique_ptr<Config> config;

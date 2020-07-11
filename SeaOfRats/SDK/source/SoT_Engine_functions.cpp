@@ -39539,7 +39539,7 @@ void UKismetGuidLibrary::STATIC_Invalidate_Guid(struct FGuid* InGuid)
 // struct FGuid                   B                              (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData)
 // bool                           ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-bool UKismetGuidLibrary::STATIC_EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B)
+bool UKismetGuidLibrary::EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetGuidLibrary.EqualEqual_GuidGuid");
 
@@ -39555,7 +39555,8 @@ bool UKismetGuidLibrary::STATIC_EqualEqual_GuidGuid(const struct FGuid& A, const
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 
@@ -60215,7 +60216,7 @@ bool UKismetTextLibrary::STATIC_TextIsTransient(const struct FText& InText)
 // struct FText                   InText                         (ConstParm, Parm, OutParm, ReferenceParm)
 // bool                           ReturnValue                    (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData)
 
-bool UKismetTextLibrary::STATIC_TextIsEmpty(const struct FText& InText)
+bool UKismetTextLibrary::TextIsEmpty(const struct FText& InText)
 {
 	static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetTextLibrary.TextIsEmpty");
 
@@ -60229,7 +60230,8 @@ bool UKismetTextLibrary::STATIC_TextIsEmpty(const struct FText& InText)
 	auto flags = fn->FunctionFlags;
 	fn->FunctionFlags |= 0x400;
 
-	UObject::ProcessEvent(fn, &params);
+	static auto defaultObj = StaticClass()->CreateDefaultObject();
+	defaultObj->ProcessEvent(fn, &params);
 
 	fn->FunctionFlags = flags;
 

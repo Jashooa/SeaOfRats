@@ -140,8 +140,11 @@ void GUI::Render()
             {
                 ImGui::Checkbox("Player", &config->playerESP);
                 ImGui::Checkbox("Skeleton", &config->skeletonESP);
+                ImGui::Checkbox("Shark", &config->sharkESP);
+                ImGui::Checkbox("Mermaid", &config->mermaidESP);
                 ImGui::Checkbox("Ship", &config->shipESP);
-                ImGui::Checkbox("Far Ship", &config->farShipESP);
+                ImGui::Checkbox("Far Ship", &config->shipFarESP);
+                ImGui::Checkbox("Rowboat", &config->rowboatESP);
                 ImGui::Checkbox("Item", &config->itemESP);
                 ImGui::Checkbox("Map", &config->mapESP);
                 ImGui::Checkbox("Debug", &config->debugESP);

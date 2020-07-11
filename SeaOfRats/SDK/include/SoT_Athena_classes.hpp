@@ -13125,7 +13125,7 @@ public:
 	class UClass* STATIC_GetShipSizeForCrewId(class UObject* WorldContext, const struct FGuid& CrewId);
 	class UClass* STATIC_GetShipSizeForActorsCrew(class UObject* WorldContext, class AActor* Actor);
 	TArray<class AAthenaPlayerController*> STATIC_GetPlayerControllersFromCrew(class UObject* WorldContext, const struct FGuid& CrewId);
-	struct FGuid STATIC_GetCrewIdFromActor(class UObject* WorldContext, class AActor* Actor);
+	static struct FGuid GetCrewIdFromActor(class UObject* WorldContext, class AActor* Actor);
 	void STATIC_CreateCrew(class UObject* WorldContext, const struct FGuid& CrewId, class AAthenaPlayerState* FirstMember, TEnumAsByte<ESessionVisibility> SessionVisibility);
 	void STATIC_ClearCrewSpawnProgressOverrideId(class UWorld* World, const struct FGuid& CrewId);
 	void STATIC_ClearCrewShipProgressionSpawnLocations(class UObject* WorldContext, const struct FGuid& CrewId);

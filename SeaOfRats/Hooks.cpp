@@ -9,6 +9,7 @@
 #include <mutex>
 #include <string>
 
+#define SPDLOG_WCHAR_TO_UTF8_SUPPORT
 #include "include/spdlog/spdlog.h"
 #include "include/spdlog/async.h"
 #include "include/spdlog/sinks/basic_file_sink.h"
@@ -115,7 +116,12 @@ bool NullChecks(UGameViewportClient* client)
         spdlog::warn("World null");
         return false;
     }
-    if (!reinterpret_cast<AAthenaGameState*>(client->World->GameState)->CrewService)
+    if (!client->World->GameState)
+    {
+        spdlog::warn("GameState null");
+        return false;
+    }
+    if (!client->World->GameState->IsA(AAthenaGameState::StaticClass()))
     {
         return false;
     }
@@ -212,7 +218,7 @@ Hooks::Hooks(HMODULE module)
     auto directory = dataDirectory + "\\SeaOfRats\\";
 
     spdlog::set_default_logger(spdlog::basic_logger_mt("SeaOfRats", directory + "log.txt"));
-    spdlog::flush_on(spdlog::level::info);
+    spdlog::flush_on(spdlog::level::debug);
 
 #if _DEBUG
     spdlog::set_level(spdlog::level::debug);
@@ -225,7 +231,7 @@ static DWORD WINAPI Load(HWND window)
 {
     spdlog::info("Loading Hooks");
 
-    config = std::make_shared<Config>();
+    config = std::make_unique<Config>();
     gui = std::make_unique<GUI>();
 
     spdlog::info("Hooking DirectX");
