@@ -12,8 +12,6 @@
 
 using namespace SDK;
 
-static float y = 0.0f;
-
 namespace Hacks
 {
     void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -977,11 +975,9 @@ namespace Hacks
             return;
         if (name.find("StaticMeshActor") != std::string::npos)
             return;
-
-        y += 10.0f;
         //name = actor->GetFullName();
         std::wstring namew(name.begin(), name.end());
-        Drawing::DrawActorString(hud, namew, FVector2D(screen.X, screen.Y - y), Drawing::Colour::Red);
+        Drawing::DrawActorString(hud, namew, screen, Drawing::Colour::Red);
     }
 
     void RenderESP(UGameViewportClient* client, AHUD* hud)
@@ -1236,7 +1232,5 @@ namespace Hacks
                 DrawDebug(client, hud, actor);
             }
         }
-
-        y = 0.0f;
     }
 }
