@@ -19,6 +19,7 @@ public:
     bool ghostShipESP;
     bool rowboatESP;
     bool itemESP;
+    bool barrelESP;
     bool shipwreckESP;
     bool stormESP;
     bool eventESP;

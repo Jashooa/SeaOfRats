@@ -8154,6 +8154,8 @@ public:
 	class UStaticMeshComponent*                        Mesh;                                                     // 0x04A8(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
 	class UInteractableComponent*                      InteractionRegion;                                        // 0x04B0(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
 	unsigned char                                      UnknownData01[0x48];                                      // 0x04B8(0x0048) MISSED OFFSET
+	unsigned char                                      UnknownData02[0x10];
+	class UStorageContainerComponent*                  StorageContainer;
 
 	static UClass* StaticClass()
 	{

@@ -14,7 +14,8 @@ Config::Config()
     skeletonShipESP = true;
     ghostShipESP = false;
     rowboatESP = false;
-    itemESP = true;
+    itemESP = false;
+    barrelESP = false;
     shipwreckESP = false;
     stormESP = false;
     eventESP = false;

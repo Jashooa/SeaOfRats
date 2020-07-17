@@ -160,6 +160,7 @@ void GUI::Render()
 
                 ImGui::Text("Misc");
                 ImGui::Checkbox("Item", &config->itemESP);
+                ImGui::Checkbox("Barrel", &config->barrelESP);
                 ImGui::Checkbox("Shipwreck", &config->shipwreckESP);
                 ImGui::Checkbox("Storm", &config->stormESP);
                 ImGui::Checkbox("Event", &config->eventESP);

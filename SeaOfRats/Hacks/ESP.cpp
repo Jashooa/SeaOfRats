@@ -755,6 +755,26 @@ namespace Hacks
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
             Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+            auto storage = barrel->StorageContainer;
+            if (storage)
+            {
+                auto nodes = storage->ContainerNodes.ContainerNodes;
+                for (int32_t i = 0; i < nodes.Num(); ++i)
+                {
+                    auto node = nodes[i];
+                    //auto itemDesc = reinterpret_cast<UItemDesc*>(node.ItemDesc);
+                    UItemDesc* itemDesc = node.ItemDesc->CreateDefaultObject<UItemDesc>();
+                    if (itemDesc)
+                    {
+                        std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
+                        itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
+
+                        FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.0f * (i + 1));
+                        Drawing::DrawActorString(hud, itemName, itemNameScreen, Drawing::Colour::White);
+                    }
+                }
+            }
         }
     }
 
@@ -980,7 +1000,7 @@ namespace Hacks
             return;
         }
 
-        /*auto levels = world->Levels;
+        auto levels = world->Levels;
 
         for (int32_t i = 6; i < levels.Num(); ++i)
         {
@@ -994,8 +1014,19 @@ namespace Hacks
                 {
                     continue;
                 }
+
+                if (actor->IsA(AStorageContainer::StaticClass()))
+                {
+                    if (config->barrelESP)
+                    {
+                        spdlog::debug("DrawBarrel Before");
+                        DrawBarrel(client, hud, actor);
+                        continue;
+                        spdlog::debug("DrawBarrel Before");
+                    }
+                }
             }
-        }*/
+        }
 
         auto actors = level->AActors;
 
@@ -1143,6 +1174,17 @@ namespace Hacks
                     spdlog::debug("DrawItem After");
                 }
                 continue;
+            }
+
+            if (actor->IsA(AStorageContainer::StaticClass()))
+            {
+                if (config->barrelESP)
+                {
+                    spdlog::debug("DrawBarrel Before");
+                    DrawBarrel(client, hud, actor);
+                    continue;
+                    spdlog::debug("DrawBarrel Before");
+                }
             }
 
             if (actor->IsA(AShipwreck::StaticClass()))
