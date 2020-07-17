@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning( disable: 4189 4267 4324 )
 
 // Sea of Thieves (2.0.16) SDK
 

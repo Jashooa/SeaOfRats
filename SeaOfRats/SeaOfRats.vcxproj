@@ -488,6 +488,6 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <PropertyGroup>
-    <CAExcludePath>$(ProjectDir)imgui\;$(ProjectDir)kiero\;$(ProjectDir)minhook\;$(ProjectDir)minhook\include\;$(ProjectDir)minhook\src\;$(ProjectDir)minhook\src\hde\;$(CAExcludePath)</CAExcludePath>
+    <CAExcludePath>$(ProjectDir)include\;$(CAExcludePath)</CAExcludePath>
   </PropertyGroup>
 </Project>
