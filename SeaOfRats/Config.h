@@ -9,11 +9,19 @@ public:
     bool playerESP;
     bool skeletonESP;
     bool sharkESP;
+    bool krakenESP;
+    bool krakenTentacleESP;
+    bool animalESP;
     bool mermaidESP;
     bool shipESP;
-    bool shipFarESP;
+    bool farShipESP;
+    bool skeletonShipESP;
+    bool ghostShipESP;
     bool rowboatESP;
     bool itemESP;
+    bool shipwreckESP;
+    bool stormESP;
+    bool eventESP;
     bool mapESP;
     bool debugESP;
 

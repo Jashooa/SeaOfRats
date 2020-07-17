@@ -138,17 +138,33 @@ void GUI::Render()
         {
             if (ImGui::BeginTabItem("ESP"))
             {
+                ImGui::Text("Entities");
                 ImGui::Checkbox("Player", &config->playerESP);
                 ImGui::Checkbox("Skeleton", &config->skeletonESP);
                 ImGui::Checkbox("Shark", &config->sharkESP);
+                ImGui::Checkbox("Kraken", &config->krakenESP);
+                ImGui::Checkbox("Kraken Tentacle", &config->krakenTentacleESP);
+                ImGui::Checkbox("Animal", &config->animalESP);
                 ImGui::Checkbox("Mermaid", &config->mermaidESP);
+
+                ImGui::Separator();
+
+                ImGui::Text("Ships");
                 ImGui::Checkbox("Ship", &config->shipESP);
-                ImGui::Checkbox("Far Ship", &config->shipFarESP);
+                ImGui::Checkbox("Far Ship", &config->farShipESP);
+                ImGui::Checkbox("Skeleton Ship", &config->skeletonShipESP);
+                ImGui::Checkbox("Ghost Ship", &config->ghostShipESP);
                 ImGui::Checkbox("Rowboat", &config->rowboatESP);
+
+                ImGui::Separator();
+
+                ImGui::Text("Misc");
                 ImGui::Checkbox("Item", &config->itemESP);
+                ImGui::Checkbox("Shipwreck", &config->shipwreckESP);
+                ImGui::Checkbox("Storm", &config->stormESP);
+                ImGui::Checkbox("Event", &config->eventESP);
                 ImGui::Checkbox("Map", &config->mapESP);
                 ImGui::Checkbox("Debug", &config->debugESP);
-                ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem("Info"))

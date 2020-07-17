@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SDK.hpp"
+#include "SDK/SDK.h"
 
 using namespace SDK;
 

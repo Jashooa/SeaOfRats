@@ -4,13 +4,15 @@
 #include <string>
 #include <vector>
 
+#include "SDK/SDK.h"
 #include "spdlog/spdlog.h"
 
 #include "Config.h"
 #include "Drawing.h"
-#include "SDK.hpp"
 
 using namespace SDK;
+
+static float y = 0.0f;
 
 namespace Hacks
 {
@@ -53,13 +55,13 @@ namespace Hacks
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
         {
             // Get name
-            std::wstring playerName = player->PlayerState->PlayerName.c_str();
+            std::wstring name = player->PlayerState->PlayerName.c_str();
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            playerName += L" [" + std::to_wstring(distance) + L"m]";
+            name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, playerName, nameScreen, colour);
+            Drawing::DrawActorString(hud, name, nameScreen, colour);
         }
 
         // Get bottom coordinates
@@ -118,54 +120,54 @@ namespace Hacks
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
         {
             // Get name
-            std::wstring skeletonName = L"Skeleton";
+            std::wstring name = L"Skeleton";
             if (skeleton->AssignedMesh)
             {
                 std::string meshName = skeleton->AssignedMesh->GetName();
                 if (meshName.find("nme_skellyshadow") != std::string::npos)
                 {
-                    skeletonName = L"Shadow " + skeletonName;
+                    name = L"Shadow " + name;
 
                     if (skeleton->TeamColorTexture)
                     {
                         std::string skeletonColour = skeleton->TeamColorTexture->GetName();
                         if (skeletonColour.find("venom") != std::string::npos)
                         {
-                            skeletonName = L"Purple " + skeletonName;
+                            name = L"Purple " + name;
                         }
                         else if (skeletonColour.find("shark") != std::string::npos)
                         {
-                            skeletonName = L"Blue " + skeletonName;
+                            name = L"Blue " + name;
                         }
                         else if (skeletonColour.find("lightning") != std::string::npos)
                         {
-                            skeletonName = L"White " + skeletonName;
+                            name = L"White " + name;
                         }
                         else if (skeletonColour.find("player") != std::string::npos)
                         {
-                            skeletonName = L"Pink " + skeletonName;
+                            name = L"Pink " + name;
                         }
                         else if (skeletonColour.find("skeleton") != std::string::npos)
                         {
-                            skeletonName = L"Green " + skeletonName;
+                            name = L"Green " + name;
                         }
                         else
                         {
-                            skeletonName = std::wstring(skeletonColour.begin(), skeletonColour.end());
+                            name = std::wstring(skeletonColour.begin(), skeletonColour.end());
                         }
                     }
                 }
                 else if (meshName.find("nme_skellyash") != std::string::npos)
                 {
-                    skeletonName = L"Ashen " + skeletonName;
+                    name = L"Ashen " + name;
                 }
 
                 if (meshName.find("_cap_") != std::string::npos)
                 {
-                    skeletonName += L" Captain";
+                    name += L" Captain";
                 }
 
-                skeletonName += L" " + std::wstring(meshName.begin(), meshName.end());
+                name += L" " + std::wstring(meshName.begin(), meshName.end());
             }
             //float worldDistance = localPlayer->GetDistanceTo(actor);
             
@@ -176,15 +178,15 @@ namespace Hacks
             {
                 //isNameplateShown = worldDistance < namePlate->VisibleUntilWorldDistance;
                 std::wstring namePlateText = UKismetTextLibrary::Conv_TextToString(namePlate->DisplayNameAsText).c_str();
-                skeletonName = namePlateText + L" " + skeletonName;
+                name = namePlateText + L" " + name;
             }
 
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            skeletonName += L" [" + std::to_wstring(distance) + L"m]";
+            name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, skeletonName, nameScreen, Drawing::Colour::White);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
         }
 
         // Get bottom coordinates
@@ -225,6 +227,14 @@ namespace Hacks
         auto localPlayer = playerController->Pawn;
         auto shark = reinterpret_cast<ASharkPawn*>(actor);
 
+        switch (shark->AIControllerParams->TeamID)
+        {
+            case EAthenaAITeam::Sharks:
+                break;
+            case EAthenaAITeam::TinyShark:
+                break;
+        }
+
         // Check if on-screen
         auto location = actor->K2_GetActorLocation();
         FVector2D screen;
@@ -243,16 +253,16 @@ namespace Hacks
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
         {
             // Get name
-            std::wstring sharkName = L"Shark ";
-            std::string sharkActorName = shark->GetName();
-            sharkName += L" " + std::wstring(sharkActorName.begin(), sharkActorName.end());
+            std::wstring name = L"Shark";
+            std::string actorName = actor->GetName();
+            name += L" " + std::wstring(actorName.begin(), actorName.end());
 
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            sharkName += L" [" + std::to_wstring(distance) + L"m]";
+            name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-            Drawing::DrawActorString(hud, sharkName, nameScreen, Drawing::Colour::White);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
 
             // Draw health bar
             auto healthComponent = shark->HealthComponent;
@@ -263,6 +273,141 @@ namespace Hacks
                 FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
                 Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
             }
+        }
+    }
+
+    void DrawKraken(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto kraken = reinterpret_cast<AKraken*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring name = L"Kraken";
+            std::string actorName = actor->GetName();
+            name += L" " + std::wstring(actorName.begin(), actorName.end());
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+            // Draw tentacles remaining
+            std::wstring tentaclesRemaining = L"Tentacles Remaining: " + std::to_wstring(kraken->NumTentaclesRemaining);
+            FVector2D tentaclesScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+            Drawing::DrawActorString(hud, tentaclesRemaining, tentaclesScreen, Drawing::Colour::White);
+        }
+    }
+
+    void DrawKrakenTentacle(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto tentacle = reinterpret_cast<AKrakenTentacle*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring name = L"Kraken Tentacle";
+            std::string actorName = actor->GetName();
+            name += L" " + std::wstring(actorName.begin(), actorName.end());
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+            // Draw health bar
+            auto healthComponent = tentacle->HealthComponent;
+            if (healthComponent)
+            {
+                FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
+                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+            }
+        }
+    }
+
+    void DrawAnimal(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto animal = reinterpret_cast<AFauna*>(actor);
+
+        switch (animal->AIControllerParams->TeamID)
+        {
+            case EAthenaAITeam::Fauna_Chickens:
+                break;
+            case EAthenaAITeam::Fauna_Pigs:
+                break;
+            case EAthenaAITeam::Fauna_Snakes:
+                break;
+        }
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring name = UKismetTextLibrary::Conv_TextToString(animal->DisplayName).c_str();
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
         }
     }
 
@@ -290,7 +435,7 @@ namespace Hacks
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
         {
             // Get name
-            std::wstring mermaidName = L"Mermaid ";
+            std::wstring name = L"Mermaid ";
 
             // Check if my mermaid
             auto localCrewId = UCrewFunctions::GetCrewIdFromActor(client->World, localPlayer);
@@ -299,16 +444,16 @@ namespace Hacks
             {
                 if (UKismetGuidLibrary::EqualEqual_GuidGuid(crewIds[i], localCrewId))
                 {
-                    mermaidName = L"My " + mermaidName;
+                    name = L"My " + name;
                 }
             }
 
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            mermaidName += L" [" + std::to_wstring(distance) + L"m]";
+            name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, mermaidName, nameScreen, Drawing::Colour::White);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
         }
     }
 
@@ -334,34 +479,34 @@ namespace Hacks
         }
 
         std::string actorName = actor->GetName();
-        std::wstring shipText;
+        std::wstring name = L"Ship";
         if (actorName.find("Large") != std::string::npos)
         {
-            shipText = L"Galleon";
+            name = L"Galleon";
         }
         else if (actorName.find("Medium") != std::string::npos)
         {
-            shipText = L"Brigantine";
+            name = L"Brigantine";
         }
         else if (actorName.find("Small") != std::string::npos)
         {
-            shipText = L"Sloop";
+            name = L"Sloop";
         }
 
         if (actorName.find("AI") != std::string::npos)
         {
-            shipText = L"Skeleton " + shipText;
+            name = L"Skeleton " + name;
         }
 
         if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
         {
-            shipText = L"My " + shipText;
+            name = L"My " + name;
         }
 
-        shipText += L" [" + std::to_wstring(distance) + L"m]";
+        name += L" [" + std::to_wstring(distance) + L"m]";
 
         FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-        Drawing::DrawActorString(hud, shipText, nameScreen, Drawing::Colour::White);
+        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
 
         auto waterInfo = ship->GetInternalWater();
         if (waterInfo)
@@ -397,34 +542,81 @@ namespace Hacks
         }
 
         std::string actorName = actor->GetName();
-        std::wstring shipType;
+        std::wstring name = L"Ship";
         if (actorName.find("Large") != std::string::npos)
         {
-            shipType = L"Galleon";
+            name = L"Galleon";
         }
         else if (actorName.find("Medium") != std::string::npos)
         {
-            shipType = L"Brigantine";
+            name = L"Brigantine";
         }
         else if (actorName.find("Small") != std::string::npos)
         {
-            shipType = L"Sloop";
+            name = L"Sloop";
         }
 
         if (actorName.find("AI") != std::string::npos)
         {
-            shipType = L"Skeleton " + shipType;
+            name = L"Skeleton " + name;
         }
 
         if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
         {
-            shipType = L"My " + shipType;
+            name = L"My " + name;
         }
 
-        std::wstring shipText = shipType + L" [" + std::to_wstring(distance) + L"m]";
+        name += L" [" + std::to_wstring(distance) + L"m]";
 
         FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-        Drawing::DrawActorString(hud, shipText, nameScreen, Drawing::Colour::White);
+        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+    }
+
+    void DrawGhostShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto ship = reinterpret_cast<AAggressiveGhostShip*>(actor);
+
+        auto location = actor->K2_GetActorLocation();
+        location.Z += 25 * 100;
+
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        std::wstring name = L"Ghost Ship";
+        switch (ship->GetShipType())
+        {
+            case EAggressiveGhostShipType::EAggressiveGhostShipType__Grunt:
+                name += L"Grunt Ship";
+                break;
+            case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationGrunt:
+                name += L"Ghost Flagship";
+                break;
+            case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationLeader:
+                name += L"Ghost Captain Ship";
+                break;
+            case EAggressiveGhostShipType::EAggressiveGhostShipType__CaptainFormationGrunt:
+                name += L"Ashen Dragon Ship";
+                break;
+            case EAggressiveGhostShipType::EAggressiveGhostShipType__Captain:
+                name += L"The Burning Blade";
+                break;
+        }
+
+        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+        name += L" [" + std::to_wstring(distance) + L"m]";
+
+        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
+        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+        // Draw hits remaining
+        std::wstring hitsRemaining = L"Hits Remaining: " + std::to_wstring(ship->NumShotsLeftToKill);
+        FVector2D hitsScreen = FVector2D(screen.X, screen.Y - 10.0f);
+        Drawing::DrawActorString(hud, hitsRemaining, hitsScreen, Drawing::Colour::White);
     }
 
     void DrawRowboat(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -451,20 +643,20 @@ namespace Hacks
         if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
         {
             // Get name
-            std::wstring rowboatName = L"Rowboat ";
+            std::wstring name = L"Rowboat";
 
             std::string actorName = actor->GetName();
             if (actorName.find("Harpoon") != std::string::npos)
             {
-                rowboatName = L"Harpoon " + rowboatName;
+                name = L"Harpoon " + name;
             }
 
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            rowboatName += L" [" + std::to_wstring(distance) + L"m]";
+            name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, rowboatName, nameScreen, Drawing::Colour::White);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
         }
     }
 
@@ -520,14 +712,146 @@ namespace Hacks
             }
 
             // Get name
+            std::wstring name = UKismetTextLibrary::Conv_TextToString(itemInfo->Desc->Title).c_str();
+
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemInfo->Desc->Title).c_str();
-            std::wstring itemText = itemName + L" [" + std::to_wstring(distance) + L"m]";
+            name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, itemText, nameScreen, colour);
+            Drawing::DrawActorString(hud, name, nameScreen, colour);
         }
+    }
+
+    void DrawBarrel(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto barrel = reinterpret_cast<AStorageContainer*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        // Get bounds
+        FVector origin, extent;
+        actor->GetActorBounds(true, &origin, &extent);
+
+        // Get top coordinates
+        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+        FVector2D topScreen;
+        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+        {
+            // Get name
+            std::wstring name = L"Barrel";
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+        }
+    }
+
+    void DrawShipwreck(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto shipwreck = reinterpret_cast<AShipwreck*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        location.Z = 100.0f;
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+
+        // Get name
+        //std::wstring name = UKismetTextLibrary::Conv_TextToString(shipwreck->LocalisedName).c_str();
+        std::wstring name = L"Shipwreck";
+
+        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+        name += L" [" + std::to_wstring(distance) + L"m]";
+
+        // Draw name
+        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+    }
+
+    void DrawStorm(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto storm = reinterpret_cast<AStorm*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        location.Z = 100.0f;
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+        // Get name
+        std::wstring name = storm->SubjectName.c_str();
+
+        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+        name += L" [" + std::to_wstring(distance) + L"m]";
+
+        // Draw name
+        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+    }
+
+    void DrawEvent(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    {
+        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto localPlayer = playerController->Pawn;
+        auto event = reinterpret_cast<AGameplayEventSignal*>(actor);
+
+        // Check if on-screen
+        auto location = actor->K2_GetActorLocation();
+        location.Z = 100.0f;
+        FVector2D screen;
+        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        {
+            return;
+        }
+        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+        // Get name
+        std::wstring name = L"Event";
+        switch (event->EventType)
+        {
+            case EGameplayEventSignalType::EGameplayEventSignalType__SkellyFort:
+                name = L"Skeleton Fort";
+                break;
+            case EGameplayEventSignalType::EGameplayEventSignalType__SkellyShip:
+                name = L"Skeleton Fleet";
+                break;
+            case EGameplayEventSignalType::EGameplayEventSignalType__AshenLord:
+                name = L"Fort of the Damned";
+                break;
+            case EGameplayEventSignalType::EGameplayEventSignalType__FlameheartGhostShips:
+                name = L"Ghost Fleet";
+                break;
+        }
+
+        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+        name += L" [" + std::to_wstring(distance) + L"m]";
+
+        // Draw name
+        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
     }
 
     void DrawMap(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -579,29 +903,43 @@ namespace Hacks
         }
 
         std::string name = actor->GetName();
-        if (name.find("_") != std::string::npos)
+        /*if (name.find("_") != std::string::npos)
             return;
         if (name.find("cmn") != std::string::npos)
             return;
         if (name.find("wsp") != std::string::npos)
             return;
-        if (name.find("water") != std::string::npos)
-            return;
-        if (name.find("Light") != std::string::npos)
-            return;
         if (name.find("vfx") != std::string::npos)
             return;
         if (name.find("ske") != std::string::npos)
-            return;
-        if (name.find("wld") != std::string::npos)
             return;
         if (name.find("dvr") != std::string::npos)
             return;
         if (name.find("ref") != std::string::npos)
             return;
-        if (name.find("volume") != std::string::npos)
+        if (name.find("bp") != std::string::npos)
             return;
-        if (name.find("Volume") != std::string::npos)
+        if (name.find("bld") != std::string::npos)
+            return;
+        if (name.find("bsp") != std::string::npos)
+            return;*/
+        if (name.find("wpn") != std::string::npos)
+            return;
+        if (name.find("tls") != std::string::npos)
+            return;
+        if (name.find("wld_feature") != std::string::npos)
+            return;
+        if (name.find("Copied") != std::string::npos)
+            return;
+        if (name.find("NavBlocker") != std::string::npos)
+            return;
+        if (name.find("NavMesh") != std::string::npos)
+            return;
+        if (name.find("Light") != std::string::npos)
+            return;
+        if (name.find("water") != std::string::npos)
+            return;
+        if (name.find("Water") != std::string::npos)
             return;
         if (name.find("rocks") != std::string::npos)
             return;
@@ -609,22 +947,21 @@ namespace Hacks
             return;
         if (name.find("shop") != std::string::npos)
             return;
-        if (name.find("bp") != std::string::npos)
+        if (name.find("volume") != std::string::npos)
             return;
-        if (name.find("bld") != std::string::npos)
+        if (name.find("Volume") != std::string::npos)
             return;
-        if (name.find("bsp") != std::string::npos)
+        if (name.find("NulVol") != std::string::npos)
             return;
-        if (name.find("Nav") != std::string::npos)
+        if (name.find("PhasedClusterRoot") != std::string::npos)
             return;
-        if (name.find("Water") != std::string::npos)
-            return;
-        if (name.find("FishCreature") != std::string::npos)
+        if (name.find("StaticMeshActor") != std::string::npos)
             return;
 
-        name = actor->GetFullName();
+        y += 10.0f;
+        //name = actor->GetFullName();
         std::wstring namew(name.begin(), name.end());
-        Drawing::DrawActorString(hud, namew, screen, Drawing::Colour::Red);
+        Drawing::DrawActorString(hud, namew, FVector2D(screen.X, screen.Y - y), Drawing::Colour::Red);
     }
 
     void RenderESP(UGameViewportClient* client, AHUD* hud)
@@ -633,6 +970,13 @@ namespace Hacks
         if (!world)
         {
             spdlog::warn("World null");
+            return;
+        }
+
+        ULevel* level = world->PersistentLevel;
+        if (!level)
+        {
+            spdlog::warn("PersistentLevel null");
             return;
         }
 
@@ -653,13 +997,6 @@ namespace Hacks
             }
         }*/
 
-        ULevel* level = world->PersistentLevel;
-        if (!level)
-        {
-            spdlog::warn("PersistentLevel null");
-            return;
-        }
-
         auto actors = level->AActors;
 
         for (int32_t i = 0; i < actors.Num(); ++i)
@@ -676,75 +1013,179 @@ namespace Hacks
                 continue;
             }
 
-            if (actor->IsA(AAthenaPlayerCharacter::StaticClass()) && config->playerESP)
+            if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
             {
-                spdlog::debug("DrawPlayer Before");
-                DrawPlayer(client, hud, actor);
-                spdlog::debug("DrawPlayer After");
+                if (config->playerESP)
+                {
+                    spdlog::debug("DrawPlayer Before");
+                    DrawPlayer(client, hud, actor);
+                    spdlog::debug("DrawPlayer After");
+                }
                 continue;
             }
 
-            if (actor->IsA(AAthenaAICharacter::StaticClass()) && config->skeletonESP)
+            if (actor->IsA(AAthenaAICharacter::StaticClass()))
             {
-                spdlog::debug("DrawSkeleton Before");
-                DrawSkeleton(client, hud, actor);
-                spdlog::debug("DrawSkeleton After");
+                if (config->skeletonESP)
+                {
+                    spdlog::debug("DrawSkeleton Before");
+                    DrawSkeleton(client, hud, actor);
+                    spdlog::debug("DrawSkeleton After");
+                }
                 continue;
             }
 
-            if (actor->IsA(ASharkPawn::StaticClass()) && config->sharkESP)
+            if (actor->IsA(ASharkPawn::StaticClass()))
             {
-                spdlog::debug("DrawShark Before");
-                DrawShark(client, hud, actor);
-                spdlog::debug("DrawShark After");
+                if (config->sharkESP)
+                {
+                    spdlog::debug("DrawShark Before");
+                    DrawShark(client, hud, actor);
+                    spdlog::debug("DrawShark After");
+                }
                 continue;
             }
 
-            if (actor->IsA(AMermaid::StaticClass()) && config->mermaidESP)
+            if (actor->IsA(AKraken::StaticClass()))
             {
-                spdlog::debug("DrawMermaid Before");
-                DrawMermaid(client, hud, actor);
-                spdlog::debug("DrawMermaid After");
+                if (config->krakenESP)
+                {
+                    spdlog::debug("DrawKraken Before");
+                    DrawKraken(client, hud, actor);
+                    spdlog::debug("DrawKraken After");
+                }
                 continue;
             }
 
-            if (actor->IsA(AShip::StaticClass()) && config->shipESP)
+            if (actor->IsA(AKrakenTentacle::StaticClass()))
             {
-                spdlog::debug("DrawShip Before");
-                DrawShip(client, hud, actor);
-                spdlog::debug("DrawShip After");
+                if (config->krakenTentacleESP)
+                {
+                    spdlog::debug("DrawKrakenTentacle Before");
+                    DrawKrakenTentacle(client, hud, actor);
+                    spdlog::debug("DrawKrakenTentacle After");
+                }
                 continue;
             }
 
-            if (actor->IsA(AShipNetProxy::StaticClass()) && config->shipFarESP)
+            if (actor->IsA(AFauna::StaticClass()))
             {
-                spdlog::debug("DrawShipFar Before");
-                DrawShipFar(client, hud, actor);
-                spdlog::debug("DrawShipFar After");
+                if (config->animalESP)
+                {
+                    spdlog::debug("DrawAnimal Before");
+                    DrawAnimal(client, hud, actor);
+                    spdlog::debug("DrawAnimal After");
+                }
                 continue;
             }
 
-            if (actor->IsA(ARowboat::StaticClass()) && config->rowboatESP)
+            if (actor->IsA(AMermaid::StaticClass()))
             {
-                spdlog::debug("DrawRowboat Before");
-                DrawRowboat(client, hud, actor);
-                spdlog::debug("DrawRowboat After");
+                if (config->mermaidESP)
+                {
+                    spdlog::debug("DrawMermaid Before");
+                    DrawMermaid(client, hud, actor);
+                    spdlog::debug("DrawMermaid After");
+                }
                 continue;
             }
 
-            if (actor->IsA(ABootyProxy::StaticClass()) && config->itemESP)
+            if (actor->IsA(AShip::StaticClass()))
             {
-                spdlog::debug("DrawItem Before");
-                DrawItem(client, hud, actor);
-                spdlog::debug("DrawItem After");
+                if (config->shipESP)
+                {
+                    spdlog::debug("DrawShip Before");
+                    DrawShip(client, hud, actor);
+                    spdlog::debug("DrawShip After");
+                }
                 continue;
             }
 
-            if (actor->IsA(AMapTable::StaticClass()) && config->mapESP)
+            if (actor->IsA(AShipNetProxy::StaticClass()))
             {
-                spdlog::debug("DrawMapPins Before");
-                DrawMap(client, hud, actor);
-                spdlog::debug("DrawMapPins After");
+                if (config->farShipESP)
+                {
+                    spdlog::debug("DrawShipFar Before");
+                    DrawShipFar(client, hud, actor);
+                    spdlog::debug("DrawShipFar After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(AAggressiveGhostShip::StaticClass()))
+            {
+                if (config->ghostShipESP)
+                {
+                    spdlog::debug("DrawGhostShip Before");
+                    DrawGhostShip(client, hud, actor);
+                    spdlog::debug("DrawGhostShip After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(ARowboat::StaticClass()))
+            {
+                if (config->rowboatESP)
+                {
+                    spdlog::debug("DrawRowboat Before");
+                    DrawRowboat(client, hud, actor);
+                    spdlog::debug("DrawRowboat After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(ABootyProxy::StaticClass()))
+            {
+                if (config->itemESP)
+                {
+                    spdlog::debug("DrawItem Before");
+                    DrawItem(client, hud, actor);
+                    spdlog::debug("DrawItem After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(AShipwreck::StaticClass()))
+            {
+                if (config->shipwreckESP)
+                {
+                    spdlog::debug("DrawShipwreck Before");
+                    DrawShipwreck(client, hud, actor);
+                    spdlog::debug("DrawShipwreck After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(AStorm::StaticClass()))
+            {
+                if (config->stormESP)
+                {
+                    spdlog::debug("DrawStorm Before");
+                    DrawStorm(client, hud, actor);
+                    spdlog::debug("DrawStorm After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(AGameplayEventSignal::StaticClass()))
+            {
+                if (config->eventESP)
+                {
+                    spdlog::debug("DrawEvent Before");
+                    DrawEvent(client, hud, actor);
+                    spdlog::debug("DrawEvent After");
+                }
+                continue;
+            }
+
+            if (actor->IsA(AMapTable::StaticClass()))
+            {
+                if (config->mapESP)
+                {
+                    spdlog::debug("DrawMap Before");
+                    DrawMap(client, hud, actor);
+                    spdlog::debug("DrawMap After");
+                }
                 continue;
             }
 
@@ -753,5 +1194,7 @@ namespace Hacks
                 DrawDebug(client, hud, actor);
             }
         }
+
+        y = 0.0f;
     }
 }

@@ -1,10 +1,10 @@
 #include "Info.h"
 
+#include "SDK/SDK.h"
 #include "spdlog/spdlog.h"
 
 #include "Config.h"
 #include "Drawing.h"
-#include "SDK.hpp"
 
 using namespace SDK;
 
@@ -12,8 +12,8 @@ namespace Hacks
 {
     void DrawCrosshair(AHUD* hud)
     {
-        const float centerX = static_cast<float>(hud->Canvas->SizeX) / 2;
-        const float centerY = static_cast<float>(hud->Canvas->SizeY) / 2;
+        const float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+        const float centerY = static_cast<float>(hud->Canvas->SizeY) * 0.5f;
         hud->Canvas->K2_DrawLine(FVector2D(centerX, centerY - 5), FVector2D(centerX, centerY + 5), 2, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
         hud->Canvas->K2_DrawLine(FVector2D(centerX - 5, centerY), FVector2D(centerX + 5, centerY), 2, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -55,7 +55,7 @@ namespace Hacks
         int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
         int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
 
-        float centerX = static_cast<float>(hud->Canvas->SizeX) / 2.0f;
+        float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
         Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
         Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
     }
@@ -124,6 +124,72 @@ namespace Hacks
         }
     }
 
+    void DrawOxygen(UGameViewportClient* client, AHUD* hud)
+    {
+        auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
+
+        auto drowningComponent = localPlayer->DrowningComponent;
+        if (drowningComponent)
+        {
+            int oxygenLevel = static_cast<int>(drowningComponent->OxygenLevel * 100.0f);
+            if (oxygenLevel < 100)
+            {
+                float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+                std::wstring oxygenText = L"Oxygen: " + std::to_wstring(oxygenLevel) + L"%";
+                Drawing::DrawInterfaceString(hud, oxygenText, FVector2D(centerX, 50), Drawing::Colour::Red);
+            }
+        }
+    }
+
+    void DrawWaterLevel(UGameViewportClient* client, AHUD* hud)
+    {
+        auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
+
+        auto ship = reinterpret_cast<AShip*>(localPlayer->GetCurrentShip());
+        if (ship)
+        {
+            auto waterInfo = ship->GetInternalWater();
+            if (waterInfo)
+            {
+                float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+                float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
+                int waterLevel = static_cast<int>((waterInfo->WaterAmount / waterMax) * 100.0f);
+                if (waterLevel > 10)
+                {
+                    std::wstring waterText = L"Water Level: " + std::to_wstring(waterLevel) + L"%";
+                    Drawing::DrawInterfaceString(hud, waterText, FVector2D(centerX, 65), Drawing::Colour::Red);
+                }
+            }
+        }
+    }
+
+    void DrawAnchor(UGameViewportClient* client, AHUD* hud)
+    {
+        auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
+
+        auto parent = localPlayer->GetAttachParentActor();
+        std::wstring capstanText = L"Not attached";
+        if (parent && parent->IsA(ACapstanArm::StaticClass()))
+        {
+            capstanText = L"No parent";
+            auto parentParent = parent->GetParentActor();
+            if (parentParent && parentParent->IsA(ACapstan::StaticClass()))
+            {
+                capstanText = L"No interface";
+                auto capstan = reinterpret_cast<ACapstan*>(parentParent);
+                auto capstanInterface = reinterpret_cast<UCapstanInterface*>(capstan->GetComponentInterfaceByClass(UCapstanInterface::StaticClass()));
+                if (capstanInterface)
+                {
+                    
+                    capstanText = L"Anchor: " + std::to_wstring(capstanInterface->GetCapstanState());
+
+                }
+            }
+        }
+        float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+        Drawing::DrawInterfaceString(hud, capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
+    }
+
     void RenderInfo(UGameViewportClient* client, AHUD* hud)
     {
         if (config->crosshair)
@@ -144,5 +210,10 @@ namespace Hacks
             DrawPlayerList(client, hud);
             spdlog::debug("DrawPlayerList After");
         }
+
+        DrawOxygen(client, hud);
+        DrawWaterLevel(client, hud);
+        DrawAnchor(client, hud);
+
     }
 }

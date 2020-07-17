@@ -9,7 +9,7 @@
 #include <mutex>
 #include <string>
 
-#define SPDLOG_WCHAR_TO_UTF8_SUPPORT
+#include "SDK/SDK.h"
 #include "include/spdlog/spdlog.h"
 #include "include/spdlog/async.h"
 #include "include/spdlog/sinks/basic_file_sink.h"
@@ -17,7 +17,6 @@
 #include "Config.h"
 #include "Drawing.h"
 #include "GUI.h"
-#include "SDK.hpp"
 #include "Hacks/ESP.h"
 #include "Hacks/Info.h"
 #include "Utilities/Memory.h"
@@ -194,6 +193,12 @@ void hookGame()
 
     Drawing::RobotoFont = UObject::FindObject<UFont>("Font Roboto.Roboto");
     Drawing::RobotoTinyFont = UObject::FindObject<UFont>("Font RobotoTiny.RobotoTiny");
+
+    const auto uobject = UObject::FindObject<UAthenaGameViewportClient>("Class CoreUObject.Object");
+    spdlog::info("Object Address: {:p}", reinterpret_cast<void*>(uobject));
+
+    const auto uclass = UObject::FindObject<UAthenaGameViewportClient>("Class CoreUObject.Class");
+    spdlog::info("Class Address: {:p}", reinterpret_cast<void*>(uclass));
 
     clientVTable = *reinterpret_cast<void***>(gameViewportClient);
     originalPostRender = reinterpret_cast<PostRender>(Utilities::HookMethod(clientVTable, postRenderIndex, hookedPostRender));

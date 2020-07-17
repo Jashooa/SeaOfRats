@@ -5,11 +5,19 @@ Config::Config()
     playerESP = true;
     skeletonESP = true;
     sharkESP = true;
+    krakenESP = true;
+    krakenTentacleESP = true;
+    animalESP = false;
     mermaidESP = true;
     shipESP = true;
-    shipFarESP = true;
-    rowboatESP = true;
+    farShipESP = true;
+    skeletonShipESP = true;
+    ghostShipESP = false;
+    rowboatESP = false;
     itemESP = true;
+    shipwreckESP = false;
+    stormESP = false;
+    eventESP = false;
     mapESP = true;
     debugESP = false;
 
