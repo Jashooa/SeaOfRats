@@ -151,12 +151,12 @@ namespace Hacks
             auto waterInfo = ship->GetInternalWater();
             if (waterInfo)
             {
-                float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
                 float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
-                int waterLevel = static_cast<int>((waterInfo->WaterAmount / waterMax) * 100.0f);
+                int32_t waterLevel = static_cast<int32_t>((waterInfo->WaterAmount / waterMax) * 100.0f);
                 if (waterLevel > 10)
                 {
                     std::wstring waterText = L"Water Level: " + std::to_wstring(waterLevel) + L"%";
+                    float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
                     Drawing::DrawInterfaceString(hud, waterText, FVector2D(centerX, 65), Drawing::Colour::Red);
                 }
             }
@@ -168,26 +168,21 @@ namespace Hacks
         auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
         auto parent = localPlayer->GetAttachParentActor();
-        std::wstring capstanText = L"Not attached";
+        
         if (parent && parent->IsA(ACapstanArm::StaticClass()))
         {
-            capstanText = L"No parent";
             auto parentParent = parent->GetParentActor();
             if (parentParent && parentParent->IsA(ACapstan::StaticClass()))
             {
-                capstanText = L"No interface";
                 auto capstan = reinterpret_cast<ACapstan*>(parentParent);
-                auto capstanInterface = reinterpret_cast<UCapstanInterface*>(capstan->GetComponentInterfaceByClass(UCapstanInterface::StaticClass()));
-                if (capstanInterface)
-                {
-                    
-                    capstanText = L"Anchor: " + std::to_wstring(capstanInterface->GetCapstanState());
+                int32_t anchorLevel = static_cast<int32_t>(capstan->NetState.TargetRatio * 100.0f);
 
-                }
+                std::wstring capstanText = L"Anchor Level: " + std::to_wstring(anchorLevel) + L"%";
+                float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+                Drawing::DrawInterfaceString(hud, capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
             }
         }
-        float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-        Drawing::DrawInterfaceString(hud, capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
+
     }
 
     void RenderInfo(UGameViewportClient* client, AHUD* hud)

@@ -1021,9 +1021,9 @@ namespace Hacks
                     {
                         spdlog::debug("DrawBarrel Before");
                         DrawBarrel(client, hud, actor);
-                        continue;
                         spdlog::debug("DrawBarrel Before");
                     }
+                    continue;
                 }
             }
         }
@@ -1182,9 +1182,9 @@ namespace Hacks
                 {
                     spdlog::debug("DrawBarrel Before");
                     DrawBarrel(client, hud, actor);
-                    continue;
                     spdlog::debug("DrawBarrel Before");
                 }
+                continue;
             }
 
             if (actor->IsA(AShipwreck::StaticClass()))
