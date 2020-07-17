@@ -166,6 +166,8 @@ void GUI::Render()
                 ImGui::Checkbox("Event", &config->eventESP);
                 ImGui::Checkbox("Map", &config->mapESP);
                 ImGui::Checkbox("Debug", &config->debugESP);
+
+                ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem("Info"))
