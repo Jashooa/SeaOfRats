@@ -89,7 +89,7 @@ namespace Hacks
         auto crews = crewService->Crews;
 
         float positionX = 10.0f;
-        float positionY = 60.0f;
+        float positionY = 120.0f;
         for (int32_t i = 0; i < crews.Num(); ++i)
         {
             auto crew = crews[i];
