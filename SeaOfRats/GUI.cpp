@@ -1,7 +1,7 @@
 #include "GUI.h"
 
-#include <d3d11.h>
 #include <Windows.h>
+#include <d3d11.h>
 
 #include <string>
 
@@ -10,7 +10,7 @@
 #include "include/imgui/imgui_impl_win32.h"
 
 #include "Config.h"
-#include "Hooks.h"
+#include "SeaOfRats.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static WNDPROC originalWndProcHandler = nullptr;
@@ -71,45 +71,24 @@ GUI::GUI()
     io.LogFilename = nullptr;
 }
 
-void GUI::Initialise(IDXGISwapChain* swapChain)
+void GUI::Initialise(HWND outputWindow, ID3D11Device* device, ID3D11DeviceContext* context)
 {
-    DXGI_SWAP_CHAIN_DESC desc{ 0 };
-    swapChain->GetDesc(&desc);
-
-    ID3D11Device* device;
-    swapChain->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&device));
-    device->GetImmediateContext(&context);
-
-    window = desc.OutputWindow;
+    window = outputWindow;
     originalWndProcHandler = reinterpret_cast<WNDPROC>(SetWindowLongPtr(window, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(hookWndProc)));
 
     ImGui_ImplWin32_Init(window);
     ImGui_ImplDX11_Init(device, context);
-
-    CreateRenderTarget(swapChain, device);
+    ImGui_ImplDX11_CreateDeviceObjects();
 }
 
 void GUI::BeforeResize()
 {
     ImGui_ImplDX11_InvalidateDeviceObjects();
-    renderTargetView->Release();
 }
 
-void GUI::AfterResize(IDXGISwapChain* swapChain)
-{
-    ID3D11Device* device;
-    swapChain->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&device));
-    CreateRenderTarget(swapChain, device);
-}
-
-void GUI::CreateRenderTarget(IDXGISwapChain* swapChain, ID3D11Device* device)
+void GUI::AfterResize()
 {
     ImGui_ImplDX11_CreateDeviceObjects();
-
-    ID3D11Texture2D* buffer;
-    swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&buffer));
-    device->CreateRenderTargetView(buffer, nullptr, &renderTargetView);
-    buffer->Release();
 }
 
 void GUI::Destroy()
@@ -118,7 +97,6 @@ void GUI::Destroy()
 
     ImGui_ImplWin32_Shutdown();
     ImGui_ImplDX11_Shutdown();
-    renderTargetView->Release();
     ImGui::DestroyContext();
 }
 
@@ -188,7 +166,7 @@ void GUI::Render()
         ImGui::SameLine();
         if (ImGui::Button("Unload"))
         {
-            hooks->Uninstall();
+            seaofrats->Uninstall();
         }
         ImGui::EndTabBar();
 
@@ -196,6 +174,5 @@ void GUI::Render()
     }
 
     ImGui::Render();
-    context->OMSetRenderTargets(1, &renderTargetView, nullptr);
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }

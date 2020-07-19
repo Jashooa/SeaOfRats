@@ -49,15 +49,18 @@
     <Filter Include="Header Files\include\XorStr">
       <UniqueIdentifier>{56b16af8-8f1d-4185-9cc7-512b25fa4d16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Hooks">
+      <UniqueIdentifier>{023acc98-8116-43f0-b697-f8d1117eca21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hooks">
+      <UniqueIdentifier>{62842cfe-f111-462c-9c5e-5c7cb1727d55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hooks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\imgui\imgui.cpp">
@@ -93,9 +96,6 @@
     <ClCompile Include="Hacks\Info.cpp">
       <Filter>Source Files\Hacks</Filter>
     </ClCompile>
-    <ClCompile Include="Drawing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="include\SDK\source\SoT_Athena_functions.cpp">
       <Filter>Source Files\include\SDK</Filter>
     </ClCompile>
@@ -117,12 +117,21 @@
     <ClCompile Include="include\SDK\source\SoT_UMG_functions.cpp">
       <Filter>Source Files\include\SDK</Filter>
     </ClCompile>
+    <ClCompile Include="SeaOfRats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\Game.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\DirectX.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Drawing.cpp">
+      <Filter>Source Files\Hacks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\spdlog\sinks\android_sink.h">
@@ -424,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="Hacks\Info.h">
       <Filter>Header Files\Hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawing.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SDK\SDK.h">
       <Filter>Header Files\include\SDK</Filter>
@@ -961,6 +967,18 @@
     </ClInclude>
     <ClInclude Include="include\SDK\include\SoT_Commons.h">
       <Filter>Header Files\include\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="SeaOfRats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks\DirectX.h">
+      <Filter>Header Files\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks\Game.h">
+      <Filter>Header Files\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Drawing.h">
+      <Filter>Header Files\Hacks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Hooks.h"
+#include "SeaOfRats.h"
 
 
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
@@ -14,8 +14,8 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
     switch (reason)
     {
         case DLL_PROCESS_ATTACH:
-            hooks = std::make_unique<Hooks>(module);
-            hooks->Install();
+            seaofrats = std::make_unique<SeaOfRats>(module);
+            seaofrats->Install();
             break;
         case DLL_PROCESS_DETACH:
         case DLL_THREAD_ATTACH:

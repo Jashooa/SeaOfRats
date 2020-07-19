@@ -179,12 +179,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Drawing.cpp" />
+    <ClCompile Include="Hacks\Drawing.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\Info.cpp" />
-    <ClCompile Include="Hooks.cpp" />
+    <ClCompile Include="SeaOfRats.cpp" />
+    <ClCompile Include="Hooks\DirectX.cpp" />
+    <ClCompile Include="Hooks\Game.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
@@ -202,12 +204,14 @@
     <ClCompile Include="Utilities\VMTHook.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Drawing.h" />
+    <ClInclude Include="Hacks\Drawing.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP.h" />
     <ClInclude Include="Hacks\Info.h" />
-    <ClInclude Include="Hooks.h" />
+    <ClInclude Include="SeaOfRats.h" />
+    <ClInclude Include="Hooks\DirectX.h" />
+    <ClInclude Include="Hooks\Game.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />
     <ClInclude Include="include\imgui\imgui_impl_dx11.h" />

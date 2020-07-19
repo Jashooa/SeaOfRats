@@ -1,7 +1,7 @@
 #pragma once
 
-#include <d3d11.h>
 #include <Windows.h>
+#include <d3d11.h>
 
 #include <memory>
 
@@ -9,18 +9,14 @@ class GUI
 {
 public:
     GUI();
-    void Initialise(IDXGISwapChain* swapChain);
+    void Initialise(HWND window, ID3D11Device* device, ID3D11DeviceContext* context);
     void BeforeResize();
-    void AfterResize(IDXGISwapChain* swapChain);
+    void AfterResize();
     void Destroy();
     void Render();
     bool isOpen = true;
 private:
-    void CreateRenderTarget(IDXGISwapChain* swapChain, ID3D11Device* device);
-    ID3D11RenderTargetView* renderTargetView = nullptr;
-    ID3D11DeviceContext* context = nullptr;
-
-    HWND window = NULL;
+    HWND window = nullptr;
 };
 
 inline std::unique_ptr<GUI> gui;

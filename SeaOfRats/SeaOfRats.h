@@ -4,16 +4,15 @@
 
 #include <memory>
 
-class Hooks
+class SeaOfRats
 {
 public:
-    Hooks(HMODULE module);
+    SeaOfRats(HMODULE module);
     void Install();
     void Uninstall();
 
 private:
     HMODULE module = NULL;
-    HWND window = NULL;
 };
 
-inline std::unique_ptr<Hooks> hooks;
+inline std::unique_ptr<SeaOfRats> seaofrats;
