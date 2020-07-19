@@ -83,6 +83,10 @@ struct FVector2D
 		  Y(y)
 	{ }
 
+	inline FVector2D operator-(const FVector2D& V) const
+	{
+		return FVector2D(X - V.X, Y - V.Y);
+	}
 };
 
 // ScriptStruct CoreUObject.TwoVectors

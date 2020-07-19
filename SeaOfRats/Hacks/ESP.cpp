@@ -14,1223 +14,984 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    namespace ESP
     {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto player = reinterpret_cast<AAthenaPlayerCharacter*>(actor);
-
-        // Check if me
-        if (player == localPlayer)
+        void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
-            return;
-        }
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto player = reinterpret_cast<AAthenaPlayerCharacter*>(actor);
 
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Check friendly
-        bool friendly = UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player);
-        FLinearColor colour = Drawing::Colour::Red;
-        if (friendly)
-        {
-            colour = Drawing::Colour::Green;
-        }
-        Drawing::DrawBoundingBox(client, hud, actor, colour);
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = player->PlayerState->PlayerName.c_str();
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, colour);
-        }
-
-        // Get bottom coordinates
-        auto bottomLocation = FVector(origin.X, origin.Y, origin.Z - extent.Z);
-        FVector2D bottomScreen;
-        if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
-        {
-            // Draw health bar
-            auto healthComponent = player->HealthComponent;
-            if (healthComponent)
+            // Check if me
+            if (player == localPlayer)
             {
-                FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
-                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                return;
             }
 
-            // Draw item info
-            auto wieldedItem = reinterpret_cast<AWieldableItem*>(player->WieldedItemComponent->CurrentlyWieldedItem);
-            if (wieldedItem)
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
-                auto itemDesc = wieldedItem->ItemInfo->Desc;
-                if (itemDesc)
-                {
-                    std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
-
-                    FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
-                    Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
-                }
-            }
-        }
-    }
-
-    void DrawSkeleton(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Skeleton";
-            if (skeleton->AssignedMesh)
-            {
-                std::string meshName = skeleton->AssignedMesh->GetName();
-                if (meshName.find("nme_skellyshadow") != std::string::npos)
-                {
-                    name = L"Shadow " + name;
-
-                    if (skeleton->TeamColorTexture)
-                    {
-                        std::string skeletonColour = skeleton->TeamColorTexture->GetName();
-                        if (skeletonColour.find("venom") != std::string::npos)
-                        {
-                            name = L"Purple " + name;
-                        }
-                        else if (skeletonColour.find("shark") != std::string::npos)
-                        {
-                            name = L"Blue " + name;
-                        }
-                        else if (skeletonColour.find("lightning") != std::string::npos)
-                        {
-                            name = L"White " + name;
-                        }
-                        else if (skeletonColour.find("player") != std::string::npos)
-                        {
-                            name = L"Pink " + name;
-                        }
-                        else if (skeletonColour.find("skeleton") != std::string::npos)
-                        {
-                            name = L"Green " + name;
-                        }
-                        else
-                        {
-                            name = std::wstring(skeletonColour.begin(), skeletonColour.end());
-                        }
-                    }
-                }
-                else if (meshName.find("nme_skellyash") != std::string::npos)
-                {
-                    name = L"Ashen " + name;
-                }
-
-                if (meshName.find("_cap_") != std::string::npos)
-                {
-                    name += L" Captain";
-                }
-
-                name += L" " + std::wstring(meshName.begin(), meshName.end());
-            }
-            //float worldDistance = localPlayer->GetDistanceTo(actor);
-            
-
-            auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
-            //bool isNameplateShown = false;
-            if (!UKismetTextLibrary::TextIsEmpty(namePlate->DisplayNameAsText))
-            {
-                //isNameplateShown = worldDistance < namePlate->VisibleUntilWorldDistance;
-                std::wstring namePlateText = UKismetTextLibrary::Conv_TextToString(namePlate->DisplayNameAsText).c_str();
-                name = namePlateText + L" " + name;
+                return;
             }
 
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-        }
-
-        // Get bottom coordinates
-        auto bottomLocation = FVector(origin.X, origin.Y, origin.Z - extent.Z);
-        FVector2D bottomScreen;
-        if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
-        {
-
-            // Draw health bar
-            /*auto healthComponent = skeleton->HealthComponent;
-            if (healthComponent)
-            {
-                FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-            }*/
-
-            // Draw item info
-            auto wieldedItem = reinterpret_cast<AWieldableItem*>(skeleton->WieldedItemComponent->CurrentlyWieldedItem);
-            if (wieldedItem)
-            {
-                auto itemDesc = wieldedItem->ItemInfo->Desc;
-                if (itemDesc)
-                {
-                    std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
-
-                    FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                    Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
-                }
-            }
-        }
-    }
-
-    void DrawShark(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto shark = reinterpret_cast<ASharkPawn*>(actor);
-
-        switch (shark->AIControllerParams->TeamID)
-        {
-            case EAthenaAITeam::Sharks:
-                break;
-            case EAthenaAITeam::TinyShark:
-                break;
-        }
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Shark";
-            std::string actorName = actor->GetName();
-            name += L" " + std::wstring(actorName.begin(), actorName.end());
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-
-            // Draw health bar
-            auto healthComponent = shark->HealthComponent;
-            if (healthComponent)
-            {
-                FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-            }
-        }
-    }
-
-    void DrawKraken(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto kraken = reinterpret_cast<AKraken*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Kraken";
-            std::string actorName = actor->GetName();
-            name += L" " + std::wstring(actorName.begin(), actorName.end());
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-
-            // Draw tentacles remaining
-            std::wstring tentaclesRemaining = L"Tentacles Remaining: " + std::to_wstring(kraken->NumTentaclesRemaining);
-            FVector2D tentaclesScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, tentaclesRemaining, tentaclesScreen, Drawing::Colour::White);
-        }
-    }
-
-    void DrawKrakenTentacle(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto tentacle = reinterpret_cast<AKrakenTentacle*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Kraken Tentacle";
-            std::string actorName = actor->GetName();
-            name += L" " + std::wstring(actorName.begin(), actorName.end());
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-
-            // Draw health bar
-            auto healthComponent = tentacle->HealthComponent;
-            if (healthComponent)
-            {
-                FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-            }
-        }
-    }
-
-    void DrawAnimal(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto animal = reinterpret_cast<AFauna*>(actor);
-
-        switch (animal->AIControllerParams->TeamID)
-        {
-            case EAthenaAITeam::Fauna_Chickens:
-                break;
-            case EAthenaAITeam::Fauna_Pigs:
-                break;
-            case EAthenaAITeam::Fauna_Snakes:
-                break;
-        }
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = UKismetTextLibrary::Conv_TextToString(animal->DisplayName).c_str();
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-        }
-    }
-
-    void DrawMermaid(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto mermaid = reinterpret_cast<AMermaid*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Mermaid ";
-
-            // Check if my mermaid
-            auto localCrewId = UCrewFunctions::GetCrewIdFromActor(client->World, localPlayer);
-            auto crewIds = mermaid->GetCrewIdsResponsibleForSavingAsCopy();
-            for (int32_t i = 0; i < crewIds.Num(); ++i)
-            {
-                if (UKismetGuidLibrary::EqualEqual_GuidGuid(crewIds[i], localCrewId))
-                {
-                    name = L"My " + name;
-                }
-            }
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-        }
-    }
-
-    void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto ship = reinterpret_cast<AShip*>(actor);
-
-        auto location = actor->K2_GetActorLocation();
-        location.Z += 25 * 100;
-
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-        if (distance >= 1300)
-        {
-            return;
-        }
-
-        std::string actorName = actor->GetName();
-        std::wstring name = L"Ship";
-        if (actorName.find("Large") != std::string::npos)
-        {
-            name = L"Galleon";
-        }
-        else if (actorName.find("Medium") != std::string::npos)
-        {
-            name = L"Brigantine";
-        }
-        else if (actorName.find("Small") != std::string::npos)
-        {
-            name = L"Sloop";
-        }
-
-        if (actorName.find("AI") != std::string::npos)
-        {
-            name = L"Skeleton " + name;
-        }
-
-        if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
-        {
-            name = L"My " + name;
-        }
-
-        name += L" [" + std::to_wstring(distance) + L"m]";
-
-        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-
-        auto waterInfo = ship->GetInternalWater();
-        if (waterInfo)
-        {
-            FVector2D healthScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-            FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
-            float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
-            float waterLevel = waterMax - waterInfo->WaterAmount;
-            Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, waterLevel, waterMax);
-        }
-    }
-
-    void DrawShipFar(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto ship = reinterpret_cast<AShipNetProxy*>(actor);
-
-        auto location = actor->K2_GetActorLocation();
-        location.Z += 25 * 100;
-
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-        if (distance < 1300)
-        {
-            return;
-        }
-
-        std::string actorName = actor->GetName();
-        std::wstring name = L"Ship";
-        if (actorName.find("Large") != std::string::npos)
-        {
-            name = L"Galleon";
-        }
-        else if (actorName.find("Medium") != std::string::npos)
-        {
-            name = L"Brigantine";
-        }
-        else if (actorName.find("Small") != std::string::npos)
-        {
-            name = L"Sloop";
-        }
-
-        if (actorName.find("AI") != std::string::npos)
-        {
-            name = L"Skeleton " + name;
-        }
-
-        if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
-        {
-            name = L"My " + name;
-        }
-
-        name += L" [" + std::to_wstring(distance) + L"m]";
-
-        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-    }
-
-    void DrawGhostShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto ship = reinterpret_cast<AAggressiveGhostShip*>(actor);
-
-        auto location = actor->K2_GetActorLocation();
-        location.Z += 25 * 100;
-
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        std::wstring name = L"Ghost Ship";
-        switch (ship->GetShipType())
-        {
-            case EAggressiveGhostShipType::EAggressiveGhostShipType__Grunt:
-                name += L"Grunt Ship";
-                break;
-            case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationGrunt:
-                name += L"Ghost Flagship";
-                break;
-            case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationLeader:
-                name += L"Ghost Captain Ship";
-                break;
-            case EAggressiveGhostShipType::EAggressiveGhostShipType__CaptainFormationGrunt:
-                name += L"Ashen Dragon Ship";
-                break;
-            case EAggressiveGhostShipType::EAggressiveGhostShipType__Captain:
-                name += L"The Burning Blade";
-                break;
-        }
-
-        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-        name += L" [" + std::to_wstring(distance) + L"m]";
-
-        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-
-        // Draw hits remaining
-        std::wstring hitsRemaining = L"Hits Remaining: " + std::to_wstring(ship->NumShotsLeftToKill);
-        FVector2D hitsScreen = FVector2D(screen.X, screen.Y - 10.0f);
-        Drawing::DrawActorString(hud, hitsRemaining, hitsScreen, Drawing::Colour::White);
-    }
-
-    void DrawRowboat(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto rowboat = reinterpret_cast<ARowboat*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Rowboat";
-
-            std::string actorName = actor->GetName();
-            if (actorName.find("Harpoon") != std::string::npos)
-            {
-                name = L"Harpoon " + name;
-            }
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-        }
-    }
-
-    void DrawItem(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto item = reinterpret_cast<ABootyProxy*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Get item info
-        auto itemInfo = reinterpret_cast<ABootyItemInfo*>(item->ItemInfo);
-        if (!itemInfo)
-        {
-            spdlog::warn("ItemInfo null");
-            return;
-        }
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get colour
-            std::string rarity = itemInfo->Rarity.GetName();
-            FLinearColor colour = Drawing::Colour::Blue;
-            if (rarity == "Common")
-            {
-                colour = Drawing::Colour::Grey;
-            }
-            else if (rarity == "Rare")
+            // Check friendly
+            bool friendly = UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player);
+            FLinearColor colour = Drawing::Colour::Red;
+            if (friendly)
             {
                 colour = Drawing::Colour::Green;
             }
-            else if (rarity == "Legendary")
+            Drawing::DrawBoundingBox(client, hud, actor, colour);
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
-                colour = Drawing::Colour::Purple;
-            }
-            else if (rarity == "Mythical")
-            {
-                colour = Drawing::Colour::Orange;
-            }
 
-            // Get name
-            std::wstring name = UKismetTextLibrary::Conv_TextToString(itemInfo->Desc->Title).c_str();
+                float worldDistance = localPlayer->GetDistanceTo(actor);
 
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
+                auto namePlate = reinterpret_cast<UPlayerNameplateComponent*>(player->GetComponentByClass(UPlayerNameplateComponent::StaticClass()));
+                bool isNameplateShown = (worldDistance < namePlate->VisibleUntilWorldDistanceNonCrew) && playerController->LineOfSightTo(actor, FVector(0.0f, 0.0f, 0.0f), false);
 
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, colour);
-        }
-    }
-
-    void DrawBarrel(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto barrel = reinterpret_cast<AStorageContainer*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        // Get bounds
-        FVector origin, extent;
-        actor->GetActorBounds(true, &origin, &extent);
-
-        // Get top coordinates
-        auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-        FVector2D topScreen;
-        if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-        {
-            // Get name
-            std::wstring name = L"Barrel";
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-
-            auto storage = barrel->StorageContainer;
-            if (storage)
-            {
-                auto nodes = storage->ContainerNodes.ContainerNodes;
-                for (int32_t i = 0; i < nodes.Num(); ++i)
+                if (!isNameplateShown)
                 {
-                    auto node = nodes[i];
-                    //auto itemDesc = reinterpret_cast<UItemDesc*>(node.ItemDesc);
-                    UItemDesc* itemDesc = node.ItemDesc->CreateDefaultObject<UItemDesc>();
+                    // Get name
+                    std::wstring name = player->PlayerState->PlayerName.c_str();
+                    int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                    name += L" [" + std::to_wstring(distance) + L"m]";
+
+                    // Draw name
+                    FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                    Drawing::DrawActorString(hud, name, nameScreen, colour);
+                }
+            }
+
+            // Get bottom coordinates
+            auto bottomLocation = FVector(origin.X, origin.Y, origin.Z - extent.Z);
+            FVector2D bottomScreen;
+            if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
+            {
+                // Draw health bar
+                auto healthComponent = player->HealthComponent;
+                if (healthComponent)
+                {
+                    FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                    FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
+                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                }
+
+                // Draw item info
+                auto wieldedItem = reinterpret_cast<AWieldableItem*>(player->WieldedItemComponent->CurrentlyWieldedItem);
+                if (wieldedItem)
+                {
+                    auto itemDesc = wieldedItem->ItemInfo->Desc;
                     if (itemDesc)
                     {
                         std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
-                        itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
 
-                        FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.0f * (i + 1));
-                        Drawing::DrawActorString(hud, itemName, itemNameScreen, Drawing::Colour::White);
+                        FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
+                        Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
                     }
                 }
             }
         }
-    }
 
-    void DrawShipwreck(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto shipwreck = reinterpret_cast<AShipwreck*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        location.Z = 100.0f;
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        void DrawSkeleton(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
-            return;
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Skeleton";
+                if (skeleton->AssignedMesh)
+                {
+                    std::string meshName = skeleton->AssignedMesh->GetName();
+                    if (meshName.find("nme_skellyshadow") != std::string::npos)
+                    {
+                        name = L"Shadow " + name;
+
+                        if (skeleton->TeamColorTexture)
+                        {
+                            std::string skeletonColour = skeleton->TeamColorTexture->GetName();
+                            if (skeletonColour.find("venom") != std::string::npos)
+                            {
+                                name = L"Purple " + name;
+                            }
+                            else if (skeletonColour.find("shark") != std::string::npos)
+                            {
+                                name = L"Blue " + name;
+                            }
+                            else if (skeletonColour.find("lightning") != std::string::npos)
+                            {
+                                name = L"White " + name;
+                            }
+                            else if (skeletonColour.find("player") != std::string::npos)
+                            {
+                                name = L"Pink " + name;
+                            }
+                            else if (skeletonColour.find("skeleton") != std::string::npos)
+                            {
+                                name = L"Green " + name;
+                            }
+                            else
+                            {
+                                name = std::wstring(skeletonColour.begin(), skeletonColour.end());
+                            }
+                        }
+                    }
+                    else if (meshName.find("nme_skellyash") != std::string::npos)
+                    {
+                        name = L"Ashen " + name;
+                    }
+
+                    if (meshName.find("_cap_") != std::string::npos)
+                    {
+                        name += L" Captain";
+                    }
+
+                    name += L" " + std::wstring(meshName.begin(), meshName.end());
+                }
+
+                float worldDistance = localPlayer->GetDistanceTo(actor);
+
+                auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
+                bool isNameplateShown = false;
+                if (!UKismetTextLibrary::TextIsEmpty(namePlate->DisplayNameAsText))
+                {
+                    isNameplateShown = (worldDistance < namePlate->VisibleUntilWorldDistance) && playerController->LineOfSightTo(actor, FVector(0.0f, 0.0f, 0.0f), false);
+                    std::wstring namePlateText = UKismetTextLibrary::Conv_TextToString(namePlate->DisplayNameAsText).c_str();
+                    name = namePlateText + L" " + name;
+                }
+
+                if (!isNameplateShown)
+                {
+                    int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                    name += L" [" + std::to_wstring(distance) + L"m]";
+
+                    // Draw name
+                    FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                    Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                }
+            }
+
+            // Get bottom coordinates
+            auto bottomLocation = FVector(origin.X, origin.Y, origin.Z - extent.Z);
+            FVector2D bottomScreen;
+            if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
+            {
+
+                // Draw health bar
+                /*auto healthComponent = skeleton->HealthComponent;
+                if (healthComponent)
+                {
+                    FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                    FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
+                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                }*/
+
+                // Draw item info
+                auto wieldedItem = reinterpret_cast<AWieldableItem*>(skeleton->WieldedItemComponent->CurrentlyWieldedItem);
+                if (wieldedItem)
+                {
+                    auto itemDesc = wieldedItem->ItemInfo->Desc;
+                    if (itemDesc)
+                    {
+                        std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
+
+                        FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                        Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
+                    }
+                }
+            }
         }
 
-        // Get name
-        //std::wstring name = UKismetTextLibrary::Conv_TextToString(shipwreck->LocalisedName).c_str();
-        std::wstring name = L"Shipwreck";
-
-        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-        name += L" [" + std::to_wstring(distance) + L"m]";
-
-        // Draw name
-        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-    }
-
-    void DrawStorm(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto storm = reinterpret_cast<AStorm*>(actor);
-
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        location.Z = 100.0f;
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+        void DrawShark(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
-            return;
-        }
-        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto shark = reinterpret_cast<ASharkPawn*>(actor);
 
-        // Get name
-        std::wstring name = storm->SubjectName.c_str();
+            switch (shark->AIControllerParams->TeamID)
+            {
+                case EAthenaAITeam::Sharks:
+                    break;
+                case EAthenaAITeam::TinyShark:
+                    break;
+            }
 
-        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-        name += L" [" + std::to_wstring(distance) + L"m]";
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
 
-        // Draw name
-        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-    }
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
 
-    void DrawEvent(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto event = reinterpret_cast<AGameplayEventSignal*>(actor);
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Shark";
+                std::string actorName = actor->GetName();
+                name += L" " + std::wstring(actorName.begin(), actorName.end());
 
-        // Check if on-screen
-        auto location = actor->K2_GetActorLocation();
-        location.Z = 100.0f;
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-        Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
 
-        // Get name
-        std::wstring name = L"Event";
-        switch (event->EventType)
-        {
-            case EGameplayEventSignalType::EGameplayEventSignalType__SkellyFort:
-                name = L"Skeleton Fort";
-                break;
-            case EGameplayEventSignalType::EGameplayEventSignalType__SkellyShip:
-                name = L"Skeleton Fleet";
-                break;
-            case EGameplayEventSignalType::EGameplayEventSignalType__AshenLord:
-                name = L"Fort of the Damned";
-                break;
-            case EGameplayEventSignalType::EGameplayEventSignalType__FlameheartGhostShips:
-                name = L"Ghost Fleet";
-                break;
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+                // Draw health bar
+                auto healthComponent = shark->HealthComponent;
+                if (healthComponent)
+                {
+                    FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                    FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
+                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                }
+            }
         }
 
-        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-        name += L" [" + std::to_wstring(distance) + L"m]";
-
-        // Draw name
-        FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-        Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
-    }
-
-    void DrawMap(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-        auto localPlayer = playerController->Pawn;
-        auto table = reinterpret_cast<AMapTable*>(actor);
-
-        auto parentShip = actor->GetAttachParentActor();
-        /*auto currentShip = reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)->GetCurrentShip();
-        if (parentShip != currentShip)
+        void DrawKraken(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
-            return;
-        }*/
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto kraken = reinterpret_cast<AKraken*>(actor);
 
-        if (!UCrewFunctions::IsActorMemberOfCharactersCrew(parentShip, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
-        {
-            return;
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Kraken";
+                std::string actorName = actor->GetName();
+                name += L" " + std::wstring(actorName.begin(), actorName.end());
+
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+                // Draw tentacles remaining
+                std::wstring tentaclesRemaining = L"Tentacles Remaining: " + std::to_wstring(kraken->NumTentaclesRemaining);
+                FVector2D tentaclesScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                Drawing::DrawActorString(hud, tentaclesRemaining, tentaclesScreen, Drawing::Colour::White);
+            }
         }
 
-        auto pins = table->MapPins;
-
-        for (int32_t i = 0; i < pins.Num(); ++i)
+        void DrawKrakenTentacle(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
-            auto pin = pins[i];
-            FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 100.0f);
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto tentacle = reinterpret_cast<AKrakenTentacle*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Kraken Tentacle";
+                std::string actorName = actor->GetName();
+                name += L" " + std::wstring(actorName.begin(), actorName.end());
+
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+                // Draw health bar
+                auto healthComponent = tentacle->HealthComponent;
+                if (healthComponent)
+                {
+                    FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                    FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
+                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                }
+            }
+        }
+
+        void DrawAnimal(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto animal = reinterpret_cast<AFauna*>(actor);
+
+            switch (animal->AIControllerParams->TeamID)
+            {
+                case EAthenaAITeam::Fauna_Chickens:
+                    break;
+                case EAthenaAITeam::Fauna_Pigs:
+                    break;
+                case EAthenaAITeam::Fauna_Snakes:
+                    break;
+            }
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = UKismetTextLibrary::Conv_TextToString(animal->DisplayName).c_str();
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            }
+        }
+
+        void DrawMermaid(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto mermaid = reinterpret_cast<AMermaid*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Mermaid ";
+
+                // Check if my mermaid
+                auto localCrewId = UCrewFunctions::GetCrewIdFromActor(client->World, localPlayer);
+                auto crewIds = mermaid->GetCrewIdsResponsibleForSavingAsCopy();
+                for (int32_t i = 0; i < crewIds.Num(); ++i)
+                {
+                    if (UKismetGuidLibrary::EqualEqual_GuidGuid(crewIds[i], localCrewId))
+                    {
+                        name = L"My " + name;
+                    }
+                }
+
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            }
+        }
+
+        void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto ship = reinterpret_cast<AShip*>(actor);
+
+            auto location = actor->K2_GetActorLocation();
+            location.Z += 25 * 100;
 
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
-                continue;
+                return;
             }
 
-            int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
-            std::wstring pinText = L"Map Pin [" + std::to_wstring(distance) + L"m]";
-            Drawing::DrawActorString(hud, pinText, screen, Drawing::Colour::White);
-        }
-    }
-
-    void DrawDebug(UGameViewportClient* client, AHUD* hud, AActor* actor)
-    {
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-
-        auto location = actor->K2_GetActorLocation();
-        FVector2D screen;
-        if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-        {
-            return;
-        }
-
-        std::string name = actor->GetName();
-        /*if (name.find("_") != std::string::npos)
-            return;
-        if (name.find("cmn") != std::string::npos)
-            return;
-        if (name.find("wsp") != std::string::npos)
-            return;
-        if (name.find("vfx") != std::string::npos)
-            return;
-        if (name.find("ske") != std::string::npos)
-            return;
-        if (name.find("dvr") != std::string::npos)
-            return;
-        if (name.find("ref") != std::string::npos)
-            return;
-        if (name.find("bp") != std::string::npos)
-            return;
-        if (name.find("bld") != std::string::npos)
-            return;
-        if (name.find("bsp") != std::string::npos)
-            return;*/
-        if (name.find("wpn") != std::string::npos)
-            return;
-        if (name.find("tls") != std::string::npos)
-            return;
-        if (name.find("wld_feature") != std::string::npos)
-            return;
-        if (name.find("Copied") != std::string::npos)
-            return;
-        if (name.find("NavBlocker") != std::string::npos)
-            return;
-        if (name.find("NavMesh") != std::string::npos)
-            return;
-        if (name.find("Light") != std::string::npos)
-            return;
-        if (name.find("water") != std::string::npos)
-            return;
-        if (name.find("Water") != std::string::npos)
-            return;
-        if (name.find("rocks") != std::string::npos)
-            return;
-        if (name.find("jetty") != std::string::npos)
-            return;
-        if (name.find("shop") != std::string::npos)
-            return;
-        if (name.find("volume") != std::string::npos)
-            return;
-        if (name.find("Volume") != std::string::npos)
-            return;
-        if (name.find("NulVol") != std::string::npos)
-            return;
-        if (name.find("PhasedClusterRoot") != std::string::npos)
-            return;
-        if (name.find("StaticMeshActor") != std::string::npos)
-            return;
-        //name = actor->GetFullName();
-        std::wstring namew(name.begin(), name.end());
-        Drawing::DrawActorString(hud, namew, screen, Drawing::Colour::Red);
-    }
-
-    void RenderESP(UGameViewportClient* client, AHUD* hud)
-    {
-        UWorld* world = client->World;
-        if (!world)
-        {
-            spdlog::warn("World null");
-            return;
-        }
-
-        ULevel* level = world->PersistentLevel;
-        if (!level)
-        {
-            spdlog::warn("PersistentLevel null");
-            return;
-        }
-
-        auto levels = world->Levels;
-
-        for (int32_t i = 6; i < levels.Num(); ++i)
-        {
-            auto actors = levels[i]->AActors;
-
-            for (int32_t j = 0; j < actors.Num(); ++j)
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            if (distance >= 1300)
             {
-                AActor* actor = actors[j];
+                return;
+            }
 
-                if (!actor)
+            std::string actorName = actor->GetName();
+            std::wstring name = L"Ship";
+            if (actorName.find("Large") != std::string::npos)
+            {
+                name = L"Galleon";
+            }
+            else if (actorName.find("Medium") != std::string::npos)
+            {
+                name = L"Brigantine";
+            }
+            else if (actorName.find("Small") != std::string::npos)
+            {
+                name = L"Sloop";
+            }
+
+            if (actorName.find("AI") != std::string::npos)
+            {
+                name = L"Skeleton " + name;
+            }
+
+            if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
+            {
+                name = L"My " + name;
+            }
+
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+            auto waterInfo = ship->GetInternalWater();
+            if (waterInfo)
+            {
+                FVector2D healthScreen = FVector2D(screen.X, screen.Y - 10.0f);
+                FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
+                float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
+                float waterLevel = waterMax - waterInfo->WaterAmount;
+                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, waterLevel, waterMax);
+            }
+        }
+
+        void DrawShipFar(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto ship = reinterpret_cast<AShipNetProxy*>(actor);
+
+            auto location = actor->K2_GetActorLocation();
+            location.Z += 25 * 100;
+
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            if (distance < 1300)
+            {
+                return;
+            }
+
+            std::string actorName = actor->GetName();
+            std::wstring name = L"Ship";
+            if (actorName.find("Large") != std::string::npos)
+            {
+                name = L"Galleon";
+            }
+            else if (actorName.find("Medium") != std::string::npos)
+            {
+                name = L"Brigantine";
+            }
+            else if (actorName.find("Small") != std::string::npos)
+            {
+                name = L"Sloop";
+            }
+
+            if (actorName.find("AI") != std::string::npos)
+            {
+                name = L"Skeleton " + name;
+            }
+
+            if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
+            {
+                name = L"My " + name;
+            }
+
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+        }
+
+        void DrawGhostShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto ship = reinterpret_cast<AAggressiveGhostShip*>(actor);
+
+            auto location = actor->K2_GetActorLocation();
+            location.Z += 25 * 100;
+
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            std::wstring name = L"Ghost Ship";
+            switch (ship->GetShipType())
+            {
+                case EAggressiveGhostShipType::EAggressiveGhostShipType__Grunt:
+                    name += L"Grunt Ship";
+                    break;
+                case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationGrunt:
+                    name += L"Ghost Flagship";
+                    break;
+                case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationLeader:
+                    name += L"Ghost Captain Ship";
+                    break;
+                case EAggressiveGhostShipType::EAggressiveGhostShipType__CaptainFormationGrunt:
+                    name += L"Ashen Dragon Ship";
+                    break;
+                case EAggressiveGhostShipType::EAggressiveGhostShipType__Captain:
+                    name += L"The Burning Blade";
+                    break;
+            }
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+            // Draw hits remaining
+            std::wstring hitsRemaining = L"Hits Remaining: " + std::to_wstring(ship->NumShotsLeftToKill);
+            FVector2D hitsScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            Drawing::DrawActorString(hud, hitsRemaining, hitsScreen, Drawing::Colour::White);
+        }
+
+        void DrawRowboat(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto rowboat = reinterpret_cast<ARowboat*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Rowboat";
+
+                std::string actorName = actor->GetName();
+                if (actorName.find("Harpoon") != std::string::npos)
                 {
-                    continue;
+                    name = L"Harpoon " + name;
                 }
 
-                if (actor->IsA(AStorageContainer::StaticClass()))
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            }
+        }
+
+        void DrawItem(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto item = reinterpret_cast<ABootyProxy*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            // Get item info
+            auto itemInfo = reinterpret_cast<ABootyItemInfo*>(item->ItemInfo);
+            if (!itemInfo)
+            {
+                spdlog::warn("ItemInfo null");
+                return;
+            }
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get colour
+                std::string rarity = itemInfo->Rarity.GetName();
+                FLinearColor colour = Drawing::Colour::Blue;
+                if (rarity == "Common")
                 {
-                    if (config->barrelESP)
+                    colour = Drawing::Colour::Grey;
+                }
+                else if (rarity == "Rare")
+                {
+                    colour = Drawing::Colour::Green;
+                }
+                else if (rarity == "Legendary")
+                {
+                    colour = Drawing::Colour::Purple;
+                }
+                else if (rarity == "Mythical")
+                {
+                    colour = Drawing::Colour::Orange;
+                }
+
+                // Get name
+                std::wstring name = UKismetTextLibrary::Conv_TextToString(itemInfo->Desc->Title).c_str();
+
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, colour);
+            }
+        }
+
+        void DrawBarrel(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto barrel = reinterpret_cast<AStorageContainer*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+
+            // Get bounds
+            FVector origin, extent;
+            actor->GetActorBounds(true, &origin, &extent);
+
+            // Get top coordinates
+            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            FVector2D topScreen;
+            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            {
+                // Get name
+                std::wstring name = L"Barrel";
+
+                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+
+                auto storage = barrel->StorageContainer;
+                if (storage)
+                {
+                    auto nodes = storage->ContainerNodes.ContainerNodes;
+                    for (int32_t i = 0; i < nodes.Num(); ++i)
                     {
-                        spdlog::debug("DrawBarrel Before");
-                        DrawBarrel(client, hud, actor);
-                        spdlog::debug("DrawBarrel Before");
+                        auto node = nodes[i];
+                        //auto itemDesc = reinterpret_cast<UItemDesc*>(node.ItemDesc);
+                        UItemDesc* itemDesc = node.ItemDesc->CreateDefaultObject<UItemDesc>();
+                        if (itemDesc)
+                        {
+                            std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
+                            itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
+
+                            FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.0f * (i + 1));
+                            Drawing::DrawActorString(hud, itemName, itemNameScreen, Drawing::Colour::White);
+                        }
                     }
-                    continue;
                 }
             }
         }
 
-        auto actors = level->AActors;
-
-        for (int32_t i = 0; i < actors.Num(); ++i)
+        void DrawShipwreck(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
-            AActor* actor = actors[i];
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto shipwreck = reinterpret_cast<AShipwreck*>(actor);
 
-            if (!actor)
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            location.Z = 100.0f;
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
-                continue;
+                return;
             }
 
-            if (actor == client->GameInstance->LocalPlayers[0]->PlayerController)
+            // Get name
+            //std::wstring name = UKismetTextLibrary::Conv_TextToString(shipwreck->LocalisedName).c_str();
+            std::wstring name = L"Shipwreck";
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+        }
+
+        void DrawStorm(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto storm = reinterpret_cast<AStorm*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            location.Z = 100.0f;
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
-                continue;
+                return;
+            }
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+            // Get name
+            std::wstring name = storm->SubjectName.c_str();
+
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+        }
+
+        void DrawEvent(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto event = reinterpret_cast<AGameplayEventSignal*>(actor);
+
+            // Check if on-screen
+            auto location = actor->K2_GetActorLocation();
+            location.Z = 100.0f;
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
+            }
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+
+            // Get name
+            std::wstring name = L"Event";
+            switch (event->EventType)
+            {
+                case EGameplayEventSignalType::EGameplayEventSignalType__SkellyFort:
+                    name = L"Skeleton Fort";
+                    break;
+                case EGameplayEventSignalType::EGameplayEventSignalType__SkellyShip:
+                    name = L"Skeleton Fleet";
+                    break;
+                case EGameplayEventSignalType::EGameplayEventSignalType__AshenLord:
+                    name = L"Fort of the Damned";
+                    break;
+                case EGameplayEventSignalType::EGameplayEventSignalType__FlameheartGhostShips:
+                    name = L"Ghost Fleet";
+                    break;
             }
 
-            if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
+            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            name += L" [" + std::to_wstring(distance) + L"m]";
+
+            // Draw name
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+        }
+
+        void DrawMap(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            auto table = reinterpret_cast<AMapTable*>(actor);
+
+            auto parentShip = actor->GetAttachParentActor();
+            /*auto currentShip = reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)->GetCurrentShip();
+            if (parentShip != currentShip)
             {
-                if (config->playerESP)
+                return;
+            }*/
+
+            if (!UCrewFunctions::IsActorMemberOfCharactersCrew(parentShip, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
+            {
+                return;
+            }
+
+            auto pins = table->MapPins;
+
+            for (int32_t i = 0; i < pins.Num(); ++i)
+            {
+                auto pin = pins[i];
+                FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 100.0f);
+
+                FVector2D screen;
+                if (!playerController->ProjectWorldLocationToScreen(location, &screen))
                 {
-                    spdlog::debug("DrawPlayer Before");
-                    DrawPlayer(client, hud, actor);
-                    spdlog::debug("DrawPlayer After");
+                    continue;
                 }
-                continue;
+
+                int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
+                std::wstring pinText = L"Map Pin [" + std::to_wstring(distance) + L"m]";
+                Drawing::DrawActorString(hud, pinText, screen, Drawing::Colour::White);
+            }
+        }
+
+        void DrawDebug(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+
+            auto location = actor->K2_GetActorLocation();
+            FVector2D screen;
+            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            {
+                return;
             }
 
-            if (actor->IsA(AAthenaAICharacter::StaticClass()))
-            {
-                if (config->skeletonESP)
-                {
-                    spdlog::debug("DrawSkeleton Before");
-                    DrawSkeleton(client, hud, actor);
-                    spdlog::debug("DrawSkeleton After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(ASharkPawn::StaticClass()))
-            {
-                if (config->sharkESP)
-                {
-                    spdlog::debug("DrawShark Before");
-                    DrawShark(client, hud, actor);
-                    spdlog::debug("DrawShark After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AKraken::StaticClass()))
-            {
-                if (config->krakenESP)
-                {
-                    spdlog::debug("DrawKraken Before");
-                    DrawKraken(client, hud, actor);
-                    spdlog::debug("DrawKraken After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AKrakenTentacle::StaticClass()))
-            {
-                if (config->krakenTentacleESP)
-                {
-                    spdlog::debug("DrawKrakenTentacle Before");
-                    DrawKrakenTentacle(client, hud, actor);
-                    spdlog::debug("DrawKrakenTentacle After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AFauna::StaticClass()))
-            {
-                if (config->animalESP)
-                {
-                    spdlog::debug("DrawAnimal Before");
-                    DrawAnimal(client, hud, actor);
-                    spdlog::debug("DrawAnimal After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AMermaid::StaticClass()))
-            {
-                if (config->mermaidESP)
-                {
-                    spdlog::debug("DrawMermaid Before");
-                    DrawMermaid(client, hud, actor);
-                    spdlog::debug("DrawMermaid After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AShip::StaticClass()))
-            {
-                if (config->shipESP)
-                {
-                    spdlog::debug("DrawShip Before");
-                    DrawShip(client, hud, actor);
-                    spdlog::debug("DrawShip After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AShipNetProxy::StaticClass()))
-            {
-                if (config->farShipESP)
-                {
-                    spdlog::debug("DrawShipFar Before");
-                    DrawShipFar(client, hud, actor);
-                    spdlog::debug("DrawShipFar After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AAggressiveGhostShip::StaticClass()))
-            {
-                if (config->ghostShipESP)
-                {
-                    spdlog::debug("DrawGhostShip Before");
-                    DrawGhostShip(client, hud, actor);
-                    spdlog::debug("DrawGhostShip After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(ARowboat::StaticClass()))
-            {
-                if (config->rowboatESP)
-                {
-                    spdlog::debug("DrawRowboat Before");
-                    DrawRowboat(client, hud, actor);
-                    spdlog::debug("DrawRowboat After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(ABootyProxy::StaticClass()))
-            {
-                if (config->itemESP)
-                {
-                    spdlog::debug("DrawItem Before");
-                    DrawItem(client, hud, actor);
-                    spdlog::debug("DrawItem After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AStorageContainer::StaticClass()))
-            {
-                if (config->barrelESP)
-                {
-                    spdlog::debug("DrawBarrel Before");
-                    DrawBarrel(client, hud, actor);
-                    spdlog::debug("DrawBarrel Before");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AShipwreck::StaticClass()))
-            {
-                if (config->shipwreckESP)
-                {
-                    spdlog::debug("DrawShipwreck Before");
-                    DrawShipwreck(client, hud, actor);
-                    spdlog::debug("DrawShipwreck After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AStorm::StaticClass()))
-            {
-                if (config->stormESP)
-                {
-                    spdlog::debug("DrawStorm Before");
-                    DrawStorm(client, hud, actor);
-                    spdlog::debug("DrawStorm After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AGameplayEventSignal::StaticClass()))
-            {
-                if (config->eventESP)
-                {
-                    spdlog::debug("DrawEvent Before");
-                    DrawEvent(client, hud, actor);
-                    spdlog::debug("DrawEvent After");
-                }
-                continue;
-            }
-
-            if (actor->IsA(AMapTable::StaticClass()))
-            {
-                if (config->mapESP)
-                {
-                    spdlog::debug("DrawMap Before");
-                    DrawMap(client, hud, actor);
-                    spdlog::debug("DrawMap After");
-                }
-                continue;
-            }
-
-            if (config->debugESP)
-            {
-                DrawDebug(client, hud, actor);
-            }
+            std::string name = actor->GetName();
+            /*if (name.find("_") != std::string::npos)
+                return;
+            if (name.find("cmn") != std::string::npos)
+                return;
+            if (name.find("wsp") != std::string::npos)
+                return;
+            if (name.find("vfx") != std::string::npos)
+                return;
+            if (name.find("ske") != std::string::npos)
+                return;
+            if (name.find("dvr") != std::string::npos)
+                return;
+            if (name.find("ref") != std::string::npos)
+                return;
+            if (name.find("bp") != std::string::npos)
+                return;
+            if (name.find("bld") != std::string::npos)
+                return;
+            if (name.find("bsp") != std::string::npos)
+                return;*/
+            if (name.find("wpn") != std::string::npos)
+                return;
+            if (name.find("tls") != std::string::npos)
+                return;
+            if (name.find("wld_feature") != std::string::npos)
+                return;
+            if (name.find("Copied") != std::string::npos)
+                return;
+            if (name.find("NavBlocker") != std::string::npos)
+                return;
+            if (name.find("NavMesh") != std::string::npos)
+                return;
+            if (name.find("Light") != std::string::npos)
+                return;
+            if (name.find("water") != std::string::npos)
+                return;
+            if (name.find("Water") != std::string::npos)
+                return;
+            if (name.find("rocks") != std::string::npos)
+                return;
+            if (name.find("jetty") != std::string::npos)
+                return;
+            if (name.find("shop") != std::string::npos)
+                return;
+            if (name.find("volume") != std::string::npos)
+                return;
+            if (name.find("Volume") != std::string::npos)
+                return;
+            if (name.find("NulVol") != std::string::npos)
+                return;
+            if (name.find("PhasedClusterRoot") != std::string::npos)
+                return;
+            if (name.find("StaticMeshActor") != std::string::npos)
+                return;
+            //name = actor->GetFullName();
+            std::wstring namew(name.begin(), name.end());
+            Drawing::DrawActorString(hud, namew, screen, Drawing::Colour::Red);
         }
     }
 }

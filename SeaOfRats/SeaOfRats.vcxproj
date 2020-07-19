@@ -179,10 +179,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Hacks\Aimbot.cpp" />
     <ClCompile Include="Hacks\Drawing.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
+    <ClCompile Include="Hacks\Hacks.cpp" />
     <ClCompile Include="Hacks\Info.cpp" />
     <ClCompile Include="SeaOfRats.cpp" />
     <ClCompile Include="Hooks\DirectX.cpp" />
@@ -204,10 +206,12 @@
     <ClCompile Include="Utilities\VMTHook.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hacks\Aimbot.h" />
     <ClInclude Include="Hacks\Drawing.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP.h" />
+    <ClInclude Include="Hacks\Hacks.h" />
     <ClInclude Include="Hacks\Info.h" />
     <ClInclude Include="SeaOfRats.h" />
     <ClInclude Include="Hooks\DirectX.h" />

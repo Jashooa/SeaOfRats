@@ -9,8 +9,7 @@
 #include "spdlog/spdlog.h"
 
 #include "Hacks/Drawing.h"
-#include "Hacks/ESP.h"
-#include "Hacks/Info.h"
+#include "Hacks/Hacks.h"
 #include "Utilities/Memory.h"
 #include "Utilities/VMTHook.h"
 
@@ -18,71 +17,21 @@ using namespace SDK;
 
 static void** clientVTable = nullptr;
 using PostRender = void(__thiscall*)(UGameViewportClient*, UCanvas*);
-static PostRender originalPostRender = nullptr;
+static PostRender OriginalPostRender = nullptr;
 const size_t postRenderIndex = 88;
 
 std::mutex hookLock;
 
-bool NullChecks(UGameViewportClient* client)
-{
-    if (!client->World)
-    {
-        spdlog::warn("World null");
-        return false;
-    }
-    if (!client->World->GameState)
-    {
-        spdlog::warn("GameState null");
-        return false;
-    }
-    if (!client->World->GameState->IsA(AAthenaGameState::StaticClass()))
-    {
-        return false;
-    }
-    if (!client->World->PersistentLevel)
-    {
-        spdlog::warn("PersistentLevel null");
-        return false;
-    }
-    if (!client->GameInstance)
-    {
-        spdlog::warn("GameInstance null");
-        return false;
-    }
-    if (client->GameInstance->LocalPlayers.Num() < 1)
-    {
-        spdlog::warn("LocalPlayers < 1");
-        return false;
-    }
-    if (!client->GameInstance->LocalPlayers[0]->PlayerController)
-    {
-        spdlog::warn("PlayerController null");
-        return false;
-    }
-    if (!client->GameInstance->LocalPlayers[0]->PlayerController->Pawn)
-    {
-        spdlog::warn("Pawn null");
-        return false;
-    }
-    return true;
-}
-
-void hookedPostRender(UGameViewportClient* client, UCanvas* canvas)
+void HookedPostRender(UGameViewportClient* client, UCanvas* canvas)
 {
     hookLock.lock();
-    if (NullChecks(client))
-    {
-        AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
-        hud->Canvas = canvas;
-        Hacks::RenderESP(client, hud);
-        Hacks::RenderInfo(client, hud);
-    }
+    Hacks::Loop(client, canvas);
     hookLock.unlock();
 
-    return originalPostRender(client, canvas);
+    return OriginalPostRender(client, canvas);
 }
 
-void hookGame()
+void HookGame()
 {
     MODULEINFO modInfo{ 0 };
     GetModuleInformation(GetCurrentProcess(), GetModuleHandle(nullptr), &modInfo, sizeof MODULEINFO);
@@ -116,7 +65,7 @@ void hookGame()
     spdlog::info("Class Address: {:p}", reinterpret_cast<void*>(uclass));
 
     clientVTable = *reinterpret_cast<void***>(gameViewportClient);
-    originalPostRender = reinterpret_cast<PostRender>(Utilities::HookMethod(clientVTable, postRenderIndex, hookedPostRender));
+    OriginalPostRender = reinterpret_cast<PostRender>(Utilities::HookMethod(clientVTable, postRenderIndex, HookedPostRender));
 }
 
 namespace Hooks
@@ -125,13 +74,13 @@ namespace Hooks
     {
         void Install()
         {
-            hookGame();
+            HookGame();
         }
 
         void Uninstall()
         {
             hookLock.lock();
-            Utilities::HookMethod(clientVTable, postRenderIndex, originalPostRender);
+            Utilities::HookMethod(clientVTable, postRenderIndex, OriginalPostRender);
             hookLock.unlock();
         }
     }

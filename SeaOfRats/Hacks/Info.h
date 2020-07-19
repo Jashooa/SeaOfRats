@@ -6,5 +6,8 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void RenderInfo(UGameViewportClient* client, AHUD* hud);
+    namespace Info
+    {
+        void Render(UGameViewportClient* client, AHUD* hud);
+    }
 }

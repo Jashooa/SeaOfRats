@@ -13,11 +13,11 @@
 
 static void** swapChainVTable = nullptr;
 using Present = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT);
-static Present originalPresent = nullptr;
+static Present OriginalPresent = nullptr;
 const size_t presentIndex = 8;
 
 using ResizeBuffers = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT, UINT, DXGI_FORMAT, UINT);
-static ResizeBuffers originalResizeBuffers = nullptr;
+static ResizeBuffers OriginalResizeBuffers = nullptr;
 const size_t resizeBuffersIndex = 13;
 
 static std::once_flag isInitialised;
@@ -34,7 +34,7 @@ void CreateRenderTarget(IDXGISwapChain* swapChain)
     renderTarget->Release();
 }
 
-HRESULT __stdcall hookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)
+HRESULT __stdcall HookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)
 {
     std::call_once(isInitialised, [&]()
         {
@@ -53,15 +53,15 @@ HRESULT __stdcall hookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UI
 
     gui->Render();
 
-    return originalPresent(swapChain, syncInterval, flags);
+    return OriginalPresent(swapChain, syncInterval, flags);
 }
 
-HRESULT __stdcall hookedResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
+HRESULT __stdcall HookedResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags)
 {
     gui->BeforeResize();
     renderTargetView->Release();
 
-    HRESULT result = originalResizeBuffers(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
+    HRESULT result = OriginalResizeBuffers(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
 
     gui->AfterResize();
     CreateRenderTarget(swapChain);
@@ -69,7 +69,7 @@ HRESULT __stdcall hookedResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCoun
     return result;
 }
 
-void hookD3D11()
+void HookD3D11()
 {
     D3D_FEATURE_LEVEL featureLevel;
     DXGI_SWAP_CHAIN_DESC sd{ 0 };
@@ -100,8 +100,8 @@ void hookD3D11()
     }
 
     swapChainVTable = *reinterpret_cast<void***>(swapChain);
-    originalPresent = reinterpret_cast<Present>(Utilities::HookMethod(swapChainVTable, presentIndex, hookedPresent));
-    originalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, hookedResizeBuffers));
+    OriginalPresent = reinterpret_cast<Present>(Utilities::HookMethod(swapChainVTable, presentIndex, HookedPresent));
+    OriginalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, HookedResizeBuffers));
 
     tempContext->Release();
     tempDevice->Release();
@@ -114,14 +114,14 @@ namespace Hooks
     {
         void Install()
         {
-            hookD3D11();
+            HookD3D11();
         }
 
         void Uninstall()
         {
             renderTargetView->Release();
-            Utilities::HookMethod(swapChainVTable, presentIndex, originalPresent);
-            Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, originalResizeBuffers);
+            Utilities::HookMethod(swapChainVTable, presentIndex, OriginalPresent);
+            Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, OriginalResizeBuffers);
         }
     }
 }
