@@ -26,9 +26,14 @@ public:
     bool mapESP;
     bool debugESP;
 
-    bool crosshair;
-    bool compass;
-    bool playerList;
+    bool crosshairInfo;
+    bool playerListInfo;
+    bool compassInfo;
+    bool oxygenInfo;
+    bool waterLevelInfo;
+    bool anchorInfo;
+
+    bool enabledAimbot;
 };
 
 inline std::unique_ptr<Config> config;

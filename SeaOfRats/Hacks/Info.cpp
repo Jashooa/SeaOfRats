@@ -23,45 +23,6 @@ namespace Hacks
             //hud->DrawLine(centerX - 5, centerY, centerX + 5, centerY, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
         }
 
-        void DrawCompass(UGameViewportClient* client, AHUD* hud)
-        {
-            static std::vector<const wchar_t*> compassDirections = {
-                L"North",
-                L"North North East",
-                L"North East",
-                L"East North East",
-                L"East",
-                L"East South East",
-                L"South East",
-                L"South South East",
-                L"South",
-                L"South South West",
-                L"South West",
-                L"West South West",
-                L"West",
-                L"West North West",
-                L"North West",
-                L"North North West"
-            };
-
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-            auto cameraManager = playerController->PlayerCameraManager;
-
-            if (!cameraManager)
-            {
-                spdlog::warn("CameraManager null");
-                return;
-            }
-
-            auto rotation = cameraManager->GetCameraRotation();
-            int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
-            int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
-
-            float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-            Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
-            Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
-        }
-
         void DrawPlayerList(UGameViewportClient* client, AHUD* hud)
         {
             auto world = client->World;
@@ -124,6 +85,45 @@ namespace Hacks
                 }
                 positionY += 10.0f;
             }
+        }
+
+        void DrawCompass(UGameViewportClient* client, AHUD* hud)
+        {
+            static std::vector<const wchar_t*> compassDirections = {
+                L"North",
+                L"North North East",
+                L"North East",
+                L"East North East",
+                L"East",
+                L"East South East",
+                L"South East",
+                L"South South East",
+                L"South",
+                L"South South West",
+                L"South West",
+                L"West South West",
+                L"West",
+                L"West North West",
+                L"North West",
+                L"North North West"
+            };
+
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto cameraManager = playerController->PlayerCameraManager;
+
+            if (!cameraManager)
+            {
+                spdlog::warn("CameraManager null");
+                return;
+            }
+
+            auto rotation = cameraManager->GetCameraRotation();
+            int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
+            int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
+
+            float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+            Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
+            Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
         }
 
         void DrawOxygen(UGameViewportClient* client, AHUD* hud)
@@ -189,28 +189,35 @@ namespace Hacks
 
         void Render(UGameViewportClient* client, AHUD* hud)
         {
-            if (config->crosshair)
+            if (config->crosshairInfo)
             {
                 DrawCrosshair(hud);
             }
 
-            if (config->compass)
+            if (config->playerListInfo)
             {
-                spdlog::debug("DrawCompass Before");
-                DrawCompass(client, hud);
-                spdlog::debug("DrawCompass After");
-            }
-
-            if (config->playerList)
-            {
-                spdlog::debug("DrawPlayerList Before");
                 DrawPlayerList(client, hud);
-                spdlog::debug("DrawPlayerList After");
             }
 
-            DrawOxygen(client, hud);
-            DrawWaterLevel(client, hud);
-            DrawAnchor(client, hud);
+            if (config->compassInfo)
+            {
+                DrawCompass(client, hud);
+            }
+
+            if (config->oxygenInfo)
+            {
+                DrawOxygen(client, hud);
+            }
+
+            if (config->waterLevelInfo)
+            {
+                DrawWaterLevel(client, hud);
+            }
+
+            if (config->anchorInfo)
+            {
+                DrawAnchor(client, hud);
+            }
 
         }
     }

@@ -150,15 +150,18 @@ void GUI::Render()
 
             if (ImGui::BeginTabItem("Info"))
             {
-                ImGui::Checkbox("Crosshair", &config->crosshair);
-                ImGui::Checkbox("Compass", &config->compass);
-                ImGui::Checkbox("Playerlist", &config->playerList);
+                ImGui::Checkbox("Crosshair", &config->crosshairInfo);
+                ImGui::Checkbox("Playerlist", &config->playerListInfo);
+                ImGui::Checkbox("Compass", &config->compassInfo);
+                ImGui::Checkbox("Oxygen", &config->oxygenInfo);
+                ImGui::Checkbox("Water Level", &config->waterLevelInfo);
+                ImGui::Checkbox("Anchor", &config->anchorInfo);
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem("Aimbot"))
             {
-
+                ImGui::Checkbox("Enabled", &config->enabledAimbot);
                 ImGui::EndTabItem();
             }
         }

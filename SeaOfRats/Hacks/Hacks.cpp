@@ -103,7 +103,10 @@ namespace Hacks
                 }
             }
 
-            Aimbot::Init(hud);
+            if (config->enabledAimbot)
+            {
+                Aimbot::Init(hud);
+            }
 
             auto actors = level->AActors;
 
@@ -125,7 +128,10 @@ namespace Hacks
                 {
                     if (config->playerESP)
                     {
-                        Aimbot::SetNearest(client, actor);
+                        if (config->enabledAimbot)
+                        {
+                            Aimbot::SetNearest(client, actor);
+                        }
                         ESP::DrawPlayer(client, hud, actor);
                     }
                     continue;
@@ -282,7 +288,10 @@ namespace Hacks
                 }
             }
 
-            Aimbot::Aim(client, hud);
+            if (config->enabledAimbot)
+            {
+                Aimbot::Aim(client, hud);
+            }
 
             Info::Render(client, hud);
         }

@@ -22,7 +22,12 @@ Config::Config()
     mapESP = true;
     debugESP = false;
 
-    crosshair = true;
-    compass = true;
-    playerList = true;
+    crosshairInfo = true;
+    playerListInfo = true;
+    compassInfo = true;
+    oxygenInfo = true;
+    waterLevelInfo = true;
+    anchorInfo = true;
+
+    enabledAimbot = false;
 }
