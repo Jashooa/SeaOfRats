@@ -7,6 +7,7 @@
 #include "SDK/SDK.h"
 #include "spdlog/spdlog.h"
 
+#include "Bones.h"
 #include "Config.h"
 #include "Drawing.h"
 
@@ -16,6 +17,55 @@ namespace Hacks
 {
     namespace ESP
     {
+        void DrawBones(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        {
+            static const auto left_arm = { Bones::EBones::LF_FINGB__Skeleton, Bones::EBones::LF_ELBOW__Skeleton, Bones::EBones::LF_TWIST_SHOULDER__Skeleton, Bones::EBones::NECK1__Skeleton };
+            static const auto right_arm = { Bones::EBones::RT_FINGB__Skeleton, Bones::EBones::RT_ELBOW__Skeleton, Bones::EBones::RT_TWIST_SHOULDER__Skeleton, Bones::EBones::NECK1__Skeleton };
+            static const auto left_leg = { Bones::EBones::LF_ANKLE__Skeleton, Bones::EBones::LF_KNEE__Skeleton, Bones::EBones::LF_TWIST_HIP__Skeleton, Bones::EBones::WAIST__Skeleton };
+            static const auto right_leg = { Bones::EBones::RT_ANKLE__Skeleton, Bones::EBones::RT_KNEE__Skeleton, Bones::EBones::RT_TWIST_HIP__Skeleton, Bones::EBones::WAIST__Skeleton };
+            static const auto spine = { Bones::EBones::WAIST__Skeleton, Bones::EBones::TORSO__Skeleton, Bones::EBones::CHEST__Skeleton, Bones::EBones::NECK1__Skeleton, Bones::EBones::HEAD__Skeleton };
+            static const auto skeleton = { left_arm, right_arm, left_leg, right_leg, spine };
+
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto character = reinterpret_cast<ACharacter*>(actor);
+
+            auto mesh = character->Mesh;
+            if (mesh)
+            {
+                if (!mesh->IsVisible())
+                {
+                    return;
+                }
+
+                FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
+                auto currentIndex = mesh->CurrentReadSpaceBases;
+                for (const auto bones : skeleton)
+                {
+                    FVector2D previousBone;
+
+                    for (const auto bone : bones)
+                    {
+                        FTransform boneTransform = mesh->SpaceBasesArray[currentIndex][static_cast<int>(bone)];
+                        FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
+                        FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
+                        FVector boneLocation = worldBoneMatrix.Translation();
+
+                        FVector2D screenBone;
+                        if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screenBone))
+                        {
+                            continue;
+                        }
+
+                        if (previousBone.X != 0.0f && previousBone.Y != 0.0f)
+                        {
+                            hud->Canvas->K2_DrawLine(previousBone, screenBone, 1.0f, Drawing::Colour::White);
+                        }
+                        previousBone = screenBone;
+                    }
+                }
+            }
+        }
+
         void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
             auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
@@ -24,6 +74,12 @@ namespace Hacks
 
             // Check if me
             if (player == localPlayer)
+            {
+                return;
+            }
+
+            // Check if dead
+            if (player->IsDead())
             {
                 return;
             }
@@ -43,7 +99,8 @@ namespace Hacks
             {
                 colour = Drawing::Colour::Green;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, colour);
+            //Drawing::DrawBoundingBox(client, hud, actor, colour);
+            DrawBones(client, hud, actor);
 
             // Get bounds
             FVector origin, extent;
@@ -110,6 +167,12 @@ namespace Hacks
             auto localPlayer = playerController->Pawn;
             auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
 
+            // Check if dead
+            if (skeleton->IsDead())
+            {
+                return;
+            }
+
             // Check if on-screen
             auto location = actor->K2_GetActorLocation();
             FVector2D screen;
@@ -117,7 +180,8 @@ namespace Hacks
             {
                 return;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            //Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            //DrawBones(client, hud, actor);
 
             // Get bounds
             FVector origin, extent;
@@ -133,40 +197,19 @@ namespace Hacks
                 if (skeleton->AssignedMesh)
                 {
                     std::string meshName = skeleton->AssignedMesh->GetName();
-                    if (meshName.find("nme_skellyshadow") != std::string::npos)
+                    if (meshName.find("skellyshadow") != std::string::npos)
                     {
                         name = L"Shadow " + name;
-
-                        if (skeleton->TeamColorTexture)
-                        {
-                            std::string skeletonColour = skeleton->TeamColorTexture->GetName();
-                            if (skeletonColour.find("venom") != std::string::npos)
-                            {
-                                name = L"Purple " + name;
-                            }
-                            else if (skeletonColour.find("shark") != std::string::npos)
-                            {
-                                name = L"Blue " + name;
-                            }
-                            else if (skeletonColour.find("lightning") != std::string::npos)
-                            {
-                                name = L"White " + name;
-                            }
-                            else if (skeletonColour.find("player") != std::string::npos)
-                            {
-                                name = L"Pink " + name;
-                            }
-                            else if (skeletonColour.find("skeleton") != std::string::npos)
-                            {
-                                name = L"Green " + name;
-                            }
-                            else
-                            {
-                                name = std::wstring(skeletonColour.begin(), skeletonColour.end());
-                            }
-                        }
                     }
-                    else if (meshName.find("nme_skellyash") != std::string::npos)
+                    else if (meshName.find("skellymetal") != std::string::npos)
+                    {
+                        name = L"Metal " + name;
+                    }
+                    else if (meshName.find("skellyplant") != std::string::npos)
+                    {
+                        name = L"Plant " + name;
+                    }
+                    else if (meshName.find("skellyash") != std::string::npos)
                     {
                         name = L"Ashen " + name;
                     }
@@ -176,11 +219,51 @@ namespace Hacks
                         name += L" Captain";
                     }
 
-                    name += L" " + std::wstring(meshName.begin(), meshName.end());
+                    name += L" Mesh: " + std::wstring(meshName.begin(), meshName.end());
+
+                    if (skeleton->TeamColorTexture)
+                    {
+                        std::string skeletonColour = skeleton->TeamColorTexture->GetName();
+                        /*if (skeletonColour.find("venom") != std::string::npos)
+                        {
+                            name = L"Purple " + name;
+                        }
+                        else if (skeletonColour.find("shark") != std::string::npos)
+                        {
+                            name = L"Blue " + name;
+                        }
+                        else if (skeletonColour.find("lightning") != std::string::npos)
+                        {
+                            name = L"White " + name;
+                        }
+                        else if (skeletonColour.find("player") != std::string::npos)
+                        {
+                            name = L"Pink " + name;
+                        }
+                        else if (skeletonColour.find("skeleton") != std::string::npos)
+                        {
+                            name = L"Green " + name;
+                        }*/
+                        if (skeletonColour.find("_red_") != std::string::npos)
+                        {
+                            name = L"Red " + name;
+                        }
+                        else if (skeletonColour.find("_green_") != std::string::npos)
+                        {
+                            name = L"Green " + name;
+                        }
+                        else if (skeletonColour.find("_blue_") != std::string::npos)
+                        {
+                            name = L"Blue " + name;
+                        }
+                        else
+                        {
+                            name += L" Texture: " + std::wstring(skeletonColour.begin(), skeletonColour.end());
+                        }
+                    }
                 }
 
                 float worldDistance = localPlayer->GetDistanceTo(actor);
-
                 auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
                 bool isNameplateShown = false;
                 if (!UKismetTextLibrary::TextIsEmpty(namePlate->DisplayNameAsText))
@@ -767,18 +850,41 @@ namespace Hacks
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                 Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                /*auto storage = barrel->GetStorageComponent();
 
-                auto storage = barrel->StorageContainer;
-                if (storage)
+                if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
                 {
+                    spdlog::info("ABuoyantStorageContainer {:p}", reinterpret_cast<void*>(actor));
+                    spdlog::info("StorageComponent {:p}", reinterpret_cast<void*>(storage));
+                }
+                else
+                {
+                    spdlog::info("StorageContainer {:p}", reinterpret_cast<void*>(actor));
+                    spdlog::info("StorageComponent {:p}", reinterpret_cast<void*>(storage));
+                }
+
+                if (storage && storage->IsA(UStorageContainerComponent::StaticClass()))
+                {
+                    if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
+                    {
+                        spdlog::info("ABuoyantStorageContainer {:p}", reinterpret_cast<void*>(actor));
+                        return;
+                    }
+                    else
+                    {
+                        spdlog::info("StorageContainer {:p}", reinterpret_cast<void*>(actor));
+                    }
                     auto nodes = storage->ContainerNodes.ContainerNodes;
                     for (int32_t i = 0; i < nodes.Num(); ++i)
                     {
                         auto node = nodes[i];
-                        //auto itemDesc = reinterpret_cast<UItemDesc*>(node.ItemDesc);
                         UItemDesc* itemDesc = node.ItemDesc->CreateDefaultObject<UItemDesc>();
                         if (itemDesc)
                         {
+                            if (UKismetTextLibrary::TextIsEmpty(itemDesc->Title))
+                            {
+                                continue;
+                            }
                             std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
                             itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
 
@@ -786,7 +892,7 @@ namespace Hacks
                             Drawing::DrawActorString(hud, itemName, itemNameScreen, Drawing::Colour::White);
                         }
                     }
-                }
+                }*/
             }
         }
 

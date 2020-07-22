@@ -135,6 +135,9 @@
     <ClCompile Include="Hacks\Hacks.cpp">
       <Filter>Source Files\Hacks</Filter>
     </ClCompile>
+    <ClCompile Include="Hacks\Bones.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI.h">
@@ -991,6 +994,9 @@
     </ClInclude>
     <ClInclude Include="Hacks\Aimbot.h">
       <Filter>Header Files\Hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Bones.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hacks\Aimbot.cpp" />
+    <ClCompile Include="Hacks\Bones.cpp" />
     <ClCompile Include="Hacks\Drawing.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Config.cpp" />
@@ -207,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hacks\Aimbot.h" />
+    <ClInclude Include="Hacks\Bones.h" />
     <ClInclude Include="Hacks\Drawing.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Config.h" />

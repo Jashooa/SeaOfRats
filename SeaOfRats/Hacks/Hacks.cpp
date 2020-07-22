@@ -141,7 +141,10 @@ namespace Hacks
                 {
                     if (config->skeletonESP)
                     {
-                        Aimbot::SetNearest(client, actor);
+                        if (config->enabledAimbot)
+                        {
+                            Aimbot::SetNearest(client, actor);
+                        }
                         ESP::DrawSkeleton(client, hud, actor);
                     }
                     continue;

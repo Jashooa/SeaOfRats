@@ -6038,7 +6038,10 @@ class USkinnedMeshComponent : public UMeshComponent
 public:
 	class USkeletalMesh*                               SkeletalMesh;                                             // 0x0580(0x0008) (Edit, BlueprintVisible, BlueprintReadOnly, Net, ZeroConstructor, IsPlainOldData)
 	TWeakObjectPtr<class USkinnedMeshComponent>        MasterPoseComponent;                                      // 0x0588(0x0008) (BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, InstancedReference, IsPlainOldData)
-	unsigned char                                      UnknownData00[0x50];                                      // 0x0590(0x0050) MISSED OFFSET
+	TArray<struct FTransform>                          SpaceBasesArray[2];                                       // 0x0590(0x0020) MANUAL ADDITION
+	int                                                CurrentEditableSpaceBases;                                // 0x05B0(0x0004) MANUAL ADDITION
+	int                                                CurrentReadSpaceBases;                                    // 0x05B4(0x0004) MANUAL ADDITION
+	unsigned char                                      UnknownData00[0x28];                                      // 0x05B8(0x0028) MISSED OFFSET
 	unsigned char                                      bUseBoundsFromMasterPoseComponent : 1;                    // 0x05E0(0x0001)
 	unsigned char                                      UnknownData01[0x7];                                       // 0x05E1(0x0007) MISSED OFFSET
 	TArray<struct FActiveVertexAnim>                   ActiveVertexAnims;                                        // 0x05E8(0x0010) (ZeroConstructor, Transient)

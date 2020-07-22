@@ -111,6 +111,10 @@ struct FRotator
 	float                                              Pitch;                                                    // 0x0000(0x0004) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
 	float                                              Yaw;                                                      // 0x0004(0x0004) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
 	float                                              Roll;                                                     // 0x0008(0x0004) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
+
+	inline FRotator() : Pitch(0.f), Yaw(0.f), Roll(0.f) {}
+
+	inline FRotator(float InPitch, float InYaw, float InRoll) : Pitch(InPitch), Yaw(InYaw), Roll(InRoll) {}
 };
 
 // ScriptStruct CoreUObject.Quat
@@ -237,6 +241,38 @@ struct FMatrix
 	struct FPlane                                      YPlane;                                                   // 0x0010(0x0010) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
 	struct FPlane                                      ZPlane;                                                   // 0x0020(0x0010) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
 	struct FPlane                                      WPlane;                                                   // 0x0030(0x0010) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
+
+	inline FMatrix operator*(const FMatrix& Other) const
+	{
+		FMatrix Result;
+
+		Result.XPlane.X = this->XPlane.X * Other.XPlane.X + this->XPlane.Y * Other.YPlane.X + this->XPlane.Z * Other.ZPlane.X + this->XPlane.W * Other.WPlane.X;
+		Result.XPlane.Y = this->XPlane.X * Other.XPlane.Y + this->XPlane.Y * Other.YPlane.Y + this->XPlane.Z * Other.ZPlane.Y + this->XPlane.W * Other.WPlane.Y;
+		Result.XPlane.Z = this->XPlane.X * Other.XPlane.Z + this->XPlane.Y * Other.YPlane.Z + this->XPlane.Z * Other.ZPlane.Z + this->XPlane.W * Other.WPlane.Z;
+		Result.XPlane.W = this->XPlane.X * Other.XPlane.W + this->XPlane.Y * Other.YPlane.W + this->XPlane.Z * Other.ZPlane.W + this->XPlane.W * Other.WPlane.W;
+
+		Result.YPlane.X = this->YPlane.X * Other.XPlane.X + this->YPlane.Y * Other.YPlane.X + this->YPlane.Z * Other.ZPlane.X + this->YPlane.W * Other.WPlane.X;
+		Result.YPlane.Y = this->YPlane.X * Other.XPlane.Y + this->YPlane.Y * Other.YPlane.Y + this->YPlane.Z * Other.ZPlane.Y + this->YPlane.W * Other.WPlane.Y;
+		Result.YPlane.Z = this->YPlane.X * Other.XPlane.Z + this->YPlane.Y * Other.YPlane.Z + this->YPlane.Z * Other.ZPlane.Z + this->YPlane.W * Other.WPlane.Z;
+		Result.YPlane.W = this->YPlane.X * Other.XPlane.W + this->YPlane.Y * Other.YPlane.W + this->YPlane.Z * Other.ZPlane.W + this->YPlane.W * Other.WPlane.W;
+
+		Result.ZPlane.X = this->ZPlane.X * Other.XPlane.X + this->ZPlane.Y * Other.YPlane.X + this->ZPlane.Z * Other.ZPlane.X + this->ZPlane.W * Other.WPlane.X;
+		Result.ZPlane.Y = this->ZPlane.X * Other.XPlane.Y + this->ZPlane.Y * Other.YPlane.Y + this->ZPlane.Z * Other.ZPlane.Y + this->ZPlane.W * Other.WPlane.Y;
+		Result.ZPlane.Z = this->ZPlane.X * Other.XPlane.Z + this->ZPlane.Y * Other.YPlane.Z + this->ZPlane.Z * Other.ZPlane.Z + this->ZPlane.W * Other.WPlane.Z;
+		Result.ZPlane.W = this->ZPlane.X * Other.XPlane.W + this->ZPlane.Y * Other.YPlane.W + this->ZPlane.Z * Other.ZPlane.W + this->ZPlane.W * Other.WPlane.W;
+
+		Result.WPlane.X = this->WPlane.X * Other.XPlane.X + this->WPlane.Y * Other.YPlane.X + this->WPlane.Z * Other.ZPlane.X + this->WPlane.W * Other.WPlane.X;
+		Result.WPlane.Y = this->WPlane.X * Other.XPlane.Y + this->WPlane.Y * Other.YPlane.Y + this->WPlane.Z * Other.ZPlane.Y + this->WPlane.W * Other.WPlane.Y;
+		Result.WPlane.Z = this->WPlane.X * Other.XPlane.Z + this->WPlane.Y * Other.YPlane.Z + this->WPlane.Z * Other.ZPlane.Z + this->WPlane.W * Other.WPlane.Z;
+		Result.WPlane.W = this->WPlane.X * Other.XPlane.W + this->WPlane.Y * Other.YPlane.W + this->WPlane.Z * Other.ZPlane.W + this->WPlane.W * Other.WPlane.W;
+
+		return Result;
+	}
+
+	inline FVector Translation() const
+	{
+		return FVector(this->WPlane.X, this->WPlane.Y, this->WPlane.Z);
+	}
 };
 
 // ScriptStruct CoreUObject.InterpCurvePointFloat
@@ -381,6 +417,56 @@ struct alignas(16) FTransform
 	unsigned char                                      UnknownData00[0x4];                                       // 0x001C(0x0004) MISSED OFFSET
 	struct FVector                                     Scale3D;                                                  // 0x0020(0x000C) (Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData)
 	unsigned char                                      UnknownData01[0x4];                                       // 0x002C(0x0004) MISSED OFFSET
+
+	inline FMatrix ToMatrixWithScale() const
+	{
+		FMatrix OutMatrix;
+
+		OutMatrix.WPlane.X = Translation.X;
+		OutMatrix.WPlane.Y = Translation.Y;
+		OutMatrix.WPlane.Z = Translation.Z;
+
+		const float x2 = Rotation.X + Rotation.X;
+		const float y2 = Rotation.Y + Rotation.Y;
+		const float z2 = Rotation.Z + Rotation.Z;
+		{
+			const float xx2 = Rotation.X * x2;
+			const float yy2 = Rotation.Y * y2;
+			const float zz2 = Rotation.Z * z2;
+
+			OutMatrix.XPlane.X = (1.0f - (yy2 + zz2)) * Scale3D.X;
+			OutMatrix.YPlane.Y = (1.0f - (xx2 + zz2)) * Scale3D.Y;
+			OutMatrix.ZPlane.Z = (1.0f - (xx2 + yy2)) * Scale3D.Z;
+		}
+		{
+			const float yz2 = Rotation.Y * z2;
+			const float wx2 = Rotation.W * x2;
+
+			OutMatrix.ZPlane.Y = (yz2 - wx2) * Scale3D.Z;
+			OutMatrix.YPlane.Z = (yz2 + wx2) * Scale3D.Y;
+		}
+		{
+			const float xy2 = Rotation.X * y2;
+			const float wz2 = Rotation.W * z2;
+
+			OutMatrix.YPlane.X = (xy2 - wz2) * Scale3D.Y;
+			OutMatrix.XPlane.Y = (xy2 + wz2) * Scale3D.X;
+		}
+		{
+			const float xz2 = Rotation.X * z2;
+			const float wy2 = Rotation.W * y2;
+
+			OutMatrix.ZPlane.X = (xz2 + wy2) * Scale3D.Z;
+			OutMatrix.XPlane.Z = (xz2 - wy2) * Scale3D.X;
+		}
+
+		OutMatrix.XPlane.W = 0.0f;
+		OutMatrix.YPlane.W = 0.0f;
+		OutMatrix.ZPlane.W = 0.0f;
+		OutMatrix.WPlane.W = 1.0f;
+
+		return OutMatrix;
+	}
 };
 
 // ScriptStruct CoreUObject.RandomStream

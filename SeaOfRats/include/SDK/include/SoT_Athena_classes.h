@@ -8154,15 +8154,21 @@ public:
 	class UStaticMeshComponent*                        Mesh;                                                     // 0x04A8(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
 	class UInteractableComponent*                      InteractionRegion;                                        // 0x04B0(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
 	unsigned char                                      UnknownData01[0x48];                                      // 0x04B8(0x0048) MISSED OFFSET
+protected:
 	unsigned char                                      UnknownData02[0x10];
 	class UStorageContainerComponent*                  StorageContainer;
 
+public:
 	static UClass* StaticClass()
 	{
 		static auto ptr = UObject::FindClass(_xor_("Class Athena.StorageContainer"));
 		return ptr;
 	}
 
+	class UStorageContainerComponent* GetStorageComponent()
+	{
+		return StorageContainer;
+	}
 };
 
 
@@ -8186,7 +8192,10 @@ public:
 	class URetractableFloatingBarrelComponent*         RetractableComponent;                                     // 0x06B8(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, EditConst, InstancedReference, IsPlainOldData)
 	class UPhysXAggregateProviderComponent*            PhysicsAggregateProviderComponent;                        // 0x06C0(0x0008) (Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, IsPlainOldData)
 	unsigned char                                      UnknownData04[0x60];                                      // 0x06C8(0x0060) MISSED OFFSET
+protected:
+	unsigned char                                      UnknownData05[0x08];
 
+public:
 	static UClass* StaticClass()
 	{
 		static auto ptr = UObject::FindClass(_xor_("Class Athena.BuoyantStorageContainer"));
