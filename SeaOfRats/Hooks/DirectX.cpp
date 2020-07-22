@@ -6,7 +6,7 @@
 
 #include "mutex"
 
-#include "spdlog/spdlog.h"
+#include "include/spdlog/spdlog.h"
 
 #include "GUI.h"
 #include "Utilities/VMTHook.h"

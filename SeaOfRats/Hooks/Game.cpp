@@ -5,8 +5,8 @@
 
 #include "mutex"
 
-#include "SDK/SDK.h"
-#include "spdlog/spdlog.h"
+#include "include/SDK/SDK.h"
+#include "include/spdlog/spdlog.h"
 
 #include "Hacks/Drawing.h"
 #include "Hacks/Hacks.h"

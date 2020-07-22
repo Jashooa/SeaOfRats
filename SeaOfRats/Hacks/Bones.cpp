@@ -1,5 +1,7 @@
 #include "Bones.h"
 
+#include "include/SDK/SDK.h"
+
 namespace Hacks
 {
     namespace Bones

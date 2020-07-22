@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <string>
 #include <locale>
-#include "XorStr/xorstr.h"
+#include "include/XorStr/xorstr.h"
 
 namespace SDK
 {

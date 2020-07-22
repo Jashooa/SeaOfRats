@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 
-#include "SDK/SDK.h"
-#include "spdlog/spdlog.h"
+#include "include/SDK/SDK.h"
+#include "include/spdlog/spdlog.h"
 
-#include "Bones.h"
 #include "Config.h"
-#include "Drawing.h"
+#include "Hacks/Bones.h"
+#include "Hacks/Drawing.h"
 
 using namespace SDK;
 

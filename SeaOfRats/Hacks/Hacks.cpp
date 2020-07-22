@@ -1,7 +1,7 @@
 #include "Hacks.h"
 
-#include "SDK/SDK.h"
-#include "spdlog/spdlog.h"
+#include "include/SDK/SDK.h"
+#include "include/spdlog/spdlog.h"
 
 #include "Config.h"
 #include "Hacks/Aimbot.h"

@@ -4,9 +4,9 @@
 
 #include <string>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/async.h"
-#include "spdlog/sinks/basic_file_sink.h"
+#include "include/spdlog/spdlog.h"
+#include "include/spdlog/async.h"
+#include "include/spdlog/sinks/basic_file_sink.h"
 
 #include "Config.h"
 #include "GUI.h"
