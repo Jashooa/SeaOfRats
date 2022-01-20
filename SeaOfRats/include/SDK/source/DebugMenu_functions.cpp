@@ -1,6 +1,6 @@
 #pragma warning( disable: 4189 4267 4324 4458 )
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)

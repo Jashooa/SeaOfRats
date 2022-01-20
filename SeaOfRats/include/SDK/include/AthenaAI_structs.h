@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -11,10 +11,11 @@
 #include "Engine_classes.h"
 #include "CoreUObject_classes.h"
 #include "Athena_classes.h"
+#include "Maths_classes.h"
 #include "AIModule_classes.h"
 #include "Pets_classes.h"
-#include "Maths_classes.h"
 #include "Animation_classes.h"
+#include "Tales_classes.h"
 #include "ActionStateMachine_classes.h"
 #include "StatusEffects_classes.h"
 #include "AthenaEngine_classes.h"
@@ -332,20 +333,41 @@ struct FAthenaAIControllerWeightedRangesParamValue
 	struct FWeightedProbabilityRangeOfRanges           Value;                                                    // 0x0008(0x0030) (Edit)
 };
 
+// ScriptStruct AthenaAI.QuestVariableGuidArray
+// 0x0000 (0x0010 - 0x0010)
+struct FQuestVariableGuidArray : public FQuestVariable
+{
+
+};
+
+// ScriptStruct AthenaAI.QuestVariableSharkPawn
+// 0x0000 (0x0010 - 0x0010)
+struct FQuestVariableSharkPawn : public FQuestVariable
+{
+
+};
+
 // ScriptStruct AthenaAI.TinySharkParams
 // 0x00B8
 struct FTinySharkParams
 {
-	class UClass*                                      TinySharkType;                                            // 0x0000(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	float                                              TargetRadius;                                             // 0x0008(0x0004) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	struct FVector                                     SpawnOffset;                                              // 0x000C(0x000C) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	TAssetPtr<class UClass>                            TinySharkAIType;                                          // 0x0018(0x0020) (Edit, DisableEditOnInstance)
-	TAssetPtr<class UAthenaAIControllerParamsDataAsset> TinySharkSkillset;                                        // 0x0038(0x0020) (Edit, DisableEditOnInstance)
-	TAssetPtr<class ULoadoutAsset>                     TinySharkLoadout;                                         // 0x0058(0x0020) (Edit, DisableEditOnInstance)
-	class UClass*                                      TinySharkClassID;                                         // 0x0078(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	struct FWeightedProbabilityRangeOfRanges           LifetimeTimeout;                                          // 0x0080(0x0030) (Edit, DisableEditOnInstance)
-	float                                              TrackedShipDistanceThreshold;                             // 0x00B0(0x0004) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	float                                              RepositionTime;                                           // 0x00B4(0x0004) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	class UClass*                                      TinySharkType;                                            // 0x0000(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
+	float                                              TargetRadius;                                             // 0x0008(0x0004) (Edit, ZeroConstructor, IsPlainOldData)
+	struct FVector                                     SpawnOffset;                                              // 0x000C(0x000C) (Edit, ZeroConstructor, IsPlainOldData)
+	TAssetPtr<class UClass>                            TinySharkAIType;                                          // 0x0018(0x0020) (Edit)
+	TAssetPtr<class UAthenaAIControllerParamsDataAsset> TinySharkSkillset;                                        // 0x0038(0x0020) (Edit)
+	TAssetPtr<class ULoadoutAsset>                     TinySharkLoadout;                                         // 0x0058(0x0020) (Edit)
+	class UClass*                                      TinySharkClassID;                                         // 0x0078(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
+	struct FWeightedProbabilityRangeOfRanges           LifetimeTimeout;                                          // 0x0080(0x0030) (Edit)
+	float                                              TrackedShipDistanceThreshold;                             // 0x00B0(0x0004) (Edit, ZeroConstructor, IsPlainOldData)
+	float                                              RepositionTime;                                           // 0x00B4(0x0004) (Edit, ZeroConstructor, IsPlainOldData)
+};
+
+// ScriptStruct AthenaAI.QuestVariableTinySharkExperience
+// 0x0000 (0x0010 - 0x0010)
+struct FQuestVariableTinySharkExperience : public FQuestVariable
+{
+
 };
 
 // ScriptStruct AthenaAI.TinySharkShipSpawnData

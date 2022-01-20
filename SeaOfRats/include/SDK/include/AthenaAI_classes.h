@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -526,7 +526,7 @@ public:
 
 
 // Class AthenaAI.Fauna
-// 0x03A0 (0x0BA0 - 0x0800)
+// 0x03B0 (0x0BB0 - 0x0800)
 class AFauna : public AAICreatureCharacter
 {
 public:
@@ -606,7 +606,8 @@ public:
 	float                                              TargetTurnAngle;                                          // 0x09E8(0x0004) (Net, ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData08[0x12C];                                     // 0x09EC(0x012C) MISSED OFFSET
 	class UVenomComponent*                             VenomComponent;                                           // 0x0B18(0x0008) (ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData)
-	unsigned char                                      UnknownData09[0x80];                                      // 0x0B20(0x0080) MISSED OFFSET
+	class AActor*                                      CurrentShip;                                              // 0x0B20(0x0008) (Net, ZeroConstructor, Transient, IsPlainOldData)
+	unsigned char                                      UnknownData09[0x88];                                      // 0x0B28(0x0088) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{
@@ -1416,6 +1417,138 @@ public:
 
 };
 
+
+
+// Class AthenaAI.TaleQuestGetTinySharkExperienceParticipatingCrews
+// 0x0000 (0x0090 - 0x0090)
+class UTaleQuestGetTinySharkExperienceParticipatingCrews : public UTaleQuestStep
+{
+public:
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestGetTinySharkExperienceParticipatingCrews"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestGetTinySharkExperienceParticipatingCrewsDesc
+// 0x0018 (0x0098 - 0x0080)
+class UTaleQuestGetTinySharkExperienceParticipatingCrewsDesc : public UTaleQuestStepDesc
+{
+public:
+	class ATinySharkExperience*                        TinySharkExperience;                                      // 0x0080(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
+	struct FQuestVariableGuidArray                     ParticipatingCrews;                                       // 0x0088(0x0010) (Edit)
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestGetTinySharkExperienceParticipatingCrewsDesc"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestGetTinySharkPawn
+// 0x0070 (0x0100 - 0x0090)
+class UTaleQuestGetTinySharkPawn : public UTaleQuestStep
+{
+public:
+	unsigned char                                      UnknownData00[0x70];                                      // 0x0090(0x0070) MISSED OFFSET
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestGetTinySharkPawn"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestGetTinySharkPawnDesc
+// 0x0018 (0x0098 - 0x0080)
+class UTaleQuestGetTinySharkPawnDesc : public UTaleQuestStepDesc
+{
+public:
+	class ATinySharkExperience*                        TinySharkExperience;                                      // 0x0080(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
+	struct FQuestVariableSharkPawn                     TinySharkPawn;                                            // 0x0088(0x0010) (Edit)
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestGetTinySharkPawnDesc"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestStartTinySharkExperienceStep
+// 0x0000 (0x0090 - 0x0090)
+class UTaleQuestStartTinySharkExperienceStep : public UTaleQuestStep
+{
+public:
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestStartTinySharkExperienceStep"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestTinySharkService
+// 0x0010 (0x0070 - 0x0060)
+class UTaleQuestTinySharkService : public UTaleQuestService
+{
+public:
+	TArray<class ATinySharkExperience*>                ActiveExperiences;                                        // 0x0060(0x0010) (ZeroConstructor, Transient)
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestTinySharkService"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestTinySharkServiceDesc
+// 0x0000 (0x0028 - 0x0028)
+class UTaleQuestTinySharkServiceDesc : public UTaleQuestServiceDesc
+{
+public:
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestTinySharkServiceDesc"));
+		return ptr;
+	}
+
+};
+
+
+// Class AthenaAI.TaleQuestStartTinySharkExperienceStepDesc
+// 0x0100 (0x0180 - 0x0080)
+class UTaleQuestStartTinySharkExperienceStepDesc : public UTaleQuestStepDesc
+{
+public:
+	struct FVector                                     SpawnLocation;                                            // 0x0080(0x000C) (Edit, ZeroConstructor, IsPlainOldData)
+	int                                                PartIndex;                                                // 0x008C(0x0004) (Edit, ZeroConstructor, IsPlainOldData)
+	struct FTinySharkParams                            TinySharkParams;                                          // 0x0090(0x00B8) (Edit)
+	TAssetPtr<class UAthenaAIControllerParamsDataAsset> ControllerParams;                                         // 0x0148(0x0020) (Edit)
+	class AShip*                                       TargetShip;                                               // 0x0168(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
+	struct FQuestVariableTinySharkExperience           TinySharkExperience;                                      // 0x0170(0x0010) (Edit)
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaAI.TaleQuestStartTinySharkExperienceStepDesc"));
+		return ptr;
+	}
+
+};
 
 
 // Class AthenaAI.TinySharkTelemetryComponent

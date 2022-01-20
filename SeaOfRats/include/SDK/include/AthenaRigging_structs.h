@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -8,10 +8,10 @@
 
 #include "Basic_classes.h"
 #include "AthenaRigging_enums.h"
+#include "AthenaSocketLookup_classes.h"
 #include "CoreUObject_classes.h"
 #include "Engine_classes.h"
 #include "Tethering_classes.h"
-#include "AthenaSocketLookup_classes.h"
 
 namespace SDK
 {

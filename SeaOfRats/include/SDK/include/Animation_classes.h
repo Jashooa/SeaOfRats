@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -338,6 +338,23 @@ public:
 	static UClass* StaticClass()
 	{
 		static auto ptr = UObject::FindObject<UClass>(_xor_("Class Animation.AnimNotify_DestroyCosmeticItem"));
+		return ptr;
+	}
+
+};
+
+
+// Class Animation.AnimNotify_DetachAndMaintainWorldPosition
+// 0x0008 (0x0040 - 0x0038)
+class UAnimNotify_DetachAndMaintainWorldPosition : public UAnimNotify
+{
+public:
+	TEnumAsByte<EWieldAnimationLocation>               CurrentLocation;                                          // 0x0038(0x0001) (Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData00[0x7];                                       // 0x0039(0x0007) MISSED OFFSET
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class Animation.AnimNotify_DetachAndMaintainWorldPosition"));
 		return ptr;
 	}
 

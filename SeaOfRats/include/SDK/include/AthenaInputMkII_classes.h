@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -14,6 +14,22 @@ namespace SDK
 //Classes
 //---------------------------------------------------------------------------
 
+
+
+// Class AthenaInputMkII.AthenaClampedFreelookInputComponent
+// 0x0018 (0x0290 - 0x0278)
+class UAthenaClampedFreelookInputComponent : public UAthenaCharacterBaseInputComponent
+{
+public:
+	unsigned char                                      UnknownData00[0x18];                                      // 0x0278(0x0018) MISSED OFFSET
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaInputMkII.AthenaClampedFreelookInputComponent"));
+		return ptr;
+	}
+
+};
 
 
 // Class AthenaInputMkII.MovementInterferenceComponent

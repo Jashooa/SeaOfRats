@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -101,11 +101,11 @@ public:
 
 
 // Class EmissaryLevel.EmissaryFlotsamItemSpawnComponent
-// 0x0080 (0x0520 - 0x04A0)
+// 0x0080 (0x04B0 - 0x0430)
 class UEmissaryFlotsamItemSpawnComponent : public UItemSpawnComponent
 {
 public:
-	unsigned char                                      UnknownData00[0x80];                                      // 0x04A0(0x0080) MISSED OFFSET
+	unsigned char                                      UnknownData00[0x80];                                      // 0x0430(0x0080) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{

@@ -48,32 +48,32 @@ public:
 };
 
 
-// Class AthenaInputMkII.AthenaCharacterBaseMovementComponent
+// Class AthenaInputMkII.AthenaCharacterBaseInputComponent
 // 0x0128 (0x0278 - 0x0150)
-class UAthenaCharacterBaseMovementComponent : public UInputComponent
+class UAthenaCharacterBaseInputComponent : public UInputComponent
 {
 public:
 	unsigned char                                      UnknownData00[0x128];                                     // 0x0150(0x0128) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{
-		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaInputMkII.AthenaCharacterBaseMovementComponent"));
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaInputMkII.AthenaCharacterBaseInputComponent"));
 		return ptr;
 	}
 
 };
 
 
-// Class AthenaInputMkII.AthenaCharacterBaseMovementComponentWithInterference
+// Class AthenaInputMkII.AthenaCharacterBaseInputComponentWithInterference
 // 0x0008 (0x0280 - 0x0278)
-class UAthenaCharacterBaseMovementComponentWithInterference : public UAthenaCharacterBaseMovementComponent
+class UAthenaCharacterBaseInputComponentWithInterference : public UAthenaCharacterBaseInputComponent
 {
 public:
 	unsigned char                                      UnknownData00[0x8];                                       // 0x0278(0x0008) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{
-		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaInputMkII.AthenaCharacterBaseMovementComponentWithInterference"));
+		static auto ptr = UObject::FindObject<UClass>(_xor_("Class AthenaInputMkII.AthenaCharacterBaseInputComponentWithInterference"));
 		return ptr;
 	}
 
@@ -448,7 +448,7 @@ struct FDamageInstance
 {
 	struct FGuid                                       AttackId;                                                 // 0x0000(0x0010) (ZeroConstructor, IsPlainOldData)
 	class AActor*                                      DirectInstigator;                                         // 0x0010(0x0008) (ZeroConstructor, IsPlainOldData)
-	class AActor*                                      RootInstigator;                                           // 0x0018(0x0008) (ZeroConstructor, IsPlainOldData)
+	class AActor*                                      RootInstigator;                                           // 0x0018(0x0008) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
 	float                                              Amount;                                                   // 0x0020(0x0004) (BlueprintVisible, ZeroConstructor, IsPlainOldData)
 	TEnumAsByte<EHealthChangedReason>                  Reason;                                                   // 0x0024(0x0001) (BlueprintVisible, ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData00[0x3];                                       // 0x0025(0x0003) MISSED OFFSET
@@ -2330,7 +2330,7 @@ public:
 
 
 // Class Athena.ItemSpawnComponent
-// 0x01F0 (0x04A0 - 0x02B0)
+// 0x0180 (0x0430 - 0x02B0)
 class UItemSpawnComponent : public USceneComponent
 {
 public:
@@ -2339,27 +2339,22 @@ public:
 	struct FItemSpawnParams                            SpawnParams;                                              // 0x02B8(0x0028) (Edit)
 	class UWeightedItemDescSpawnDataAsset*             ReferencedSpawnDistributionAsset;                         // 0x02E0(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
 	class UItemSpawnDistributionAsset*                 ReferencedSpawnDistribution;                              // 0x02E8(0x0008) (ZeroConstructor, IsPlainOldData)
-	struct FItemSpawnDistribution                      SpawnDistribution;                                        // 0x02F0(0x0010)
-	TArray<struct FItemSpawnTransform>                 SpawnTransforms;                                          // 0x0300(0x0010) (Edit, ZeroConstructor)
-	TArray<struct FItemSpawnTransformWithRandomQuantity> SpawnTransformsWithRandomQuantities;                      // 0x0310(0x0010) (Edit, ZeroConstructor)
-	struct FName                                       FeatureToggle;                                            // 0x0320(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
-	TEnumAsByte<ESpawnedItemSource>                    SpawnSource;                                              // 0x0328(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
-	unsigned char                                      UnknownData01[0x3];                                       // 0x0329(0x0003) MISSED OFFSET
-	float                                              SpawnRate;                                                // 0x032C(0x0004) (Edit, ZeroConstructor, IsPlainOldData)
-	bool                                               DestroyProxiesOnEndPlay;                                  // 0x0330(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
-	bool                                               SpawnWithPhysicsEnabled;                                  // 0x0331(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
-	bool                                               DoNotAttachToOwnerWhenSpawned;                            // 0x0332(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
-	bool                                               DropItemsOnSpawn;                                         // 0x0333(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
-	bool                                               DropItemsUsingPriorityAIDropParams;                       // 0x0334(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
-	unsigned char                                      UnknownData02[0xB];                                       // 0x0335(0x000B) MISSED OFFSET
-	TArray<struct FSpawnInstance>                      SpawnList;                                                // 0x0340(0x0010) (ZeroConstructor)
-	TArray<struct FSpawnInstance>                      SingleItemInstances;                                      // 0x0350(0x0010) (ZeroConstructor)
-	unsigned char                                      UnknownData03[0x10];                                      // 0x0360(0x0010) MISSED OFFSET
-	TArray<struct FSpawnedItem>                        SpawnedItems;                                             // 0x0370(0x0010) (ZeroConstructor)
-	unsigned char                                      UnknownData04[0x8];                                       // 0x0380(0x0008) MISSED OFFSET
-	TArray<class ACluster*>                            Clusters;                                                 // 0x0388(0x0010) (ZeroConstructor, Transient)
-	int                                                NumberOfInteractablesToSpawn;                             // 0x0398(0x0004) (ZeroConstructor, Transient, IsPlainOldData)
-	unsigned char                                      UnknownData05[0x104];                                     // 0x039C(0x0104) MISSED OFFSET
+	TArray<struct FItemSpawnTransform>                 SpawnTransforms;                                          // 0x02F0(0x0010) (Edit, ZeroConstructor)
+	TArray<struct FItemSpawnTransformWithRandomQuantity> SpawnTransformsWithRandomQuantities;                      // 0x0300(0x0010) (Edit, ZeroConstructor)
+	struct FName                                       FeatureToggle;                                            // 0x0310(0x0008) (Edit, ZeroConstructor, IsPlainOldData)
+	TEnumAsByte<ESpawnedItemSource>                    SpawnSource;                                              // 0x0318(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData01[0x3];                                       // 0x0319(0x0003) MISSED OFFSET
+	float                                              SpawnRate;                                                // 0x031C(0x0004) (Edit, ZeroConstructor, IsPlainOldData)
+	bool                                               DestroyProxiesOnEndPlay;                                  // 0x0320(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+	bool                                               SpawnWithPhysicsEnabled;                                  // 0x0321(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+	bool                                               DoNotAttachToOwnerWhenSpawned;                            // 0x0322(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+	bool                                               DropItemsOnSpawn;                                         // 0x0323(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+	bool                                               DropItemsUsingPriorityAIDropParams;                       // 0x0324(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData02[0x3];                                       // 0x0325(0x0003) MISSED OFFSET
+	TArray<struct FSpawnInstance>                      SpawnList;                                                // 0x0328(0x0010) (ZeroConstructor)
+	TArray<struct FSpawnInstance>                      SingleItemInstances;                                      // 0x0338(0x0010) (ZeroConstructor)
+	TArray<struct FSpawnedItem>                        SpawnedItems;                                             // 0x0348(0x0010) (ZeroConstructor)
+	unsigned char                                      UnknownData03[0xD8];                                      // 0x0358(0x00D8) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{
@@ -2442,7 +2437,8 @@ public:
 	TMap<class UMeshComponent*, struct FDynamicMaterialsList> DynamicMaterialsPerMeshComponent;                         // 0x00E8(0x0050) (ZeroConstructor, Transient)
 	unsigned char                                      UnknownData03[0x84];                                      // 0x0138(0x0084) MISSED OFFSET
 	bool                                               PurgeOverrideMatsOnDynamicMatMeshLoaded;                  // 0x01BC(0x0001) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	unsigned char                                      UnknownData04[0x3];                                       // 0x01BD(0x0003) MISSED OFFSET
+	bool                                               FadeInOnStart;                                            // 0x01BD(0x0001) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	unsigned char                                      UnknownData04[0x2];                                       // 0x01BE(0x0002) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{
@@ -2452,6 +2448,8 @@ public:
 
 
 	void SetCurrentTransparency(float Val);
+	void Multicast_FadeOut();
+	void Multicast_FadeIn();
 	void FadeOut();
 	void FadeIn();
 };
@@ -2527,7 +2525,7 @@ public:
 
 // Class Athena.LookAtOffsetInputComponent
 // 0x0000 (0x0280 - 0x0280)
-class ULookAtOffsetInputComponent : public UAthenaCharacterBaseMovementComponentWithInterference
+class ULookAtOffsetInputComponent : public UAthenaCharacterBaseInputComponentWithInterference
 {
 public:
 
@@ -2732,9 +2730,9 @@ public:
 	class UInventoryItemComponent*                     InventoryItem;                                            // 0x07A8(0x0008) (Edit, BlueprintVisible, ExportObject, ZeroConstructor, InstancedReference, IsPlainOldData)
 	class UNamedNotificationInputComponent*            NamedNotificationInputComponent;                          // 0x07B0(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
 	class UUsableWieldableComponent*                   UsableWieldableComponent;                                 // 0x07B8(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
-	unsigned char                                      UnknownData01[0x11];                                      // 0x07C0(0x0011) MISSED OFFSET
-	TEnumAsByte<EQuestMapIcon>                         QuestMapIcon;                                             // 0x07D1(0x0001) (Net, ZeroConstructor, IsPlainOldData)
-	unsigned char                                      UnknownData02[0xE];                                       // 0x07D2(0x000E) MISSED OFFSET
+	unsigned char                                      UnknownData01[0x12];                                      // 0x07C0(0x0012) MISSED OFFSET
+	TEnumAsByte<EQuestMapIcon>                         QuestMapIcon;                                             // 0x07D2(0x0001) (Net, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData02[0xD];                                       // 0x07D3(0x000D) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{

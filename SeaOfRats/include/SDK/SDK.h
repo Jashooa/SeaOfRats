@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning( disable: 4189 4267 4324 4458 )
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 
 #include "include/Basic_classes.h"
@@ -17,9 +17,9 @@
 #include "include/StatusEffects_classes.h"
 #include "include/ActionStateMachine_classes.h"
 #include "include/Fire_classes.h"
+#include "include/AthenaInputMkII_classes.h"
 #include "include/RareAudio_classes.h"
 #include "include/Animation_classes.h"
-#include "include/AthenaInputMkII_classes.h"
 #include "include/DebugMenu_classes.h"
 #include "include/RareEngine_classes.h"
 #include "include/GameplayDebugger_classes.h"
@@ -51,21 +51,20 @@
 #include "include/ObjectMessaging_classes.h"
 #include "include/SeasonProgressionFramework_classes.h"
 #include "include/Time_classes.h"
-#include "include/Water_classes.h"
 #include "include/Wind_classes.h"
 #include "include/AthenaSocketLookup_classes.h"
+#include "include/CrewOwnershipTracking_classes.h"
 #include "include/EmotingFramework_classes.h"
+#include "include/Tethering_classes.h"
 #include "include/PositionalVoice_classes.h"
 #include "include/Repair_classes.h"
 #include "include/Reviving_classes.h"
-#include "include/CrewOwnershipTracking_classes.h"
 #include "include/NetworkRegions_classes.h"
 #include "include/EmissaryFramework_classes.h"
 #include "include/Cooking_classes.h"
 #include "include/ResourceContentionFramework_classes.h"
 #include "include/ItemQuality_classes.h"
 #include "include/AthenaProjectiles_classes.h"
-#include "include/Tethering_classes.h"
 #include "include/MerchantContracts_classes.h"
 #include "include/CommodityDemandFramework_classes.h"
 #include "include/PrioritisedPrompts_classes.h"
@@ -83,5 +82,6 @@
 #include "include/EmissaryLevel_classes.h"
 #include "include/ShipDamage_classes.h"
 #include "include/AthenaServerMigration_classes.h"
+#include "include/Water_classes.h"
 #include "include/WwiseAudio_classes.h"
 #include "include/Sessions_classes.h"

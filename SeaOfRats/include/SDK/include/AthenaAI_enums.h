@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -229,6 +229,19 @@ enum class ETinySharkState : uint8_t
 	ETinySharkState__Defeated      = 3,
 	ETinySharkState__Despawning    = 4,
 	ETinySharkState__ETinySharkState_MAX = 5
+};
+
+
+// Enum AthenaAI.ETinySharkTypes
+enum class ETinySharkTypes : uint8_t
+{
+	ETinySharkTypes__None          = 0,
+	ETinySharkTypes__TheHuneringOne = 1,
+	ETinySharkTypes__TheCrestedQueen = 2,
+	ETinySharkTypes__TheShadowmaw  = 3,
+	ETinySharkTypes__TheAncientTerror = 4,
+	ETinySharkTypes__TheShroudedGhost = 5,
+	ETinySharkTypes__ETinySharkTypes_MAX = 6
 };
 
 

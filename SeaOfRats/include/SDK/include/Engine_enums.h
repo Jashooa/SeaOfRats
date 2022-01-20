@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -1189,6 +1189,16 @@ enum class EDetailMode : uint8_t
 };
 
 
+// Enum Engine.ENetSpatialClusteringOptions
+enum class ENetSpatialClusteringOptions : uint8_t
+{
+	ENetSpatialClusteringOptions__OptIn = 0,
+	ENetSpatialClusteringOptions__OptOut = 1,
+	ENetSpatialClusteringOptions__NeverRelevant = 2,
+	ENetSpatialClusteringOptions__ENetSpatialClusteringOptions_MAX = 3
+};
+
+
 // Enum Engine.EBrushType
 enum class EBrushType : uint8_t
 {
@@ -1649,7 +1659,8 @@ enum class EParticleEventType : uint8_t
 	EPET_Collision                 = 3,
 	EPET_Burst                     = 4,
 	EPET_Blueprint                 = 5,
-	EPET_MAX                       = 6
+	EPET_KillByKillPlane           = 6,
+	EPET_MAX                       = 7
 };
 
 
@@ -2199,7 +2210,8 @@ enum class ETextureGroup : uint8_t
 	TEXTUREGROUP_Animation         = 31,
 	TEXTUREGROUP_Coherent          = 32,
 	TEXTUREGROUP_MippedUI          = 33,
-	TEXTUREGROUP_MAX               = 34
+	TEXTUREGROUP_LoadingScreen     = 34,
+	TEXTUREGROUP_MAX               = 35
 };
 
 

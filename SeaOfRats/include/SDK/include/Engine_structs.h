@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -4042,8 +4042,10 @@ struct FGPUSpriteEmitterInfo
 	struct FVector4                                    MurkyColorScale;                                          // 0x0270(0x0010) (ZeroConstructor, IsPlainOldData)
 	struct FName                                       LocationEmitterName;                                      // 0x0280(0x0008) (ZeroConstructor, IsPlainOldData)
 	unsigned char                                      bUseInheritedVelocityLocationEmitter : 1;                 // 0x0288(0x0001)
-	unsigned char                                      bKillParticlesOnFFTWater : 1;                             // 0x0288(0x0001)
-	unsigned char                                      UnknownData04[0x17];                                      // 0x0289(0x0017) MISSED OFFSET
+	unsigned char                                      UnknownData04[0x3];                                       // 0x0289(0x0003) MISSED OFFSET
+	struct FVector2D                                   InheritedVelocityScaleLocationEmitter;                    // 0x028C(0x0008) (ZeroConstructor, IsPlainOldData)
+	unsigned char                                      bKillParticlesOnFFTWater : 1;                             // 0x0294(0x0001)
+	unsigned char                                      UnknownData05[0xB];                                       // 0x0295(0x000B) MISSED OFFSET
 };
 
 // ScriptStruct Engine.GPUSpriteResourceData
@@ -5860,7 +5862,7 @@ struct FEdGraphSchemaAction_NewNode : public FEdGraphSchemaAction
 };
 
 // ScriptStruct Engine.ScreenMessageString
-// 0x0028
+// 0x0030
 struct FScreenMessageString
 {
 	uint64_t                                           Key;                                                      // 0x0000(0x0008) (ZeroConstructor, Transient, IsPlainOldData)
@@ -5868,7 +5870,7 @@ struct FScreenMessageString
 	struct FColor                                      DisplayColor;                                             // 0x0018(0x0004) (ZeroConstructor, Transient, IsPlainOldData)
 	float                                              TimeToDisplay;                                            // 0x001C(0x0004) (ZeroConstructor, Transient, IsPlainOldData)
 	float                                              CurrentTimeDisplayed;                                     // 0x0020(0x0004) (ZeroConstructor, Transient, IsPlainOldData)
-	unsigned char                                      UnknownData00[0x4];                                       // 0x0024(0x0004) MISSED OFFSET
+	unsigned char                                      UnknownData00[0xC];                                       // 0x0024(0x000C) MISSED OFFSET
 };
 
 // ScriptStruct Engine.FullyLoadedPackagesInfo

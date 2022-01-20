@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -8,13 +8,14 @@
 
 #include "Basic_classes.h"
 #include "Tales_enums.h"
-#include "Engine_classes.h"
 #include "CoreUObject_classes.h"
-#include "MerchantContracts_classes.h"
+#include "Engine_classes.h"
 #include "Athena_classes.h"
+#include "PrioritisedPrompts_classes.h"
+#include "AthenaEngine_classes.h"
+#include "MerchantContracts_classes.h"
 #include "AIModule_classes.h"
 #include "EmissaryFramework_classes.h"
-#include "PrioritisedPrompts_classes.h"
 #include "TaleMaps_classes.h"
 #include "Commons.h"
 
@@ -86,7 +87,7 @@ struct FCriticalActorDelegateData
 };
 
 // ScriptStruct Tales.SnapshottedActorData
-// 0x0068
+// 0x0060
 struct FSnapshottedActorData
 {
 	TScriptInterface<class USnapshotOwnerInterface>    Instagator;                                               // 0x0000(0x0010) (ZeroConstructor, IsPlainOldData)
@@ -95,7 +96,6 @@ struct FSnapshottedActorData
 	bool                                               ActorWasTracked;                                          // 0x0021(0x0001) (ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData00[0x6];                                       // 0x0022(0x0006) MISSED OFFSET
 	struct FText                                       FailureMessage;                                           // 0x0028(0x0038)
-	class AItemInfo*                                   StoredItemInfo;                                           // 0x0060(0x0008) (ZeroConstructor, IsPlainOldData)
 };
 
 // ScriptStruct Tales.PhasedActor
@@ -160,6 +160,13 @@ struct FQuestVariableItemInfo : public FQuestVariable
 
 };
 
+// ScriptStruct Tales.QuestVariableCollection
+// 0x0000 (0x0010 - 0x0010)
+struct FQuestVariableCollection : public FQuestVariable
+{
+
+};
+
 // ScriptStruct Tales.QuestVariablePrioritisedPrompt
 // 0x0000 (0x0010 - 0x0010)
 struct FQuestVariablePrioritisedPrompt : public FQuestVariable
@@ -180,6 +187,13 @@ struct FTaleQuestDeliverableItem
 {
 	struct FText                                       Name;                                                     // 0x0000(0x0038) (Edit, BlueprintVisible)
 	class UTexture*                                    Icon;                                                     // 0x0038(0x0008) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
+};
+
+// ScriptStruct Tales.QuestVariableChecklistItemArray
+// 0x0000 (0x0010 - 0x0010)
+struct FQuestVariableChecklistItemArray : public FQuestVariable
+{
+
 };
 
 // ScriptStruct Tales.QuestVariableMerchantItemArray
@@ -309,6 +323,24 @@ struct FTaleQuestSelectorServiceSeedSetTelemetryEvent
 struct FPlaySequencerAutomationEvent
 {
 	unsigned char                                      UnknownData00[0x18];                                      // 0x0000(0x0018) MISSED OFFSET
+};
+
+// ScriptStruct Tales.QuestVariableChecklistItem
+// 0x0000 (0x0010 - 0x0010)
+struct FQuestVariableChecklistItem : public FQuestVariable
+{
+
+};
+
+// ScriptStruct Tales.StepChecklistItemDesc
+// 0x0050
+struct FStepChecklistItemDesc
+{
+	struct FText                                       Description;                                              // 0x0000(0x0038) (Edit, BlueprintVisible)
+	int                                                NumRequiredCompletions;                                   // 0x0038(0x0004) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData00[0x4];                                       // 0x003C(0x0004) MISSED OFFSET
+	class UTexture*                                    UnfulfilledIcon;                                          // 0x0040(0x0008) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
+	class UTexture*                                    FulfilledIcon;                                            // 0x0048(0x0008) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
 };
 
 // ScriptStruct Tales.StepMerchantItemDesc

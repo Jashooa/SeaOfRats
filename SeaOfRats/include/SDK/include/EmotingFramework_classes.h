@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -139,8 +139,8 @@ public:
 class UEmoteSettings : public UDeveloperSettings
 {
 public:
-	int                                                Pages;                                                    // 0x0038(0x0004) (Edit, ZeroConstructor, Config, IsPlainOldData)
-	unsigned char                                      UnknownData00[0x4];                                       // 0x003C(0x0004) MISSED OFFSET
+	int                                                NumPages;                                                 // 0x0038(0x0004) (Edit, ZeroConstructor, Config, IsPlainOldData)
+	int                                                ExpandedAndCompactEmoteRadialNumPages;                    // 0x003C(0x0004) (Edit, ZeroConstructor, Config, IsPlainOldData)
 
 	static UClass* StaticClass()
 	{

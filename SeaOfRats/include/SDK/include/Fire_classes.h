@@ -1,6 +1,6 @@
 #pragma once
 
-// Sea of Thieves (2.4.0) SDK
+// Sea of Thieves (2.4.1) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
@@ -451,31 +451,31 @@ public:
 
 
 // Class Fire.ShipFirePropagationComponent
-// 0x03C0 (0x0488 - 0x00C8)
+// 0x03C8 (0x0490 - 0x00C8)
 class UShipFirePropagationComponent : public UActorComponent
 {
 public:
-	unsigned char                                      UnknownData00[0x8];                                       // 0x00C8(0x0008) MISSED OFFSET
-	struct FName                                       FeatureToggleName;                                        // 0x00D0(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	class UClass*                                      ShipSize;                                                 // 0x00D8(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	float                                              CellSize;                                                 // 0x00E0(0x0004) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	struct FIntVector                                  GridDimensions;                                           // 0x00E4(0x000C) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	struct FVector                                     GridOffset;                                               // 0x00F0(0x000C) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	unsigned char                                      UnknownData01[0x4];                                       // 0x00FC(0x0004) MISSED OFFSET
-	class UFirePropagator*                             Propagator;                                               // 0x0100(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
-	class UShipFireDamageParamsDataAsset*              FireDamageDataAsset;                                      // 0x0108(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
-	TArray<struct FFireCellDesc>                       FireCellDescs;                                            // 0x0110(0x0010) (Edit, ZeroConstructor, DisableEditOnInstance)
-	unsigned char                                      UnknownData02[0x10];                                      // 0x0120(0x0010) MISSED OFFSET
-	struct FStatus                                     BurnStatus;                                               // 0x0130(0x0018) (Edit, DisableEditOnInstance)
-	class UFireGridVFXManager*                         VFXManager;                                               // 0x0148(0x0008) (ZeroConstructor, Transient, IsPlainOldData)
-	struct FFireGridVfxSpawnSettings                   VfxSpawnSettings;                                         // 0x0150(0x0058) (Edit, DisableEditOnInstance)
-	struct FShipFireLightManager                       FireLightManager;                                         // 0x01A8(0x0150) (Edit, DisableEditOnInstance)
-	struct FFireGridCharringManager                    FireCharringManager;                                      // 0x02F8(0x00C8) (Edit, DisableEditOnInstance)
-	TArray<struct FReplicatedFireCellData>             ReplicatedCellData;                                       // 0x03C0(0x0010) (Net, ZeroConstructor, Transient)
-	struct FReplicatedFireCellCharringData             ReplicatedCellCharringData;                               // 0x03D0(0x0018) (Net, Transient)
-	class UFireGridAudioManager*                       FireAudioManager;                                         // 0x03E8(0x0008) (ZeroConstructor, Transient, IsPlainOldData)
-	struct FFireCellAudioParams                        FireAudioParams;                                          // 0x03F0(0x0040) (Edit, DisableEditOnInstance)
-	unsigned char                                      UnknownData03[0x58];                                      // 0x0430(0x0058) MISSED OFFSET
+	unsigned char                                      UnknownData00[0x10];                                      // 0x00C8(0x0010) MISSED OFFSET
+	struct FName                                       FeatureToggleName;                                        // 0x00D8(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	class UClass*                                      ShipSize;                                                 // 0x00E0(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	float                                              CellSize;                                                 // 0x00E8(0x0004) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	struct FIntVector                                  GridDimensions;                                           // 0x00EC(0x000C) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	struct FVector                                     GridOffset;                                               // 0x00F8(0x000C) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	unsigned char                                      UnknownData01[0x4];                                       // 0x0104(0x0004) MISSED OFFSET
+	class UFirePropagator*                             Propagator;                                               // 0x0108(0x0008) (Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData)
+	class UShipFireDamageParamsDataAsset*              FireDamageDataAsset;                                      // 0x0110(0x0008) (Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
+	TArray<struct FFireCellDesc>                       FireCellDescs;                                            // 0x0118(0x0010) (Edit, ZeroConstructor, DisableEditOnInstance)
+	unsigned char                                      UnknownData02[0x10];                                      // 0x0128(0x0010) MISSED OFFSET
+	struct FStatus                                     BurnStatus;                                               // 0x0138(0x0018) (Edit, DisableEditOnInstance)
+	class UFireGridVFXManager*                         VFXManager;                                               // 0x0150(0x0008) (ZeroConstructor, Transient, IsPlainOldData)
+	struct FFireGridVfxSpawnSettings                   VfxSpawnSettings;                                         // 0x0158(0x0058) (Edit, DisableEditOnInstance)
+	struct FShipFireLightManager                       FireLightManager;                                         // 0x01B0(0x0150) (Edit, DisableEditOnInstance)
+	struct FFireGridCharringManager                    FireCharringManager;                                      // 0x0300(0x00C8) (Edit, DisableEditOnInstance)
+	TArray<struct FReplicatedFireCellData>             ReplicatedCellData;                                       // 0x03C8(0x0010) (Net, ZeroConstructor, Transient)
+	struct FReplicatedFireCellCharringData             ReplicatedCellCharringData;                               // 0x03D8(0x0018) (Net, Transient)
+	class UFireGridAudioManager*                       FireAudioManager;                                         // 0x03F0(0x0008) (ZeroConstructor, Transient, IsPlainOldData)
+	struct FFireCellAudioParams                        FireAudioParams;                                          // 0x03F8(0x0040) (Edit, DisableEditOnInstance)
+	unsigned char                                      UnknownData03[0x58];                                      // 0x0438(0x0058) MISSED OFFSET
 
 	static UClass* StaticClass()
 	{
