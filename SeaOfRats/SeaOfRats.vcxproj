@@ -189,7 +189,7 @@
     <ClCompile Include="Hacks\Hacks.cpp" />
     <ClCompile Include="Hacks\Info.cpp" />
     <ClCompile Include="include\SDK\source\Athena_functions.cpp" />
-    <ClCompile Include="include\SDK\source\Basic.cpp" />
+    <ClCompile Include="include\SDK\source\Basic_functions.cpp" />
     <ClCompile Include="include\SDK\source\CoreUObject_functions.cpp" />
     <ClCompile Include="include\SDK\source\DebugMenu_functions.cpp" />
     <ClCompile Include="include\SDK\source\Engine_functions.cpp" />
@@ -256,7 +256,7 @@
     <ClInclude Include="include\SDK\include\Athena_classes.h" />
     <ClInclude Include="include\SDK\include\Athena_enums.h" />
     <ClInclude Include="include\SDK\include\Athena_structs.h" />
-    <ClInclude Include="include\SDK\include\Basic.h" />
+    <ClInclude Include="include\SDK\include\Basic_classes.h" />
     <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_classes.h" />
     <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_enums.h" />
     <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_structs.h" />

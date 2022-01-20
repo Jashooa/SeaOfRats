@@ -6,7 +6,7 @@
 	#pragma pack(push, 0x8)
 #endif
 
-#include "Basic.h"
+#include "Basic_classes.h"
 #include "Pets_enums.h"
 #include "Athena_classes.h"
 #include "AthenaAI_classes.h"

@@ -6,7 +6,7 @@
 	#pragma pack(push, 0x8)
 #endif
 
-#include "Basic.h"
+#include "Basic_classes.h"
 #include "Slate_enums.h"
 #include "SlateCore_classes.h"
 #include "InputCore_classes.h"

@@ -6,7 +6,7 @@
 	#pragma pack(push, 0x8)
 #endif
 
-#include "Basic.h"
+#include "Basic_classes.h"
 #include "RareAudio_enums.h"
 #include "RareEngine_classes.h"
 #include "CoreUObject_classes.h"

@@ -1,10 +1,10 @@
 #pragma once
-#pragma warning( disable: 4189 4267 4324 )
+#pragma warning( disable: 4189 4267 4324 4458 )
 
 // Sea of Thieves (2.4.0) SDK
 
 
-#include "include/Basic.h"
+#include "include/Basic_classes.h"
 
 #include "include/CoreUObject_classes.h"
 #include "include/Engine_classes.h"

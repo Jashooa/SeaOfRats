@@ -1,10 +1,12 @@
+#pragma warning( disable: 4189 4267 4324 4458 )
+
 // Sea of Thieves (2.4.0) SDK
 
 #ifdef _MSC_VER
 	#pragma pack(push, 0x8)
 #endif
 
-#include "../include/Basic.h"
+#include "../include/Basic_classes.h"
 #include "../include/CoreUObject_classes.h"
 
 namespace SDK

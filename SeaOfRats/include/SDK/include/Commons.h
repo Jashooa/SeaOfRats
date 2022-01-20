@@ -4,7 +4,7 @@
 	#pragma pack(push, 0x8)
 #endif
 
-#include "Basic.h"
+#include "Basic_classes.h"
 #include "Athena_enums.h"
 #include "AthenaAI_enums.h"
 #include "AthenaEngine_enums.h"

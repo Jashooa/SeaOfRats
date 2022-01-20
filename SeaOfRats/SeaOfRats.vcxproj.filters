@@ -120,7 +120,7 @@
     <ClCompile Include="include\SDK\source\Athena_functions.cpp">
       <Filter>Source Files\include\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="include\SDK\source\Basic.cpp">
+    <ClCompile Include="include\SDK\source\Basic_functions.cpp">
       <Filter>Source Files\include\SDK</Filter>
     </ClCompile>
     <ClCompile Include="include\SDK\source\CoreUObject_functions.cpp">
@@ -467,6 +467,9 @@
     <ClInclude Include="Hacks\Bones.h">
       <Filter>Header Files\Hacks</Filter>
     </ClInclude>
+    <ClInclude Include="include\SDK\SDK.h">
+      <Filter>Header Files\include\SDK</Filter>
+    </ClInclude>
     <ClInclude Include="include\SDK\include\ActionStateMachine_classes.h">
       <Filter>Header Files\include\SDK</Filter>
     </ClInclude>
@@ -587,7 +590,7 @@
     <ClInclude Include="include\SDK\include\AthenaSocketLookup_structs.h">
       <Filter>Header Files\include\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="include\SDK\include\Basic.h">
+    <ClInclude Include="include\SDK\include\Basic_classes.h">
       <Filter>Header Files\include\SDK</Filter>
     </ClInclude>
     <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_classes.h">
@@ -1128,9 +1131,6 @@
       <Filter>Header Files\include\SDK</Filter>
     </ClInclude>
     <ClInclude Include="include\SDK\include\WwiseAudio_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\SDK.h">
       <Filter>Header Files\include\SDK</Filter>
     </ClInclude>
   </ItemGroup>

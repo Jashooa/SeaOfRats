@@ -6,7 +6,7 @@
 	#pragma pack(push, 0x8)
 #endif
 
-#include "Basic.h"
+#include "Basic_classes.h"
 #include "Watercrafts_enums.h"
 #include "Water_classes.h"
 #include "Engine_classes.h"
