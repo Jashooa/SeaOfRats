@@ -266,8 +266,7 @@ namespace Hacks
                 float worldDistance = localPlayer->GetDistanceTo(actor);
                 auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
                 bool isNameplateShown = false;
-                //if (!UKismetTextLibrary::TextIsEmpty(namePlate->DisplayNameAsText))
-                if (namePlate->DisplayNameAsString.Num() > 1)
+                if (!namePlate->DisplayNameAsString.IsEmpty())
                 {
                     isNameplateShown = (worldDistance < namePlate->VisibleUntilWorldDistance) && playerController->LineOfSightTo(actor, FVector(0.0f, 0.0f, 0.0f), false);
                     std::wstring namePlateText = namePlate->DisplayNameAsString.c_str();

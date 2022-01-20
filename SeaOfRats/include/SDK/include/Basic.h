@@ -293,6 +293,11 @@ public:
 		return Data != nullptr;
 	}
 
+	inline bool IsEmpty() const
+	{
+		return Num() <= 1;
+	}
+
 	inline const wchar_t* c_str() const
 	{
 		return Data;
