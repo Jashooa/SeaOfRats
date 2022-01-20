@@ -61,7 +61,7 @@ namespace Hacks
         if (NullChecks(client))
         {
             AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
-            hud->Canvas = canvas;
+            //hud->Canvas = canvas;
 
             UWorld* world = client->World;
             if (!world)

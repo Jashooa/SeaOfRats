@@ -142,7 +142,7 @@ namespace Hacks
                 if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }) && validateAngles)
                 {
                     //playerController->ClientSetRotation(rotation, false);
-                    playerController->ControlRotation = rotation;
+                    //playerController->ControlRotation = rotation;
                 }
             }
         }

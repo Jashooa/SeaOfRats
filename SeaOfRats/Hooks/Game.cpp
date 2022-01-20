@@ -18,7 +18,7 @@ using namespace SDK;
 static void** clientVTable = nullptr;
 using PostRender = void(__thiscall*)(UGameViewportClient*, UCanvas*);
 static PostRender OriginalPostRender = nullptr;
-const size_t postRenderIndex = 88;
+const size_t postRenderIndex = 91;
 
 std::mutex hookLock;
 
