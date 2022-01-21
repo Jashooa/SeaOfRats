@@ -4,7 +4,7 @@
 #include "include/spdlog/spdlog.h"
 
 #include "Config.h"
-#include "Hacks/Drawing.h"
+#include "Render/Drawing.h"
 
 using namespace SDK;
 
@@ -74,13 +74,13 @@ namespace Hacks
                         break;
                 }
                 //shipType = shipType + L" " + UKismetGuidLibrary::Conv_GuidToString(crew.CrewId).c_str();
-                Drawing::DrawInterfaceString(hud, shipType, FVector2D(positionX, positionY), Drawing::Colour::White, false, false);
+                Render::Drawing::DrawInterfaceString(hud, shipType, FVector2D(positionX, positionY), Render::Drawing::Colour::White, false, false);
                 positionY += 15.0f;
                 for (int32_t j = 0; j < players.Num(); ++j)
                 {
                     auto player = players[j];
                     std::wstring playerName = player->PlayerName.c_str();
-                    Drawing::DrawInterfaceString(hud, playerName, FVector2D(positionX + 10.0f, positionY), Drawing::Colour::White, false, false);
+                    Render::Drawing::DrawInterfaceString(hud, playerName, FVector2D(positionX + 10.0f, positionY), Render::Drawing::Colour::White, false, false);
                     positionY += 15.0f;
                 }
                 positionY += 10.0f;
@@ -122,8 +122,8 @@ namespace Hacks
             int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
 
             float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-            Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
-            Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
+            Render::Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Render::Drawing::Colour::White);
+            Render::Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Render::Drawing::Colour::White);
         }
 
         void DrawOxygen(UGameViewportClient* client, AHUD* hud)
@@ -138,7 +138,7 @@ namespace Hacks
                 {
                     float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
                     std::wstring oxygenText = L"Oxygen: " + std::to_wstring(oxygenLevel) + L"%";
-                    Drawing::DrawInterfaceString(hud, oxygenText, FVector2D(centerX, 50), Drawing::Colour::Red);
+                    Render::Drawing::DrawInterfaceString(hud, oxygenText, FVector2D(centerX, 50), Render::Drawing::Colour::Red);
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace Hacks
                     {
                         std::wstring waterText = L"Water Level: " + std::to_wstring(waterLevel) + L"%";
                         float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-                        Drawing::DrawInterfaceString(hud, waterText, FVector2D(centerX, 65), Drawing::Colour::Red);
+                        Render::Drawing::DrawInterfaceString(hud, waterText, FVector2D(centerX, 65), Render::Drawing::Colour::Red);
                     }
                 }
             }
@@ -181,7 +181,7 @@ namespace Hacks
 
                     std::wstring capstanText = L"Anchor Level: " + std::to_wstring(anchorLevel) + L"%";
                     float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-                    Drawing::DrawInterfaceString(hud, capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
+                    Render::Drawing::DrawInterfaceString(hud, capstanText, FVector2D(centerX, 80), Render::Drawing::Colour::Red);
                 }
             }
 

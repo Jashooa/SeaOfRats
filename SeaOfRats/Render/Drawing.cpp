@@ -7,7 +7,7 @@
 
 using namespace SDK;
 
-namespace Hacks
+namespace Render
 {
     namespace Drawing
     {

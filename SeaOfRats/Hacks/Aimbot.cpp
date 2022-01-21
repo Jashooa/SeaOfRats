@@ -3,7 +3,7 @@
 #include "include/SDK/SDK.h"
 
 #include "Bones.h"
-#include "Drawing.h"
+#include "Render/Drawing.h"
 
 using namespace SDK;
 
@@ -103,41 +103,41 @@ namespace Hacks
                 return;
             }
 
-            Drawing::DrawActorString(hud, L"x", screen, Drawing::Colour::Red);
+            Render::Drawing::DrawActorString(hud, L"x", screen, Render::Drawing::Colour::Red);
 
             auto cameraManager = playerController->PlayerCameraManager;
             if (cameraManager)
             {
                 auto controlRotation = playerController->GetControlRotation();
-                Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(controlRotation.Pitch), FVector2D(200.0f, 200.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(controlRotation.Yaw), FVector2D(200.0f, 215.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(controlRotation.Roll), FVector2D(200.0f, 230.0f), Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(controlRotation.Pitch), FVector2D(200.0f, 200.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(controlRotation.Yaw), FVector2D(200.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(controlRotation.Roll), FVector2D(200.0f, 230.0f), Render::Drawing::Colour::Red, false);
 
                 auto cameraRotation = cameraManager->GetCameraRotation();
-                Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(cameraRotation.Pitch), FVector2D(400.0f, 200.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(cameraRotation.Yaw), FVector2D(400.0f, 215.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(cameraRotation.Roll), FVector2D(400.0f, 230.0f), Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(cameraRotation.Pitch), FVector2D(400.0f, 200.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(cameraRotation.Yaw), FVector2D(400.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(cameraRotation.Roll), FVector2D(400.0f, 230.0f), Render::Drawing::Colour::Red, false);
 
                 auto rotation = UKismetMathLibrary::FindLookAtRotation(cameraManager->CameraCache.POV.Location, location);
-                Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(rotation.Pitch), FVector2D(600.0f, 200.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(rotation.Yaw), FVector2D(600.0f, 215.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(rotation.Roll), FVector2D(600.0f, 230.0f), Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(rotation.Pitch), FVector2D(600.0f, 200.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(rotation.Yaw), FVector2D(600.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(rotation.Roll), FVector2D(600.0f, 230.0f), Render::Drawing::Colour::Red, false);
 
                 bool validateAngles = ValidateAngles(cameraManager, &rotation);
-                Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(rotation.Pitch), FVector2D(800.0f, 200.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(rotation.Yaw), FVector2D(800.0f, 215.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(rotation.Roll), FVector2D(800.0f, 230.0f), Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(rotation.Pitch), FVector2D(800.0f, 200.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(rotation.Yaw), FVector2D(800.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(rotation.Roll), FVector2D(800.0f, 230.0f), Render::Drawing::Colour::Red, false);
                 if (validateAngles)
                 {
-                    Drawing::DrawInterfaceString(hud, L"True", FVector2D(800.0f, 245.0f), Drawing::Colour::Green, false);
+                    Render::Drawing::DrawInterfaceString(hud, L"True", FVector2D(800.0f, 245.0f), Render::Drawing::Colour::Green, false);
                 }
 
-                Drawing::DrawInterfaceString(hud, L"Pitch Min: " + std::to_wstring(cameraManager->ViewPitchMin), FVector2D(1000.0f, 200.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Pitch Max: " + std::to_wstring(cameraManager->ViewPitchMax), FVector2D(1000.0f, 215.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Yaw Min: " + std::to_wstring(cameraManager->ViewYawMin), FVector2D(1000.0f, 230.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Yaw Max: " + std::to_wstring(cameraManager->ViewYawMax), FVector2D(1000.0f, 245.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Roll Min: " + std::to_wstring(cameraManager->ViewRollMin), FVector2D(1000.0f, 260.0f), Drawing::Colour::Red, false);
-                Drawing::DrawInterfaceString(hud, L"Roll Max: " + std::to_wstring(cameraManager->ViewRollMax), FVector2D(1000.0f, 275.0f), Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Pitch Min: " + std::to_wstring(cameraManager->ViewPitchMin), FVector2D(1000.0f, 200.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Pitch Max: " + std::to_wstring(cameraManager->ViewPitchMax), FVector2D(1000.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Yaw Min: " + std::to_wstring(cameraManager->ViewYawMin), FVector2D(1000.0f, 230.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Yaw Max: " + std::to_wstring(cameraManager->ViewYawMax), FVector2D(1000.0f, 245.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Roll Min: " + std::to_wstring(cameraManager->ViewRollMin), FVector2D(1000.0f, 260.0f), Render::Drawing::Colour::Red, false);
+                Render::Drawing::DrawInterfaceString(hud, L"Roll Max: " + std::to_wstring(cameraManager->ViewRollMax), FVector2D(1000.0f, 275.0f), Render::Drawing::Colour::Red, false);
 
                 if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }) && validateAngles)
                 {

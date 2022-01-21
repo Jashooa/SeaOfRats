@@ -8,8 +8,8 @@
 #include "include/SDK/SDK.h"
 #include "include/spdlog/spdlog.h"
 
-#include "Hacks/Drawing.h"
 #include "Hacks/Hacks.h"
+#include "Render/Drawing.h"
 #include "Utilities/Memory.h"
 #include "Utilities/VMTHook.h"
 
@@ -55,8 +55,8 @@ void HookGame()
     const auto gameViewportClient = UObject::FindObject<UAthenaGameViewportClient>("AthenaGameViewportClient Transient.AthenaGameEngine_1.AthenaGameViewportClient_1");
     spdlog::info("AthenaGameViewportClient Address: {:p}", reinterpret_cast<void*>(gameViewportClient));
 
-    Hacks::Drawing::RobotoFont = UObject::FindObject<UFont>("Font Roboto.Roboto");
-    Hacks::Drawing::RobotoTinyFont = UObject::FindObject<UFont>("Font RobotoTiny.RobotoTiny");
+    Render::Drawing::RobotoFont = UObject::FindObject<UFont>("Font Roboto.Roboto");
+    Render::Drawing::RobotoTinyFont = UObject::FindObject<UFont>("Font RobotoTiny.RobotoTiny");
 
     const auto uobject = UObject::FindObject<UAthenaGameViewportClient>("Class CoreUObject.Object");
     spdlog::info("Object Address: {:p}", reinterpret_cast<void*>(uobject));

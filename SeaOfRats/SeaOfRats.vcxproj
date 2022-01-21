@@ -182,8 +182,6 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hacks\Aimbot.cpp" />
     <ClCompile Include="Hacks\Bones.cpp" />
-    <ClCompile Include="Hacks\Drawing.cpp" />
-    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\Hacks.cpp" />
@@ -195,6 +193,8 @@
     <ClCompile Include="include\SDK\source\Engine_functions.cpp" />
     <ClCompile Include="include\SDK\source\Maths_functions.cpp" />
     <ClCompile Include="include\SDK\source\UMG_functions.cpp" />
+    <ClCompile Include="Render\Drawing.cpp" />
+    <ClCompile Include="Render\GUI.cpp" />
     <ClCompile Include="SeaOfRats.cpp" />
     <ClCompile Include="Hooks\DirectX.cpp" />
     <ClCompile Include="Hooks\Game.cpp" />
@@ -210,8 +210,6 @@
   <ItemGroup>
     <ClInclude Include="Hacks\Aimbot.h" />
     <ClInclude Include="Hacks\Bones.h" />
-    <ClInclude Include="Hacks\Drawing.h" />
-    <ClInclude Include="GUI.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP.h" />
     <ClInclude Include="Hacks\Hacks.h" />
@@ -438,6 +436,8 @@
     <ClInclude Include="include\SDK\include\WwiseAudio_enums.h" />
     <ClInclude Include="include\SDK\include\WwiseAudio_structs.h" />
     <ClInclude Include="include\SDK\SDK.h" />
+    <ClInclude Include="Render\Drawing.h" />
+    <ClInclude Include="Render\GUI.h" />
     <ClInclude Include="SeaOfRats.h" />
     <ClInclude Include="Hooks\DirectX.h" />
     <ClInclude Include="Hooks\Game.h" />

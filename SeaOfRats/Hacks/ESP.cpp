@@ -9,7 +9,7 @@
 
 #include "Config.h"
 #include "Hacks/Bones.h"
-#include "Hacks/Drawing.h"
+#include "Render/Drawing.h"
 
 using namespace SDK;
 
@@ -58,7 +58,7 @@ namespace Hacks
 
                         if (previousBone.X != 0.0f && previousBone.Y != 0.0f)
                         {
-                            hud->Canvas->K2_DrawLine(previousBone, screenBone, 1.0f, Drawing::Colour::White);
+                            hud->Canvas->K2_DrawLine(previousBone, screenBone, 1.0f, Render::Drawing::Colour::White);
                         }
                         previousBone = screenBone;
                     }
@@ -94,10 +94,10 @@ namespace Hacks
 
             // Check friendly
             bool friendly = UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player);
-            FLinearColor colour = Drawing::Colour::Red;
+            FLinearColor colour = Render::Drawing::Colour::Red;
             if (friendly)
             {
-                colour = Drawing::Colour::Green;
+                colour = Render::Drawing::Colour::Green;
             }
             //Drawing::DrawBoundingBox(client, hud, actor, colour);
             DrawBones(client, hud, actor);
@@ -126,7 +126,7 @@ namespace Hacks
 
                     // Draw name
                     FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    Drawing::DrawActorString(hud, name, nameScreen, colour);
+                    Render::Drawing::DrawActorString(hud, name, nameScreen, colour);
                 }
             }
 
@@ -142,7 +142,7 @@ namespace Hacks
                     FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
                     FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                     FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
-                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                    Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }
 
                 // Draw item info
@@ -155,7 +155,7 @@ namespace Hacks
                         std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
 
                         FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
-                        Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
+                        Render::Drawing::DrawActorString(hud, itemName, itemScreen, Render::Drawing::Colour::White);
                     }
                 }
             }
@@ -180,7 +180,7 @@ namespace Hacks
             {
                 return;
             }
-            //Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
             //DrawBones(client, hud, actor);
 
             // Get bounds
@@ -280,7 +280,7 @@ namespace Hacks
 
                     // Draw name
                     FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                    Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
                 }
             }
 
@@ -310,7 +310,7 @@ namespace Hacks
                         std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
 
                         FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                        Drawing::DrawActorString(hud, itemName, itemScreen, Drawing::Colour::White);
+                        Render::Drawing::DrawActorString(hud, itemName, itemScreen, Render::Drawing::Colour::White);
                     }
                 }
             }
@@ -357,7 +357,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
 
                 // Draw health bar
                 auto healthComponent = shark->HealthComponent;
@@ -366,7 +366,7 @@ namespace Hacks
                     FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                     FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                     FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                    Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }
             }
         }
@@ -384,7 +384,7 @@ namespace Hacks
             {
                 return;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
 
             // Get bounds
             FVector origin, extent;
@@ -405,12 +405,12 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
 
                 // Draw tentacles remaining
                 std::wstring tentaclesRemaining = L"Tentacles Remaining: " + std::to_wstring(kraken->NumTentaclesRemaining);
                 FVector2D tentaclesScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawActorString(hud, tentaclesRemaining, tentaclesScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, tentaclesRemaining, tentaclesScreen, Render::Drawing::Colour::White);
             }
         }
 
@@ -427,7 +427,7 @@ namespace Hacks
             {
                 return;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
 
             // Get bounds
             FVector origin, extent;
@@ -448,7 +448,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
 
                 // Draw health bar
                 auto healthComponent = tentacle->HealthComponent;
@@ -457,7 +457,7 @@ namespace Hacks
                     FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                     FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                     FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                    Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }
             }
         }
@@ -502,7 +502,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
             }
         }
 
@@ -548,7 +548,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
             }
         }
 
@@ -572,6 +572,8 @@ namespace Hacks
             {
                 return;
             }
+
+            //Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
 
             std::string actorName = actor->GetName();
             std::wstring name = L"Ship";
@@ -601,7 +603,7 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
 
             auto waterInfo = ship->GetInternalWater();
             if (waterInfo)
@@ -611,7 +613,7 @@ namespace Hacks
                 FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
                 float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
                 float waterLevel = waterMax - waterInfo->WaterAmount;
-                Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, waterLevel, waterMax);
+                Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, waterLevel, waterMax);
             }
         }
 
@@ -664,7 +666,7 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
         }
 
         void DrawGhostShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -706,12 +708,12 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
 
             // Draw hits remaining
             std::wstring hitsRemaining = L"Hits Remaining: " + std::to_wstring(ship->NumShotsLeftToKill);
             FVector2D hitsScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawActorString(hud, hitsRemaining, hitsScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, hitsRemaining, hitsScreen, Render::Drawing::Colour::White);
         }
 
         void DrawRowboat(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -751,7 +753,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
             }
         }
 
@@ -788,22 +790,22 @@ namespace Hacks
             {
                 // Get colour
                 std::string rarity = itemInfo->Rarity.GetName();
-                FLinearColor colour = Drawing::Colour::Blue;
+                FLinearColor colour = Render::Drawing::Colour::Blue;
                 if (rarity == "Common")
                 {
-                    colour = Drawing::Colour::Grey;
+                    colour = Render::Drawing::Colour::Grey;
                 }
                 else if (rarity == "Rare")
                 {
-                    colour = Drawing::Colour::Green;
+                    colour = Render::Drawing::Colour::Green;
                 }
                 else if (rarity == "Legendary")
                 {
-                    colour = Drawing::Colour::Purple;
+                    colour = Render::Drawing::Colour::Purple;
                 }
                 else if (rarity == "Mythical")
                 {
-                    colour = Drawing::Colour::Orange;
+                    colour = Render::Drawing::Colour::Orange;
                 }
 
                 // Get name
@@ -814,7 +816,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, colour);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, colour);
             }
         }
 
@@ -849,7 +851,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
                 /*auto storage = barrel->GetStorageComponent();
 
                 if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
@@ -920,7 +922,7 @@ namespace Hacks
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
         }
 
         void DrawStorm(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -937,7 +939,7 @@ namespace Hacks
             {
                 return;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
 
             // Get name
             std::wstring name = storm->SubjectName.c_str();
@@ -947,7 +949,7 @@ namespace Hacks
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
         }
 
         void DrawEvent(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -964,7 +966,7 @@ namespace Hacks
             {
                 return;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
 
             // Get name
             std::wstring name = L"Event";
@@ -989,7 +991,7 @@ namespace Hacks
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawActorString(hud, name, nameScreen, Drawing::Colour::White);
+            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
         }
 
         void DrawMap(UGameViewportClient* client, AHUD* hud, AActor* actor)
@@ -1025,7 +1027,7 @@ namespace Hacks
 
                 int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
                 std::wstring pinText = L"Map Pin [" + std::to_wstring(distance) + L"m]";
-                Drawing::DrawActorString(hud, pinText, screen, Drawing::Colour::White);
+                Render::Drawing::DrawActorString(hud, pinText, screen, Render::Drawing::Colour::White);
             }
         }
 
@@ -1097,7 +1099,7 @@ namespace Hacks
                 return;
             //name = actor->GetFullName();
             std::wstring namew(name.begin(), name.end());
-            Drawing::DrawActorString(hud, namew, screen, Drawing::Colour::Red);
+            Render::Drawing::DrawActorString(hud, namew, screen, Render::Drawing::Colour::Red);
         }
     }
 }

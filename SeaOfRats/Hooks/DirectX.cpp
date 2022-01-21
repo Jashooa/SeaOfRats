@@ -8,7 +8,7 @@
 
 #include "include/spdlog/spdlog.h"
 
-#include "GUI.h"
+#include "Render/GUI.h"
 #include "Utilities/VMTHook.h"
 
 static void** swapChainVTable = nullptr;

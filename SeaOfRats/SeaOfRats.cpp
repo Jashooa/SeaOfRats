@@ -9,9 +9,9 @@
 #include "include/spdlog/sinks/basic_file_sink.h"
 
 #include "Config.h"
-#include "GUI.h"
 #include "Hooks/DirectX.h"
 #include "Hooks/Game.h"
+#include "Render/GUI.h"
 
 SeaOfRats::SeaOfRats(HMODULE module)
 {
@@ -45,7 +45,7 @@ static DWORD WINAPI Load()
     spdlog::info("Loading Hooks");
 
     config = std::make_unique<Config>();
-    gui = std::make_unique<GUI>();
+    gui = std::make_unique<Render::GUI::GUI>();
 
     spdlog::info("Hooking DirectX");
     Hooks::DirectX::Install();
