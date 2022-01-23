@@ -107,7 +107,7 @@ public:
 	unsigned char                                      UnknownData03 : 1;                                        // 0x007E(0x0001)
 	unsigned char                                      bReplicates : 1;                                          // 0x007E(0x0001) (Edit, BlueprintVisible, BlueprintReadOnly, DisableEditOnInstance)
 	unsigned char                                      UnknownData04[0x1];                                       // 0x007F(0x0001) MISSED OFFSET
-	struct FScriptMulticastSparseDelegate              OnPreNetOwnershipChange;                                  // 0x0080(0x0010) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnPreNetOwnershipChange;                                  // 0x0080(0x0001) (InstancedReference, BlueprintAssignable)
 	unsigned char                                      UnknownData05[0x1];                                       // 0x0081(0x0001) MISSED OFFSET
 	TEnumAsByte<ENetRole>                              RemoteRole;                                               // 0x0082(0x0001) (Net, ZeroConstructor, Transient, IsPlainOldData)
 	unsigned char                                      UnknownData06[0x5];                                       // 0x0083(0x0005) MISSED OFFSET
@@ -159,12 +159,12 @@ public:
 	TArray<struct FName>                               Tags;                                                     // 0x01D0(0x0010) (Edit, BlueprintVisible, ZeroConstructor)
 	struct FName                                       Feature;                                                  // 0x01E0(0x0008) (Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, DisableEditOnInstance, IsPlainOldData)
 	uint64_t                                           HiddenEditorViews;                                        // 0x01E8(0x0008) (ZeroConstructor, Transient, IsPlainOldData)
-	struct FScriptMulticastSparseDelegate              OnActorBeginOverlap;                                      // 0x01F0(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnActorEndOverlap;                                        // 0x01F1(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnActorHit;                                               // 0x01F2(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnDestroyed;                                              // 0x01F3(0x0010) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnActorBeginOverlap;                                      // 0x01F0(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnActorEndOverlap;                                        // 0x01F1(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnActorHit;                                               // 0x01F2(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnDestroyed;                                              // 0x01F3(0x0001) (InstancedReference, BlueprintAssignable)
 	unsigned char                                      UnknownData18[0x3C];                                      // 0x01F4(0x003C) MISSED OFFSET
-	struct FScriptMulticastSparseDelegate              OnEndPlay;                                                // 0x0230(0x0010) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnEndPlay;                                                // 0x0230(0x0001) (InstancedReference, BlueprintAssignable)
 	bool                                               bDoOverlapNotifiesOnLoad;                                 // 0x0231(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData19[0xF6];                                      // 0x0232(0x00F6) MISSED OFFSET
 	TArray<class UActorComponent*>                     BlueprintCreatedComponents;                               // 0x0328(0x0010) (ExportObject, ZeroConstructor)
@@ -1610,11 +1610,11 @@ public:
 	TEnumAsByte<EHasCustomNavigableGeometry>           bHasCustomNavigableGeometry;                              // 0x04A5(0x0001) (ZeroConstructor, IsPlainOldData)
 	TEnumAsByte<ECanBeCharacterBase>                   CanCharacterStepUpOn;                                     // 0x04A6(0x0001) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData12[0x49];                                      // 0x04A7(0x0049) MISSED OFFSET
-	struct FScriptMulticastSparseDelegate              OnComponentHit;                                           // 0x04F0(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnComponentBeginOverlap;                                  // 0x04F1(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnComponentEndOverlap;                                    // 0x04F2(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnComponentWake;                                          // 0x04F3(0x0010) (InstancedReference, BlueprintAssignable)
-	struct FScriptMulticastSparseDelegate              OnComponentSleep;                                         // 0x04F4(0x0010) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnComponentHit;                                           // 0x04F0(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnComponentBeginOverlap;                                  // 0x04F1(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnComponentEndOverlap;                                    // 0x04F2(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnComponentWake;                                          // 0x04F3(0x0001) (InstancedReference, BlueprintAssignable)
+	struct FScriptMulticastSparseDelegate              OnComponentSleep;                                         // 0x04F4(0x0001) (InstancedReference, BlueprintAssignable)
 	unsigned char                                      UnknownData13[0x33];                                      // 0x04F5(0x0033) MISSED OFFSET
 	class UPrimitiveComponent*                         LODParentPrimitive;                                       // 0x0528(0x0008) (ExportObject, ZeroConstructor, InstancedReference, DuplicateTransient, IsPlainOldData)
 	struct FPrimitiveComponentPostPhysicsTickFunction  PostPhysicsComponentTick;                                 // 0x0530(0x0050)

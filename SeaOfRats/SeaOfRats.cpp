@@ -44,7 +44,7 @@ static DWORD WINAPI Load()
 {
     spdlog::info("Loading Hooks");
 
-    config = std::make_unique<Config>();
+    //config = std::make_unique<Config>();
     gui = std::make_unique<Render::GUI::GUI>();
 
     spdlog::info("Hooking DirectX");

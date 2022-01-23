@@ -87,7 +87,7 @@
     <ClCompile Include="Utilities\Memory.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities\VMTHook.cpp">
+    <ClCompile Include="Utilities\Hooking.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Config.cpp">
@@ -434,7 +434,7 @@
     <ClInclude Include="Utilities\Memory.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\VMTHook.h">
+    <ClInclude Include="Utilities\Hooking.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Config.h">

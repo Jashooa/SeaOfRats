@@ -205,7 +205,7 @@
     <ClCompile Include="include\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Utilities\Memory.cpp" />
-    <ClCompile Include="Utilities\VMTHook.cpp" />
+    <ClCompile Include="Utilities\Hooking.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hacks\Aimbot.h" />
@@ -538,7 +538,7 @@
     <ClInclude Include="include\spdlog\version.h" />
     <ClInclude Include="include\XorStr\xorstr.h" />
     <ClInclude Include="Utilities\Memory.h" />
-    <ClInclude Include="Utilities\VMTHook.h" />
+    <ClInclude Include="Utilities\Hooking.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

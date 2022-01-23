@@ -826,6 +826,11 @@ namespace Hacks
             auto localPlayer = playerController->Pawn;
             auto barrel = reinterpret_cast<AStorageContainer*>(actor);
 
+            if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
+            {
+                return;
+            };
+
             // Check if on-screen
             auto location = actor->K2_GetActorLocation();
             FVector2D screen;
@@ -836,7 +841,7 @@ namespace Hacks
 
             // Get bounds
             FVector origin, extent;
-            actor->GetActorBounds(true, &origin, &extent);
+            actor->GetActorBounds(false, &origin, &extent);
 
             // Get top coordinates
             auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
@@ -845,6 +850,10 @@ namespace Hacks
             {
                 // Get name
                 std::wstring name = L"Barrel";
+                if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
+                {
+                    name = L"Water " + name;
+                }
 
                 int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
                 name += L" [" + std::to_wstring(distance) + L"m]";
@@ -852,31 +861,11 @@ namespace Hacks
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                 Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
-                /*auto storage = barrel->GetStorageComponent();
+                auto storageComponent = reinterpret_cast<UStorageContainerComponent*>(actor->GetComponentByClass(UStorageContainerComponent::StaticClass()));
 
-                if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
+                if (storageComponent)
                 {
-                    spdlog::info("ABuoyantStorageContainer {:p}", reinterpret_cast<void*>(actor));
-                    spdlog::info("StorageComponent {:p}", reinterpret_cast<void*>(storage));
-                }
-                else
-                {
-                    spdlog::info("StorageContainer {:p}", reinterpret_cast<void*>(actor));
-                    spdlog::info("StorageComponent {:p}", reinterpret_cast<void*>(storage));
-                }
-
-                if (storage && storage->IsA(UStorageContainerComponent::StaticClass()))
-                {
-                    if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
-                    {
-                        spdlog::info("ABuoyantStorageContainer {:p}", reinterpret_cast<void*>(actor));
-                        return;
-                    }
-                    else
-                    {
-                        spdlog::info("StorageContainer {:p}", reinterpret_cast<void*>(actor));
-                    }
-                    auto nodes = storage->ContainerNodes.ContainerNodes;
+                    auto nodes = storageComponent->ContainerNodes.ContainerNodes;
                     for (int32_t i = 0; i < nodes.Num(); ++i)
                     {
                         auto node = nodes[i];
@@ -891,10 +880,10 @@ namespace Hacks
                             itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
 
                             FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.0f * (i + 1));
-                            Drawing::DrawActorString(hud, itemName, itemNameScreen, Drawing::Colour::White);
+                            Render::Drawing::DrawActorString(hud, itemName, itemNameScreen, Render::Drawing::Colour::White);
                         }
                     }
-                }*/
+                }
             }
         }
 

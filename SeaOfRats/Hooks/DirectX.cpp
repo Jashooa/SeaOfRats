@@ -9,7 +9,7 @@
 #include "include/spdlog/spdlog.h"
 
 #include "Render/GUI.h"
-#include "Utilities/VMTHook.h"
+#include "Utilities/Hooking.h"
 
 static void** swapChainVTable = nullptr;
 using Present = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT);
@@ -19,6 +19,12 @@ const size_t presentIndex = 8;
 using ResizeBuffers = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT, UINT, DXGI_FORMAT, UINT);
 static ResizeBuffers OriginalResizeBuffers = nullptr;
 const size_t resizeBuffersIndex = 13;
+
+using SetCursorProto = HCURSOR(__stdcall*)(HCURSOR);
+static SetCursorProto OriginalSetCursor = nullptr;
+
+using SetCursorPosProto = BOOL(__stdcall*)(int, int);
+static SetCursorPosProto OriginalSetCursorPos = nullptr;
 
 static std::once_flag isInitialised;
 
@@ -100,12 +106,51 @@ void HookD3D11()
     }
 
     swapChainVTable = *reinterpret_cast<void***>(swapChain);
-    OriginalPresent = reinterpret_cast<Present>(Utilities::HookMethod(swapChainVTable, presentIndex, HookedPresent));
-    OriginalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, HookedResizeBuffers));
+    OriginalPresent = reinterpret_cast<Present>(Utilities::VMTHook(swapChainVTable, presentIndex, HookedPresent));
+    OriginalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::VMTHook(swapChainVTable, resizeBuffersIndex, HookedResizeBuffers));
 
     tempContext->Release();
     tempDevice->Release();
     swapChain->Release();
+}
+
+void UnhookD3D11()
+{
+    renderTargetView->Release();
+    Utilities::VMTHook(swapChainVTable, presentIndex, OriginalPresent);
+    Utilities::VMTHook(swapChainVTable, resizeBuffersIndex, OriginalResizeBuffers);
+}
+
+HCURSOR __stdcall HookedSetCursor(HCURSOR hCursor)
+{
+    if (gui->isOpen)
+    {
+        return 0;
+    }
+
+    return OriginalSetCursor(hCursor);
+}
+
+BOOL __stdcall HookedSetCursorPos(int X, int Y)
+{
+    if (gui->isOpen)
+    {
+        return FALSE;
+    }
+
+    return OriginalSetCursorPos(X, Y);
+}
+
+void HookMouse()
+{
+    OriginalSetCursor = reinterpret_cast<SetCursorProto>(Utilities::IATHook("USER32.dll", "SetCursor", HookedSetCursor));
+    OriginalSetCursorPos = reinterpret_cast<SetCursorPosProto>(Utilities::IATHook("USER32.dll", "SetCursorPos", HookedSetCursorPos));
+}
+
+void UnhookMouse()
+{
+    Utilities::IATHook("USER32.dll", "SetCursor", OriginalSetCursor);
+    Utilities::IATHook("USER32.dll", "SetCursorPos", OriginalSetCursorPos);
 }
 
 namespace Hooks
@@ -115,13 +160,13 @@ namespace Hooks
         void Install()
         {
             HookD3D11();
+            HookMouse();
         }
 
         void Uninstall()
         {
-            renderTargetView->Release();
-            Utilities::HookMethod(swapChainVTable, presentIndex, OriginalPresent);
-            Utilities::HookMethod(swapChainVTable, resizeBuffersIndex, OriginalResizeBuffers);
+            UnhookD3D11();
+            UnhookMouse();
         }
     }
 }

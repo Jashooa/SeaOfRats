@@ -4,36 +4,146 @@
 
 class Config
 {
+    enum class BoxType : int
+    {
+        None,
+        Box2D,
+        Box3D,
+    };
+
 public:
-    Config();
-    bool playerESP;
-    bool skeletonESP;
-    bool sharkESP;
-    bool krakenESP;
-    bool krakenTentacleESP;
-    bool animalESP;
-    bool mermaidESP;
-    bool shipESP;
-    bool farShipESP;
-    bool skeletonShipESP;
-    bool ghostShipESP;
-    bool rowboatESP;
-    bool itemESP;
-    bool barrelESP;
-    bool shipwreckESP;
-    bool stormESP;
-    bool eventESP;
-    bool mapESP;
-    bool debugESP;
+    struct
+    {
+        bool enable = false;
 
-    bool crosshairInfo;
-    bool playerListInfo;
-    bool compassInfo;
-    bool oxygenInfo;
-    bool waterLevelInfo;
-    bool anchorInfo;
+        struct
+        {
+            bool enable = false;
+            bool skeleton = false;
+            bool name = false;
+            bool health = false;
+            BoxType boxType = BoxType::None;
+        } player;
 
-    bool enabledAimbot;
+        struct
+        {
+            bool enable = false;
+            bool skeleton = false;
+            bool name = false;
+            bool health = false;
+            BoxType boxType = BoxType::None;
+        } skeleton;
+
+        struct
+        {
+            bool enable = false;
+            bool skeleton = false;
+            bool name = false;
+            bool health = false;
+            BoxType boxType = BoxType::None;
+        } ship;
+
+        struct
+        {
+            bool enable = false;
+            bool skeleton = false;
+            bool name = false;
+            bool health = false;
+            BoxType boxType = BoxType::None;
+        } rowboat;
+
+        struct
+        {
+            bool enable = false;
+        } barrel;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
+            BoxType boxType = BoxType::None;
+        } item;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
+            BoxType boxType = BoxType::None;
+        } animal;
+
+        struct
+        {
+            bool enable = false;
+            bool skeleton = false;
+            bool name = false;
+            bool health = false;
+        } shark;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
+        } mermaid;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
+        } shipwreck;
+
+        struct
+        {
+            bool enable = false;
+        } storm;
+
+        struct
+        {
+            bool enable = false;
+        } map;
+
+        struct
+        {
+            bool enable = false;
+        } debug;
+    } esp;
+
+    struct
+    {
+        bool enable = false;
+
+        bool crosshair = true;
+        bool playerList = false;
+        bool compass = false;
+        bool oxygen = false;
+        bool waterLevel = false;
+        bool anchor = false;
+    } info;
+
+    struct
+    {
+        bool enable = false;
+
+        struct
+        {
+            bool enable = false;
+        } player;
+
+        struct
+        {
+            bool enable = false;
+        } skeleton;
+
+        struct
+        {
+
+        } harpoon;
+
+        struct
+        {
+
+        } cannon;
+    } aim;
 };
 
-inline std::unique_ptr<Config> config;
+//inline std::unique_ptr<Config> config;
+inline Config config;

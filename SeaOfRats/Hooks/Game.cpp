@@ -11,7 +11,7 @@
 #include "Hacks/Hacks.h"
 #include "Render/Drawing.h"
 #include "Utilities/Memory.h"
-#include "Utilities/VMTHook.h"
+#include "Utilities/Hooking.h"
 
 using namespace SDK;
 
@@ -65,7 +65,7 @@ void HookGame()
     spdlog::info("Class Address: {:p}", reinterpret_cast<void*>(uclass));
 
     clientVTable = *reinterpret_cast<void***>(gameViewportClient);
-    OriginalPostRender = reinterpret_cast<PostRender>(Utilities::HookMethod(clientVTable, postRenderIndex, HookedPostRender));
+    OriginalPostRender = reinterpret_cast<PostRender>(Utilities::VMTHook(clientVTable, postRenderIndex, HookedPostRender));
 }
 
 namespace Hooks
@@ -80,7 +80,7 @@ namespace Hooks
         void Uninstall()
         {
             hookLock.lock();
-            Utilities::HookMethod(clientVTable, postRenderIndex, OriginalPostRender);
+            Utilities::VMTHook(clientVTable, postRenderIndex, OriginalPostRender);
             hookLock.unlock();
         }
     }

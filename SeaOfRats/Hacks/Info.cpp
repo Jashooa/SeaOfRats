@@ -189,32 +189,32 @@ namespace Hacks
 
         void Render(UGameViewportClient* client, AHUD* hud)
         {
-            if (config->crosshairInfo)
+            if (config.info.crosshair)
             {
                 DrawCrosshair(hud);
             }
 
-            if (config->playerListInfo)
+            if (config.info.playerList)
             {
                 DrawPlayerList(client, hud);
             }
 
-            if (config->compassInfo)
+            if (config.info.compass)
             {
                 DrawCompass(client, hud);
             }
 
-            if (config->oxygenInfo)
+            if (config.info.oxygen)
             {
                 DrawOxygen(client, hud);
             }
 
-            if (config->waterLevelInfo)
+            if (config.info.waterLevel)
             {
                 DrawWaterLevel(client, hud);
             }
 
-            if (config->anchorInfo)
+            if (config.info.anchor)
             {
                 DrawAnchor(client, hud);
             }

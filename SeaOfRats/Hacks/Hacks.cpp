@@ -94,7 +94,7 @@ namespace Hacks
 
                     if (actor->IsA(AStorageContainer::StaticClass()))
                     {
-                        if (config->barrelESP)
+                        if (config.esp.barrel.enable)
                         {
                             ESP::DrawBarrel(client, hud, actor);
                         }
@@ -103,7 +103,7 @@ namespace Hacks
                 }
             }
 
-            if (config->enabledAimbot)
+            if (config.aim.enable)
             {
                 Aimbot::Init(hud);
             }
@@ -126,9 +126,9 @@ namespace Hacks
 
                 if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
                 {
-                    if (config->playerESP)
+                    if (config.esp.player.enable)
                     {
-                        if (config->enabledAimbot)
+                        if (config.aim.player.enable)
                         {
                             Aimbot::SetNearest(client, actor);
                         }
@@ -139,9 +139,9 @@ namespace Hacks
 
                 if (actor->IsA(AAthenaAICharacter::StaticClass()))
                 {
-                    if (config->skeletonESP)
+                    if (config.esp.skeleton.enable)
                     {
-                        if (config->enabledAimbot)
+                        if (config.aim.skeleton.enable)
                         {
                             Aimbot::SetNearest(client, actor);
                         }
@@ -152,14 +152,14 @@ namespace Hacks
 
                 if (actor->IsA(ASharkPawn::StaticClass()))
                 {
-                    if (config->sharkESP)
+                    if (config.esp.shark.enable)
                     {
                         ESP::DrawShark(client, hud, actor);
                     }
                     continue;
                 }
 
-                if (actor->IsA(AKraken::StaticClass()))
+                /*if (actor->IsA(AKraken::StaticClass()))
                 {
                     if (config->krakenESP)
                     {
@@ -175,11 +175,11 @@ namespace Hacks
                         ESP::DrawKrakenTentacle(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
                 if (actor->IsA(AFauna::StaticClass()))
                 {
-                    if (config->animalESP)
+                    if (config.esp.animal.enable)
                     {
                         ESP::DrawAnimal(client, hud, actor);
                     }
@@ -188,7 +188,7 @@ namespace Hacks
 
                 if (actor->IsA(AMermaid::StaticClass()))
                 {
-                    if (config->mermaidESP)
+                    if (config.esp.mermaid.enable)
                     {
                         ESP::DrawMermaid(client, hud, actor);
                     }
@@ -197,7 +197,7 @@ namespace Hacks
 
                 if (actor->IsA(AShip::StaticClass()))
                 {
-                    if (config->shipESP)
+                    if (config.esp.ship.enable)
                     {
                         ESP::DrawShip(client, hud, actor);
                     }
@@ -206,25 +206,25 @@ namespace Hacks
 
                 if (actor->IsA(AShipNetProxy::StaticClass()))
                 {
-                    if (config->farShipESP)
+                    if (config.esp.ship.enable)
                     {
                         ESP::DrawShipFar(client, hud, actor);
                     }
                     continue;
                 }
 
-                if (actor->IsA(AAggressiveGhostShip::StaticClass()))
+                /*if (actor->IsA(AAggressiveGhostShip::StaticClass()))
                 {
                     if (config->ghostShipESP)
                     {
                         ESP::DrawGhostShip(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
                 if (actor->IsA(ARowboat::StaticClass()))
                 {
-                    if (config->rowboatESP)
+                    if (config.esp.rowboat.enable)
                     {
                         ESP::DrawRowboat(client, hud, actor);
                     }
@@ -233,7 +233,7 @@ namespace Hacks
 
                 if (actor->IsA(ABootyProxy::StaticClass()))
                 {
-                    if (config->itemESP)
+                    if (config.esp.item.enable)
                     {
                         ESP::DrawItem(client, hud, actor);
                     }
@@ -242,7 +242,7 @@ namespace Hacks
 
                 if (actor->IsA(AStorageContainer::StaticClass()))
                 {
-                    if (config->barrelESP)
+                    if (config.esp.barrel.enable)
                     {
                         ESP::DrawBarrel(client, hud, actor);
                     }
@@ -251,7 +251,7 @@ namespace Hacks
 
                 if (actor->IsA(AShipwreck::StaticClass()))
                 {
-                    if (config->shipwreckESP)
+                    if (config.esp.shipwreck.enable)
                     {
                         ESP::DrawShipwreck(client, hud, actor);
                     }
@@ -260,38 +260,38 @@ namespace Hacks
 
                 if (actor->IsA(AStorm::StaticClass()))
                 {
-                    if (config->stormESP)
+                    if (config.esp.storm.enable)
                     {
                         ESP::DrawStorm(client, hud, actor);
                     }
                     continue;
                 }
 
-                if (actor->IsA(AGameplayEventSignal::StaticClass()))
+                /*if (actor->IsA(AGameplayEventSignal::StaticClass()))
                 {
                     if (config->eventESP)
                     {
                         ESP::DrawEvent(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
                 if (actor->IsA(AMapTable::StaticClass()))
                 {
-                    if (config->mapESP)
+                    if (config.esp.map.enable)
                     {
                         ESP::DrawMap(client, hud, actor);
                     }
                     continue;
                 }
 
-                if (config->debugESP)
+                if (config.esp.debug.enable)
                 {
                     ESP::DrawDebug(client, hud, actor);
                 }
             }
 
-            if (config->enabledAimbot)
+            if (config.aim.enable)
             {
                 Aimbot::Aim(client, hud);
             }

@@ -410,6 +410,11 @@ struct FScriptMulticastDelegate
 	char UnknownData[0x10];
 };
 
+struct FScriptMulticastInlineDelegate : FScriptMulticastDelegate
+{
+
+};
+
 struct FScriptMulticastSparseDelegate
 {
 	unsigned char UnknownData[0x1];

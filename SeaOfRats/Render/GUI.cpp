@@ -40,7 +40,7 @@ bool shouldImGuiHandle(const UINT message)
 
 LRESULT CALLBACK hookWndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    ImGuiIO& io = ImGui::GetIO();
+    /*ImGuiIO& io = ImGui::GetIO();
     POINT mousePosition;
     GetCursorPos(&mousePosition);
     ScreenToClient(handle, &mousePosition);
@@ -54,8 +54,57 @@ LRESULT CALLBACK hookWndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lP
 
     if (gui->isOpen && shouldImGuiHandle(message))
     {
+        ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
+        LPWSTR win32_cursor = IDC_ARROW;
+        switch (imgui_cursor)
+        {
+            case ImGuiMouseCursor_Arrow:        win32_cursor = IDC_ARROW; break;
+            case ImGuiMouseCursor_TextInput:    win32_cursor = IDC_IBEAM; break;
+            case ImGuiMouseCursor_ResizeAll:    win32_cursor = IDC_SIZEALL; break;
+            case ImGuiMouseCursor_ResizeEW:     win32_cursor = IDC_SIZEWE; break;
+            case ImGuiMouseCursor_ResizeNS:     win32_cursor = IDC_SIZENS; break;
+            case ImGuiMouseCursor_ResizeNESW:   win32_cursor = IDC_SIZENESW; break;
+            case ImGuiMouseCursor_ResizeNWSE:   win32_cursor = IDC_SIZENWSE; break;
+            case ImGuiMouseCursor_Hand:         win32_cursor = IDC_HAND; break;
+            case ImGuiMouseCursor_NotAllowed:   win32_cursor = IDC_NO; break;
+        }
+        SetCursor(LoadCursorW(nullptr, win32_cursor));
+
         return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam);
     }
+
+    return CallWindowProc(originalWndProcHandler, handle, message, wParam, lParam);*/
+
+    if (message == WM_KEYUP && wParam == VK_INSERT)
+    {
+        gui->isOpen = !gui->isOpen;
+    }
+
+    if (gui->isOpen && ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))
+    {
+        return true;
+    }
+
+    if (gui->isOpen)
+    {
+        ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
+        LPWSTR win32_cursor = IDC_ARROW;
+        switch (imgui_cursor)
+        {
+            case ImGuiMouseCursor_Arrow:        win32_cursor = IDC_ARROW; break;
+            case ImGuiMouseCursor_TextInput:    win32_cursor = IDC_IBEAM; break;
+            case ImGuiMouseCursor_ResizeAll:    win32_cursor = IDC_SIZEALL; break;
+            case ImGuiMouseCursor_ResizeEW:     win32_cursor = IDC_SIZEWE; break;
+            case ImGuiMouseCursor_ResizeNS:     win32_cursor = IDC_SIZENS; break;
+            case ImGuiMouseCursor_ResizeNESW:   win32_cursor = IDC_SIZENESW; break;
+            case ImGuiMouseCursor_ResizeNWSE:   win32_cursor = IDC_SIZENWSE; break;
+            case ImGuiMouseCursor_Hand:         win32_cursor = IDC_HAND; break;
+            case ImGuiMouseCursor_NotAllowed:   win32_cursor = IDC_NO; break;
+        }
+        SetCursor(LoadCursor(nullptr, win32_cursor));
+
+        return DefWindowProc(handle, message, wParam, lParam);
+    }  
 
     return CallWindowProc(originalWndProcHandler, handle, message, wParam, lParam);
 }
@@ -121,51 +170,51 @@ namespace Render
                     if (ImGui::BeginTabItem("ESP"))
                     {
                         ImGui::Text("Entities");
-                        ImGui::Checkbox("Player", &config->playerESP);
-                        ImGui::Checkbox("Skeleton", &config->skeletonESP);
-                        ImGui::Checkbox("Shark", &config->sharkESP);
-                        ImGui::Checkbox("Kraken", &config->krakenESP);
-                        ImGui::Checkbox("Kraken Tentacle", &config->krakenTentacleESP);
-                        ImGui::Checkbox("Animal", &config->animalESP);
-                        ImGui::Checkbox("Mermaid", &config->mermaidESP);
+                        ImGui::Checkbox("Player", &config.esp.player.enable);
+                        ImGui::Checkbox("Skeleton", &config.esp.skeleton.enable);
+                        ImGui::Checkbox("Shark", &config.esp.shark.enable);
+                        //ImGui::Checkbox("Kraken", &config->krakenESP);
+                        //ImGui::Checkbox("Kraken Tentacle", &config->krakenTentacleESP);
+                        ImGui::Checkbox("Animal", &config.esp.animal.enable);
+                        ImGui::Checkbox("Mermaid", &config.esp.mermaid.enable);
 
                         ImGui::Separator();
 
                         ImGui::Text("Ships");
-                        ImGui::Checkbox("Ship", &config->shipESP);
-                        ImGui::Checkbox("Far Ship", &config->farShipESP);
-                        ImGui::Checkbox("Skeleton Ship", &config->skeletonShipESP);
-                        ImGui::Checkbox("Ghost Ship", &config->ghostShipESP);
-                        ImGui::Checkbox("Rowboat", &config->rowboatESP);
+                        ImGui::Checkbox("Ship", &config.esp.ship.enable);
+                        //ImGui::Checkbox("Far Ship", &config->farShipESP);
+                        //ImGui::Checkbox("Skeleton Ship", &config->skeletonShipESP);
+                        //ImGui::Checkbox("Ghost Ship", &config->ghostShipESP);
+                        ImGui::Checkbox("Rowboat", &config.esp.rowboat.enable);
 
                         ImGui::Separator();
 
                         ImGui::Text("Misc");
-                        ImGui::Checkbox("Item", &config->itemESP);
-                        ImGui::Checkbox("Barrel", &config->barrelESP);
-                        ImGui::Checkbox("Shipwreck", &config->shipwreckESP);
-                        ImGui::Checkbox("Storm", &config->stormESP);
-                        ImGui::Checkbox("Event", &config->eventESP);
-                        ImGui::Checkbox("Map", &config->mapESP);
-                        ImGui::Checkbox("Debug", &config->debugESP);
+                        ImGui::Checkbox("Item", &config.esp.item.enable);
+                        ImGui::Checkbox("Barrel", &config.esp.barrel.enable);
+                        ImGui::Checkbox("Shipwreck", &config.esp.shipwreck.enable);
+                        ImGui::Checkbox("Storm", &config.esp.storm.enable);
+                        //ImGui::Checkbox("Event", &config->eventESP);
+                        ImGui::Checkbox("Map", &config.esp.map.enable);
+                        ImGui::Checkbox("Debug", &config.esp.debug.enable);
 
                         ImGui::EndTabItem();
                     }
 
                     if (ImGui::BeginTabItem("Info"))
                     {
-                        ImGui::Checkbox("Crosshair", &config->crosshairInfo);
-                        ImGui::Checkbox("Playerlist", &config->playerListInfo);
-                        ImGui::Checkbox("Compass", &config->compassInfo);
-                        ImGui::Checkbox("Oxygen", &config->oxygenInfo);
-                        ImGui::Checkbox("Water Level", &config->waterLevelInfo);
-                        ImGui::Checkbox("Anchor", &config->anchorInfo);
+                        ImGui::Checkbox("Crosshair", &config.info.crosshair);
+                        ImGui::Checkbox("Playerlist", &config.info.playerList);
+                        ImGui::Checkbox("Compass", &config.info.compass);
+                        ImGui::Checkbox("Oxygen", &config.info.oxygen);
+                        ImGui::Checkbox("Water Level", &config.info.waterLevel);
+                        ImGui::Checkbox("Anchor", &config.info.anchor);
                         ImGui::EndTabItem();
                     }
 
                     if (ImGui::BeginTabItem("Aimbot"))
                     {
-                        ImGui::Checkbox("Enabled", &config->enabledAimbot);
+                        ImGui::Checkbox("Enabled", &config.aim.player.enable);
                         ImGui::EndTabItem();
                     }
                 }

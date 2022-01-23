@@ -220,6 +220,11 @@ public:
 		return ptr;
 	}
 
+	inline UObject* CreateDefaultObject()
+	{
+		return GetVFunction<UObject*(*)(UClass*)>(this, 91)(this);
+	}
+
 };
 
 
