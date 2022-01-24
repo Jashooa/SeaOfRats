@@ -36,8 +36,11 @@ void CreateRenderTarget(IDXGISwapChain* swapChain)
 {
     ID3D11Texture2D* renderTarget;
     swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&renderTarget));
-    device->CreateRenderTargetView(renderTarget, nullptr, &renderTargetView);
-    renderTarget->Release();
+    if (renderTarget != NULL)
+    {
+        device->CreateRenderTargetView(renderTarget, nullptr, &renderTargetView);
+        renderTarget->Release();
+    }
 }
 
 HRESULT __stdcall HookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)

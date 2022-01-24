@@ -186,6 +186,7 @@
     <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\Hacks.cpp" />
     <ClCompile Include="Hacks\Info.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\SDK\source\Athena_functions.cpp" />
     <ClCompile Include="include\SDK\source\Basic_functions.cpp" />
     <ClCompile Include="include\SDK\source\CoreUObject_functions.cpp" />
@@ -199,7 +200,6 @@
     <ClCompile Include="Hooks\DirectX.cpp" />
     <ClCompile Include="Hooks\Game.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_win32.cpp" />

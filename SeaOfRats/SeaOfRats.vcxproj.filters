@@ -69,9 +69,6 @@
     <ClCompile Include="include\imgui\imgui.cpp">
       <Filter>Source Files\include\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="include\imgui\imgui_demo.cpp">
-      <Filter>Source Files\include\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="include\imgui\imgui_draw.cpp">
       <Filter>Source Files\include\imgui</Filter>
     </ClCompile>
@@ -143,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="Render\GUI.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_tables.cpp">
+      <Filter>Source Files\include\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
