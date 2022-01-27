@@ -51,6 +51,21 @@ namespace SDK
 		return params.ReturnValue;
 	}
 
+	// Function Athena.AthenaPlayerState.GetPlayerActivity
+	TEnumAsByte<EPlayerActivityType> AAthenaPlayerState::GetPlayerActivity()
+	{
+		static auto fn = UObject::FindObject<UFunction>("Function Athena.AthenaPlayerState.GetPlayerActivity");
+
+		struct
+		{
+			TEnumAsByte<EPlayerActivityType> ReturnValue;
+		} params;
+
+		UObject::ProcessEvent(this, fn, &params);
+
+		return params.ReturnValue;
+	}
+
 	// Function Athena.Ship.GetInternalWater
 	class AShipInternalWater* AShip::GetInternalWater()
 	{

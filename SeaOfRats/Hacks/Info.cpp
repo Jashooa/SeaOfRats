@@ -78,9 +78,86 @@ namespace Hacks
                 positionY += 15.0f;
                 for (int32_t j = 0; j < players.Num(); ++j)
                 {
-                    auto player = players[j];
-                    std::wstring playerName = player->PlayerName.c_str();
-                    Render::Drawing::DrawInterfaceString(hud, playerName, FVector2D(positionX + 10.0f, positionY), Render::Drawing::Colour::White, false, false);
+                    auto player = reinterpret_cast<AAthenaPlayerState*>(players[j]);
+                    
+                    std::wstring activity = L"";
+                    switch (player->GetPlayerActivity())
+                    {
+                        case EPlayerActivityType::EPlayerActivityType__None:
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Bailing:
+                            activity = L"Bailing";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Cannon:
+                            activity = L"Cannon";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Cannon_END:
+                            activity = L"Cannon";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Capstan:
+                            activity = L"Capstan";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Capstan_END:
+                            activity = L"Capstan";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__CarryingBooty:
+                            activity = L"Carrying Booty";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__CarryingBooty_END:
+                            activity = L"Carrying Booty";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Dead:
+                            activity = L"Dead";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Dead_END:
+                            activity = L"Dead";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Digging:
+                            activity = L"Digging";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Dousing:
+                            activity = L"Dousing";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__EmptyingBucket:
+                            activity = L"Emptying Bucket";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Harpoon:
+                            activity = L"Harpoon";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Harpoon_END:
+                            activity = L"Harpoon";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__LoseHealth:
+                            activity = L"Losing Health";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Repairing:
+                            activity = L"Repairing";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Sails:
+                            activity = L"Sails";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Sails_END:
+                            activity = L"Sails";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__UndoingRepair:
+                            activity = L"Undoing Repair";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Wheel:
+                            activity = L"Wheel";
+                            break;
+                        case EPlayerActivityType::EPlayerActivityType__Wheel_END:
+                            activity = L"Wheel";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    std::wstring name = player->PlayerName.c_str();
+                    if (!activity.empty())
+                    {
+                        name = name + L" - " + activity;
+                    }
+                    Render::Drawing::DrawInterfaceString(hud, name, FVector2D(positionX + 10.0f, positionY), Render::Drawing::Colour::White, false, false);
                     positionY += 15.0f;
                 }
                 positionY += 10.0f;

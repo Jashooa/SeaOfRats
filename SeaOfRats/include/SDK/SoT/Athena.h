@@ -10,6 +10,35 @@
 
 namespace SDK
 {
+    // Enum Athena.EPlayerActivityType
+    enum class EPlayerActivityType : uint8_t
+    {
+        EPlayerActivityType__None = 0,
+        EPlayerActivityType__Bailing = 1,
+        EPlayerActivityType__Cannon = 2,
+        EPlayerActivityType__Cannon_END = 3,
+        EPlayerActivityType__Capstan = 4,
+        EPlayerActivityType__Capstan_END = 5,
+        EPlayerActivityType__CarryingBooty = 6,
+        EPlayerActivityType__CarryingBooty_END = 7,
+        EPlayerActivityType__Dead = 8,
+        EPlayerActivityType__Dead_END = 9,
+        EPlayerActivityType__Digging = 10,
+        EPlayerActivityType__Dousing = 11,
+        EPlayerActivityType__EmptyingBucket = 12,
+        EPlayerActivityType__Harpoon = 13,
+        EPlayerActivityType__Harpoon_END = 14,
+        EPlayerActivityType__LoseHealth = 15,
+        EPlayerActivityType__Repairing = 16,
+        EPlayerActivityType__Sails = 17,
+        EPlayerActivityType__Sails_END = 18,
+        EPlayerActivityType__UndoingRepair = 19,
+        EPlayerActivityType__Wheel = 20,
+        EPlayerActivityType__Wheel_END = 21,
+        EPlayerActivityType__MAX = 22,
+        EPlayerActivityType__EPlayerActivityType_MAX = 23
+    };
+
     // ScriptStruct Athena.CapstanNetState
     // 0x0008
     struct FCapstanNetState
@@ -154,6 +183,16 @@ namespace SDK
     {
     public:
         char pad_0x0250[0x0010];
+    };
+
+    // Class Athena.AthenaPlayerState
+    // 0x0390 (0x07E8 - 0x0458)
+    class AAthenaPlayerState : public APlayerState
+    {
+    public:
+        char pad_0x0458[0x0390];
+
+        TEnumAsByte<EPlayerActivityType> GetPlayerActivity();
     };
 
     // Class Athena.EntitlementDesc
