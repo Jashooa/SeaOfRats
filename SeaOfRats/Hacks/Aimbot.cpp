@@ -118,7 +118,7 @@ namespace Hacks
             auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
 
-            auto boneLocation = Bones::GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), Bones::EBones::TORSO__Skeleton);
+            auto boneLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
 
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screen))

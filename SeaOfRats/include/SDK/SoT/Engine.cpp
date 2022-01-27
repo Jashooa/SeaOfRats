@@ -340,26 +340,6 @@ namespace SDK
 		return params.ReturnValue;
 	}
 
-	// Function Engine.KismetMathLibrary.NormalizedDeltaRotator
-	struct FRotator UKismetMathLibrary::NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B)
-	{
-		static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.NormalizedDeltaRotator");
-
-		struct
-		{
-			struct FRotator                A;
-			struct FRotator                B;
-			struct FRotator                ReturnValue;
-		} params;
-		params.A = A;
-		params.B = B;
-
-		static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
-		UObject::ProcessEvent(defaultObj, fn, &params);
-
-		return params.ReturnValue;
-	}
-
 	// Function Engine.KismetMathLibrary.FindLookAtRotation
 	struct FRotator UKismetMathLibrary::FindLookAtRotation(const struct FVector& Start, const struct FVector& Target)
 	{
@@ -373,6 +353,44 @@ namespace SDK
 		} params;
 		params.Start = Start;
 		params.Target = Target;
+
+		static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
+		UObject::ProcessEvent(defaultObj, fn, &params);
+
+		return params.ReturnValue;
+	}
+
+	// Function Engine.KismetMathLibrary.GetForwardVector
+	struct FVector UKismetMathLibrary::GetForwardVector(const struct FRotator& InRot)
+	{
+		static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.GetForwardVector");
+
+		struct
+		{
+			struct FRotator                InRot;
+			struct FVector                 ReturnValue;
+		} params;
+		params.InRot = InRot;
+
+		static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
+		UObject::ProcessEvent(defaultObj, fn, &params);
+
+		return params.ReturnValue;
+	}
+
+	// Function Engine.KismetMathLibrary.NormalizedDeltaRotator
+	struct FRotator UKismetMathLibrary::NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B)
+	{
+		static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.NormalizedDeltaRotator");
+
+		struct
+		{
+			struct FRotator                A;
+			struct FRotator                B;
+			struct FRotator                ReturnValue;
+		} params;
+		params.A = A;
+		params.B = B;
 
 		static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
 		UObject::ProcessEvent(defaultObj, fn, &params);

@@ -273,6 +273,7 @@ namespace SDK
     {
     public:
         static struct FRotator FindLookAtRotation(const struct FVector& Start, const struct FVector& Target);
+        static struct FVector GetForwardVector(const struct FRotator& InRot);
         static struct FRotator NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B);
     };
 

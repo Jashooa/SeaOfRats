@@ -17,55 +17,6 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawBones(UGameViewportClient* client, AHUD* hud, AActor* actor)
-        {
-            static const auto left_arm = { Bones::EBones::LF_FINGB__Skeleton, Bones::EBones::LF_ELBOW__Skeleton, Bones::EBones::LF_TWIST_SHOULDER__Skeleton, Bones::EBones::NECK1__Skeleton };
-            static const auto right_arm = { Bones::EBones::RT_FINGB__Skeleton, Bones::EBones::RT_ELBOW__Skeleton, Bones::EBones::RT_TWIST_SHOULDER__Skeleton, Bones::EBones::NECK1__Skeleton };
-            static const auto left_leg = { Bones::EBones::LF_ANKLE__Skeleton, Bones::EBones::LF_KNEE__Skeleton, Bones::EBones::LF_TWIST_HIP__Skeleton, Bones::EBones::WAIST__Skeleton };
-            static const auto right_leg = { Bones::EBones::RT_ANKLE__Skeleton, Bones::EBones::RT_KNEE__Skeleton, Bones::EBones::RT_TWIST_HIP__Skeleton, Bones::EBones::WAIST__Skeleton };
-            static const auto spine = { Bones::EBones::WAIST__Skeleton, Bones::EBones::TORSO__Skeleton, Bones::EBones::CHEST__Skeleton, Bones::EBones::NECK1__Skeleton, Bones::EBones::HEAD__Skeleton };
-            static const auto skeleton = { left_arm, right_arm, left_leg, right_leg, spine };
-
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
-            auto character = reinterpret_cast<ACharacter*>(actor);
-
-            auto mesh = character->Mesh;
-            if (mesh)
-            {
-                if (!mesh->IsVisible())
-                {
-                    return;
-                }
-
-                FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
-                auto currentIndex = mesh->CurrentReadSpaceBases;
-                for (const auto bones : skeleton)
-                {
-                    FVector2D previousBone;
-
-                    for (const auto bone : bones)
-                    {
-                        FTransform boneTransform = mesh->SpaceBasesArray[currentIndex][static_cast<int>(bone)];
-                        FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
-                        FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
-                        FVector boneLocation = worldBoneMatrix.GetOrigin();
-
-                        FVector2D screenBone;
-                        if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screenBone))
-                        {
-                            continue;
-                        }
-
-                        if (previousBone.X != 0.0f && previousBone.Y != 0.0f)
-                        {
-                            hud->Canvas->K2_DrawLine(previousBone, screenBone, 1.0f, Render::Drawing::Colour::White);
-                        }
-                        previousBone = screenBone;
-                    }
-                }
-            }
-        }
-
         void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
         {
             auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
@@ -194,8 +145,8 @@ namespace Hacks
                 return;
             }
             //Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
-            Render::Drawing::DrawBoundingRect(client, hud, actor, Render::Drawing::Colour::White);
-            //DrawBones(client, hud, actor);
+            //Render::Drawing::DrawBoundingRect(client, hud, actor, Render::Drawing::Colour::White);
+            DrawBones(client, hud, actor);
 
             // Get bounds
             FVector origin, extent;
@@ -596,7 +547,7 @@ namespace Hacks
                 return;
             }
 
-            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
+            //Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
 
             std::string actorName = actor->GetName();
             std::wstring name = L"Ship";
