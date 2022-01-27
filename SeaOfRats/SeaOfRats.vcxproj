@@ -334,6 +334,7 @@
     <ClInclude Include="include\spdlog\spdlog.h" />
     <ClInclude Include="include\spdlog\tweakme.h" />
     <ClInclude Include="include\spdlog\version.h" />
+    <ClInclude Include="Utilities\General.h" />
     <ClInclude Include="Utilities\Memory.h" />
     <ClInclude Include="Utilities\Hooking.h" />
   </ItemGroup>

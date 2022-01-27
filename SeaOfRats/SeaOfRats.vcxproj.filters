@@ -539,5 +539,8 @@
     <ClInclude Include="include\SDK\SoT\AthenaAI.h">
       <Filter>Header Files\include\SDK\SoT</Filter>
     </ClInclude>
+    <ClInclude Include="Utilities\General.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

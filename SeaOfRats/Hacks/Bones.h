@@ -1,9 +1,10 @@
 #pragma once
 
 #include <list>
-#include <utility>
 
 #include "include/SDK/SDK.h"
+
+#include "Utilities/General.h"
 
 using namespace SDK;
 
@@ -223,74 +224,68 @@ namespace Hacks
         RT_IK_FOOT__Skeleton = 82,
     };
 
-    template <typename Enum>
-    constexpr std::enable_if_t<std::is_enum<Enum>::value, std::underlying_type_t<Enum>> to_underlying(const Enum value)
-    {
-        return static_cast<std::underlying_type_t<Enum>>(value);
-    }
-
     const std::list<uint8_t> player_left_arm = {
-        to_underlying(EBones::LF_FINGB__Skeleton),
-        to_underlying(EBones::LF_ELBOW__Skeleton),
-        to_underlying(EBones::LF_TWIST_SHOULDER__Skeleton),
-        to_underlying(EBones::NECK1__Skeleton)
+        Utilities::to_underlying(EBones::LF_FINGB__Skeleton),
+        Utilities::to_underlying(EBones::LF_ELBOW__Skeleton),
+        Utilities::to_underlying(EBones::LF_TWIST_SHOULDER__Skeleton),
+        Utilities::to_underlying(EBones::NECK1__Skeleton)
     };
     const std::list<uint8_t> player_right_arm = {
-        to_underlying(EBones::RT_FINGB__Skeleton),
-        to_underlying(EBones::RT_ELBOW__Skeleton),
-        to_underlying(EBones::RT_TWIST_SHOULDER__Skeleton),
-        to_underlying(EBones::NECK1__Skeleton)
+        Utilities::to_underlying(EBones::RT_FINGB__Skeleton),
+        Utilities::to_underlying(EBones::RT_ELBOW__Skeleton),
+        Utilities::to_underlying(EBones::RT_TWIST_SHOULDER__Skeleton),
+        Utilities::to_underlying(EBones::NECK1__Skeleton)
     };
     const std::list<uint8_t> player_left_leg = {
-        to_underlying(EBones::LF_ANKLE__Skeleton),
-        to_underlying(EBones::LF_KNEE__Skeleton),
-        to_underlying(EBones::LF_TWIST_HIP__Skeleton),
-        to_underlying(EBones::WAIST__Skeleton)
+        Utilities::to_underlying(EBones::LF_ANKLE__Skeleton),
+        Utilities::to_underlying(EBones::LF_KNEE__Skeleton),
+        Utilities::to_underlying(EBones::LF_TWIST_HIP__Skeleton),
+        Utilities::to_underlying(EBones::WAIST__Skeleton)
     };
     const std::list<uint8_t> player_right_leg = {
-        to_underlying(EBones::RT_ANKLE__Skeleton),
-        to_underlying(EBones::RT_KNEE__Skeleton),
-        to_underlying(EBones::RT_TWIST_HIP__Skeleton),
-        to_underlying(EBones::WAIST__Skeleton)
+        Utilities::to_underlying(EBones::RT_ANKLE__Skeleton),
+        Utilities::to_underlying(EBones::RT_KNEE__Skeleton),
+        Utilities::to_underlying(EBones::RT_TWIST_HIP__Skeleton),
+        Utilities::to_underlying(EBones::WAIST__Skeleton)
     };
     const std::list<uint8_t> player_spine = {
-        to_underlying(EBones::WAIST__Skeleton),
-        to_underlying(EBones::TORSO__Skeleton),
-        to_underlying(EBones::CHEST__Skeleton),
-        to_underlying(EBones::NECK1__Skeleton),
-        to_underlying(EBones::HEAD__Skeleton)
+        Utilities::to_underlying(EBones::WAIST__Skeleton),
+        Utilities::to_underlying(EBones::TORSO__Skeleton),
+        Utilities::to_underlying(EBones::CHEST__Skeleton),
+        Utilities::to_underlying(EBones::NECK1__Skeleton),
+        Utilities::to_underlying(EBones::HEAD__Skeleton)
     };
 
     const std::list<uint8_t> ai_left_arm = {
-        to_underlying(EBonesSkeleton::LF_FINGB__Skeleton),
-        to_underlying(EBonesSkeleton::LF_ELBOW__Skeleton),
-        to_underlying(EBonesSkeleton::LF_TWIST_SHOULDER__Skeleton),
-        to_underlying(EBonesSkeleton::NECK1__Skeleton)
+        Utilities::to_underlying(EBonesSkeleton::LF_FINGB__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::LF_ELBOW__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::LF_TWIST_SHOULDER__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::NECK1__Skeleton)
     };
     const std::list<uint8_t> ai_right_arm = {
-        to_underlying(EBonesSkeleton::RT_FINGB__Skeleton),
-        to_underlying(EBonesSkeleton::RT_ELBOW__Skeleton),
-        to_underlying(EBonesSkeleton::RT_TWIST_SHOULDER__Skeleton),
-        to_underlying(EBonesSkeleton::NECK1__Skeleton)
+        Utilities::to_underlying(EBonesSkeleton::RT_FINGB__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::RT_ELBOW__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::RT_TWIST_SHOULDER__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::NECK1__Skeleton)
     };
     const std::list<uint8_t> ai_left_leg = {
-        to_underlying(EBonesSkeleton::LF_ANKLE__Skeleton),
-        to_underlying(EBonesSkeleton::LF_KNEE__Skeleton),
-        to_underlying(EBonesSkeleton::LF_TWIST_HIP__Skeleton),
-        to_underlying(EBonesSkeleton::WAIST__Skeleton)
+        Utilities::to_underlying(EBonesSkeleton::LF_ANKLE__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::LF_KNEE__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::LF_TWIST_HIP__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::WAIST__Skeleton)
     };
     const std::list<uint8_t> ai_right_leg = {
-        to_underlying(EBonesSkeleton::RT_ANKLE__Skeleton),
-        to_underlying(EBonesSkeleton::RT_KNEE__Skeleton),
-        to_underlying(EBonesSkeleton::RT_TWIST_HIP__Skeleton),
-        to_underlying(EBonesSkeleton::WAIST__Skeleton)
+        Utilities::to_underlying(EBonesSkeleton::RT_ANKLE__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::RT_KNEE__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::RT_TWIST_HIP__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::WAIST__Skeleton)
     };
     const std::list<uint8_t> ai_spine = {
-        to_underlying(EBonesSkeleton::WAIST__Skeleton),
-        to_underlying(EBonesSkeleton::TORSO__Skeleton),
-        to_underlying(EBonesSkeleton::CHEST__Skeleton),
-        to_underlying(EBonesSkeleton::NECK1__Skeleton),
-        to_underlying(EBonesSkeleton::HEAD__Skeleton)
+        Utilities::to_underlying(EBonesSkeleton::WAIST__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::TORSO__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::CHEST__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::NECK1__Skeleton),
+        Utilities::to_underlying(EBonesSkeleton::HEAD__Skeleton)
     };
 
     static const std::list<std::list<uint8_t>> player_skeleton = {
