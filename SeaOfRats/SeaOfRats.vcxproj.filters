@@ -46,9 +46,6 @@
     <Filter Include="Source Files\include\SDK">
       <UniqueIdentifier>{670bee64-0b5d-46ac-bb02-9c878b47ae30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\include\XorStr">
-      <UniqueIdentifier>{56b16af8-8f1d-4185-9cc7-512b25fa4d16}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Hooks">
       <UniqueIdentifier>{023acc98-8116-43f0-b697-f8d1117eca21}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,18 @@
     </Filter>
     <Filter Include="Header Files\Render">
       <UniqueIdentifier>{7314fe71-e553-4160-95e7-188ae421c073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\include\SDK\SoT">
+      <UniqueIdentifier>{becc6dae-c565-40be-a662-ac13fc5939cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\include\SDK\UE4">
+      <UniqueIdentifier>{c08e22d0-681a-4aed-bf94-9f218d545c18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include\SDK\UE4">
+      <UniqueIdentifier>{e355ef53-c5da-4e94-a417-e3a4b1cbfb81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include\SDK\SoT">
+      <UniqueIdentifier>{e6c7b811-767d-4b26-b9ef-73dae0bbeb0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,27 +123,6 @@
     <ClCompile Include="Hacks\Bones.cpp">
       <Filter>Source Files\Hacks</Filter>
     </ClCompile>
-    <ClCompile Include="include\SDK\source\Athena_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="include\SDK\source\Basic_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="include\SDK\source\CoreUObject_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="include\SDK\source\DebugMenu_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="include\SDK\source\Engine_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="include\SDK\source\Maths_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="include\SDK\source\UMG_functions.cpp">
-      <Filter>Source Files\include\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="Render\Drawing.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -143,6 +131,24 @@
     </ClCompile>
     <ClCompile Include="include\imgui\imgui_tables.cpp">
       <Filter>Source Files\include\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\SDK\UE4\Basic.cpp">
+      <Filter>Source Files\include\SDK\UE4</Filter>
+    </ClCompile>
+    <ClCompile Include="include\SDK\UE4\CoreUObject.cpp">
+      <Filter>Source Files\include\SDK\UE4</Filter>
+    </ClCompile>
+    <ClCompile Include="include\SDK\UE4\UE4.cpp">
+      <Filter>Source Files\include\SDK\UE4</Filter>
+    </ClCompile>
+    <ClCompile Include="include\SDK\SoT\Athena.cpp">
+      <Filter>Source Files\include\SDK\SoT</Filter>
+    </ClCompile>
+    <ClCompile Include="include\SDK\SoT\Engine.cpp">
+      <Filter>Source Files\include\SDK\SoT</Filter>
+    </ClCompile>
+    <ClCompile Include="include\SDK\SoT\Maths.cpp">
+      <Filter>Source Files\include\SDK\SoT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -446,9 +452,6 @@
     <ClInclude Include="Hacks\Info.h">
       <Filter>Header Files\Hacks</Filter>
     </ClInclude>
-    <ClInclude Include="include\XorStr\xorstr.h">
-      <Filter>Header Files\include\XorStr</Filter>
-    </ClInclude>
     <ClInclude Include="SeaOfRats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -467,677 +470,74 @@
     <ClInclude Include="Hacks\Bones.h">
       <Filter>Header Files\Hacks</Filter>
     </ClInclude>
-    <ClInclude Include="include\SDK\SDK.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ActionStateMachine_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ActionStateMachine_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ActionStateMachine_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AIModule_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AIModule_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AIModule_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AIShips_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AIShips_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AIShips_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Animation_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Animation_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Animation_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Athena_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Athena_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Athena_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaAI_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaAI_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaAI_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaAIAbilities_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaAIAbilities_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaAIAbilities_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaEngine_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaEngine_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaEngine_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaInput_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaInput_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaInput_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaInputMkII_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaInputMkII_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaInputMkII_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaProjectiles_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaProjectiles_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaProjectiles_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaRigging_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaRigging_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaRigging_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaServerMigration_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaServerMigration_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaSocketLookup_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\AthenaSocketLookup_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Basic_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CoherentUIGTPlugin_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CommodityDemandFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CommodityDemandFramework_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CommodityDemandFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Commons.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Cooking_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Cooking_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Cooking_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CoreUObject_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CoreUObject_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CoreUObject_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CrewOwnershipTracking_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CrewOwnershipTracking_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CustomDeath_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\CustomDeath_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\DebugMenu_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\DebugMenu_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\DeliverableFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\DeliverableFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmissaryFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmissaryFramework_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmissaryFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmissaryLevel_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmissaryLevel_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmissaryLevel_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmotingFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmotingFramework_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EmotingFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EnchantedCompass_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EnchantedCompass_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\EnchantedCompass_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Engine_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Engine_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Engine_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Fire_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Fire_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Fire_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayDebugger_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayDebugger_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayDebugger_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayTags_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayTags_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayTags_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayTasks_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayTasks_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameplayTasks_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameService_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\GameService_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\InputCore_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\InputCore_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\InputCore_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Interaction_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Interaction_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Interaction_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ItemQuality_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ItemQuality_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ItemQuality_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\JsonUtilities_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\JsonUtilities_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\JsonUtilities_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Kraken_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Kraken_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Kraken_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LevelSequence_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LevelSequence_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LostShipmentsClueFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LostShipmentsClueFramework_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LostShipmentsClueFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LostShipmentsClueVariants_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LostShipmentsClueVariants_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\LostShipmentsClueVariants_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Maths_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Maths_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Maths_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MerchantContracts_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MerchantContracts_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MovieScene_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MovieScene_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MovieScene_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MovieSceneTracks_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MovieSceneTracks_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MovieSceneTracks_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MysteriousNotes_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\MysteriousNotes_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\NaturalDisasters_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\NaturalDisasters_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\NaturalDisasters_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\NetworkRegions_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\NetworkRegions_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\NetworkRegions_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ObjectMessaging_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ObjectMessaging_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\OnlineSubsystem_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\OnlineSubsystem_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\OnlineSubsystem_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Pets_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Pets_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Pets_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PirateGenerator_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PirateGenerator_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PirateGenerator_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PositionalVoice_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PositionalVoice_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PositionalVoice_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PrioritisedPrompts_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PrioritisedPrompts_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\PrioritisedPrompts_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RareAudio_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RareAudio_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RareAudio_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RareEngine_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RareEngine_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RareEngine_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RemoteActorDestruction_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\RemoteActorDestruction_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Repair_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Repair_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Repair_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ResourceContentionFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ResourceContentionFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Retraction_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Retraction_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Reviving_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Reviving_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Reviving_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\SeasonProgressionFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\SeasonProgressionFramework_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\SeasonProgressionFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Sessions_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Sessions_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Sessions_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ShipDamage_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ShipDamage_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ShipDamage_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ShortRangeMarkerFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\ShortRangeMarkerFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Slate_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Slate_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Slate_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\SlateCore_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\SlateCore_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\SlateCore_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\StatusEffects_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\StatusEffects_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\StatusEffects_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\StudiosAutomation_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\StudiosAutomation_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\StudiosAutomation_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\TaleMaps_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\TaleMaps_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Tales_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Tales_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Tales_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Tethering_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Tethering_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Tethering_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Time_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Time_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Time_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\TradeRouteFramework_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\TradeRouteFramework_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\TradeRouteFramework_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\UMG_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\UMG_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\UMG_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Water_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Water_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Water_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Watercrafts_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Watercrafts_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Watercrafts_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\WaterSlide_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\WaterSlide_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Wind_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\Wind_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\WwiseAudio_classes.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\WwiseAudio_enums.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\include\WwiseAudio_structs.h">
-      <Filter>Header Files\include\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="Render\Drawing.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Render\GUI.h">
       <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SDK.h">
+      <Filter>Header Files\include\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\LinearColor.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Math.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Quat.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\UE4.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Vector.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Vector2D.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Rotator.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Transform.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Matrix.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\SoT.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Basic.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\CoreUObject.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\Engine.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\Athena.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\GameService.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\Sessions.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Guid.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\Maths.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\InputCore.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\AthenaAI.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

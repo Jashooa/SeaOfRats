@@ -23,7 +23,7 @@ namespace Hacks
                 FTransform boneTransform = mesh->SpaceBasesArray[currentIndex][static_cast<int>(bone)];
                 FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
                 FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
-                boneLocation = worldBoneMatrix.Translation();
+                boneLocation = worldBoneMatrix.GetOrigin();
 
                 return boneLocation;
             }

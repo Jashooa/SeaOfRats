@@ -55,7 +55,7 @@ namespace Hacks
             float positionY = 120.0f;
             for (int32_t i = 0; i < crews.Num(); ++i)
             {
-                auto crew = crews[i];
+                FCrew crew = crews[i];
                 auto players = crew.Players;
                 std::wstring shipType;
                 switch (crew.CrewSessionTemplate.MaxMatchmakingPlayers)
@@ -130,10 +130,15 @@ namespace Hacks
         {
             auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
+            if (!localPlayer->IsInWater())
+            {
+                return;
+            }
+
             auto drowningComponent = localPlayer->DrowningComponent;
             if (drowningComponent)
             {
-                int oxygenLevel = static_cast<int>(drowningComponent->OxygenLevel * 100.0f);
+                int oxygenLevel = static_cast<int>(drowningComponent->GetOxygenLevel() * 100.0f);
                 if (oxygenLevel < 100)
                 {
                     float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;

@@ -125,12 +125,12 @@ public:
 
         struct
         {
-            bool enable = false;
+            bool enable = true;
         } player;
 
         struct
         {
-            bool enable = false;
+            bool enable = true;
         } skeleton;
 
         struct

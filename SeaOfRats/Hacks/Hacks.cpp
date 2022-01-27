@@ -79,7 +79,7 @@ namespace Hacks
 
             auto levels = world->Levels;
 
-            for (int32_t i = 6; i < levels.Num(); ++i)
+            /*for (int32_t i = 6; i < levels.Num(); ++i)
             {
                 auto actors = levels[i]->AActors;
 
@@ -101,11 +101,11 @@ namespace Hacks
                         continue;
                     }
                 }
-            }
+            }*/
 
             if (config.aim.enable)
             {
-                Aimbot::Init(hud);
+                Aimbot::Init(client);
             }
 
             auto actors = level->AActors;
@@ -130,7 +130,7 @@ namespace Hacks
                     {
                         if (config.aim.player.enable)
                         {
-                            Aimbot::SetNearest(client, actor);
+                            Aimbot::CalculateAim(client, actor);
                         }
                         ESP::DrawPlayer(client, hud, actor);
                     }
@@ -143,21 +143,21 @@ namespace Hacks
                     {
                         if (config.aim.skeleton.enable)
                         {
-                            Aimbot::SetNearest(client, actor);
+                            Aimbot::CalculateAim(client, actor);
                         }
                         ESP::DrawSkeleton(client, hud, actor);
                     }
                     continue;
                 }
 
-                if (actor->IsA(ASharkPawn::StaticClass()))
+                /*if (actor->IsA(ASharkPawn::StaticClass()))
                 {
                     if (config.esp.shark.enable)
                     {
                         ESP::DrawShark(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
                 /*if (actor->IsA(AKraken::StaticClass()))
                 {
@@ -222,14 +222,14 @@ namespace Hacks
                     continue;
                 }*/
 
-                if (actor->IsA(ARowboat::StaticClass()))
+                /*if (actor->IsA(ARowboat::StaticClass()))
                 {
                     if (config.esp.rowboat.enable)
                     {
                         ESP::DrawRowboat(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
                 if (actor->IsA(ABootyProxy::StaticClass()))
                 {
@@ -240,32 +240,32 @@ namespace Hacks
                     continue;
                 }
 
-                if (actor->IsA(AStorageContainer::StaticClass()))
+                /*if (actor->IsA(AStorageContainer::StaticClass()))
                 {
                     if (config.esp.barrel.enable)
                     {
                         ESP::DrawBarrel(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
-                if (actor->IsA(AShipwreck::StaticClass()))
+                /*if (actor->IsA(AShipwreck::StaticClass()))
                 {
                     if (config.esp.shipwreck.enable)
                     {
                         ESP::DrawShipwreck(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
-                if (actor->IsA(AStorm::StaticClass()))
+                /*if (actor->IsA(AStorm::StaticClass()))
                 {
                     if (config.esp.storm.enable)
                     {
                         ESP::DrawStorm(client, hud, actor);
                     }
                     continue;
-                }
+                }*/
 
                 /*if (actor->IsA(AGameplayEventSignal::StaticClass()))
                 {

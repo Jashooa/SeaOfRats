@@ -1,5 +1,7 @@
 #include "Aimbot.h"
 
+#include <float.h>
+
 #include "include/SDK/SDK.h"
 
 #include "Bones.h"
@@ -11,19 +13,51 @@ AActor* nearestActor = nullptr;
 float nearestDistance = FLT_MAX;
 FVector2D centerScreen;
 
+struct
+{
+    AActor* target = nullptr;
+    FVector location;
+    FRotator delta;
+    float best = FLT_MAX;
+} bestAim;
+
+FVector cameraLocation;
+FRotator cameraRotation;
+AProjectileWeapon* playerWeapon = nullptr;
+
 namespace Hacks
 {
     namespace Aimbot
     {
-        void Init(AHUD* hud)
+        void Init(UGameViewportClient* client)
         {
-            nearestActor = nullptr;
-            nearestDistance = FLT_MAX;
-            centerScreen = FVector2D(hud->Canvas->ClipX * 0.5f, hud->Canvas->ClipY * 0.5f);
+            bestAim.target = nullptr;
+            bestAim.best = FLT_MAX;
+            playerWeapon = nullptr;
+
+            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto localPlayer = playerController->Pawn;
+            cameraLocation = playerController->PlayerCameraManager->GetCameraLocation();
+            cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
+
+            auto wieldedItemComponent = reinterpret_cast<AAthenaCharacter*>(localPlayer)->WieldedItemComponent;
+            auto wieldedItem = wieldedItemComponent->CurrentlyWieldedItem;
+            if (wieldedItem)
+            {
+                if (wieldedItem->IsA(AProjectileWeapon::StaticClass()))
+                {
+                    playerWeapon = reinterpret_cast<AProjectileWeapon*>(wieldedItem);
+                }
+            }
         }
 
-        void SetNearest(UGameViewportClient* client, AActor* actor)
+        void CalculateAim(UGameViewportClient* client, AActor* actor)
         {
+            if (!playerWeapon)
+            {
+                return;
+            }
+
             auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
 
@@ -39,6 +73,7 @@ namespace Hacks
                 return;
             }
 
+            // Check if on screen
             auto location = actor->K2_GetActorLocation();
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
@@ -46,49 +81,36 @@ namespace Hacks
                 return;
             }
 
-            if (!playerController->LineOfSightTo(actor, FVector(0.0f, 0.0f, 0.0f), false))
+            // Check if out of range
+            auto distance = localPlayer->GetDistanceTo(actor);
+            if (distance > playerWeapon->WeaponParameters.ProjectileMaximumRange)
             {
                 return;
             }
 
-            auto centerDistance = UKismetMathLibrary::VSize2D(centerScreen - screen);
-            if (centerDistance < nearestDistance)
+            // Check if have line of sight
+            if (!playerController->LineOfSightTo(actor, cameraLocation, false))
             {
-                nearestDistance = centerDistance;
-                nearestActor = actor;
-            }
-        }
-
-        bool ValidateAngles(APlayerCameraManager* cameraManager, FRotator* rotator)
-        {
-            if (rotator->Pitch < cameraManager->ViewPitchMin || rotator->Pitch > cameraManager->ViewPitchMax)
-            {
-                return false;
+                return;
             }
 
-            if (rotator->Pitch < 0.0f)
+            FRotator rotationDelta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, location), cameraRotation);
+            float absYaw = abs(rotationDelta.Yaw);
+            float absPitch = abs(rotationDelta.Pitch);
+            float sum = absYaw + absPitch;
+
+            if (sum < bestAim.best)
             {
-                rotator->Pitch += 360.0f;
+                bestAim.target = actor;
+                bestAim.location = location;
+                bestAim.delta = rotationDelta;
+                bestAim.best = sum;
             }
-
-            if (rotator->Yaw < 0.0f)
-            {
-                rotator->Yaw += 360.0f;
-            }
-
-            if (rotator->Yaw < cameraManager->ViewYawMin || rotator->Yaw > cameraManager->ViewYawMax)
-            {
-                return false;
-            }
-
-            rotator->Roll = 0.0f;
-
-            return true;
         }
 
         void Aim(UGameViewportClient* client, AHUD* hud)
         {
-            if (!nearestActor)
+            if (!bestAim.target)
             {
                 return;
             }
@@ -96,53 +118,63 @@ namespace Hacks
             auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
 
-            auto location = Bones::GetBoneLocation(reinterpret_cast<ACharacter*>(nearestActor), Bones::EBones::HEAD__Skeleton);
+            auto boneLocation = Bones::GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), Bones::EBones::TORSO__Skeleton);
+
             FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screen))
             {
                 return;
             }
+            bestAim.location = boneLocation;
 
             Render::Drawing::DrawActorString(hud, L"x", screen, Render::Drawing::Colour::Red);
 
-            auto cameraManager = playerController->PlayerCameraManager;
-            if (cameraManager)
+            FVector localVelocity = localPlayer->GetVelocity();
+            if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
             {
-                auto controlRotation = playerController->GetControlRotation();
-                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(controlRotation.Pitch), FVector2D(200.0f, 200.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(controlRotation.Yaw), FVector2D(200.0f, 215.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(controlRotation.Roll), FVector2D(200.0f, 230.0f), Render::Drawing::Colour::Red, false);
+                localVelocity += localShip->GetVelocity();
+            }
 
-                auto cameraRotation = cameraManager->GetCameraRotation();
-                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(cameraRotation.Pitch), FVector2D(400.0f, 200.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(cameraRotation.Yaw), FVector2D(400.0f, 215.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(cameraRotation.Roll), FVector2D(400.0f, 230.0f), Render::Drawing::Colour::Red, false);
+            FVector targetVelocity = bestAim.target->GetVelocity();
+            if (const auto targetShip = reinterpret_cast<AAthenaCharacter*>(bestAim.target)->GetCurrentShip())
+            {
+                targetVelocity += targetShip->GetVelocity();
+            }
 
-                auto rotation = UKismetMathLibrary::FindLookAtRotation(cameraManager->CameraCache.POV.Location, location);
-                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(rotation.Pitch), FVector2D(600.0f, 200.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(rotation.Yaw), FVector2D(600.0f, 215.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(rotation.Roll), FVector2D(600.0f, 230.0f), Render::Drawing::Colour::Red, false);
+            const FVector relativeVelocity = targetVelocity - localVelocity;
+            const float bulletSpeed = playerWeapon->WeaponParameters.AmmoParams.Velocity;
+            const FVector relativeLocation = localPlayer->K2_GetActorLocation() - bestAim.location;
+            const float a = relativeVelocity.Size() - bulletSpeed * bulletSpeed;
+            const auto temp = relativeLocation * relativeVelocity * 2.f;
+            //const float b = (relativeLocation * relativeVelocity * 2.f).Sum();
+            const float b = temp.X + temp.Y + temp.Z;
+            const float c = relativeLocation.SizeSquared();
+            const float d = b * b - 4 * a - c;
 
-                bool validateAngles = ValidateAngles(cameraManager, &rotation);
-                Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(rotation.Pitch), FVector2D(800.0f, 200.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(rotation.Yaw), FVector2D(800.0f, 215.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Roll: " + std::to_wstring(rotation.Roll), FVector2D(800.0f, 230.0f), Render::Drawing::Colour::Red, false);
-                if (validateAngles)
+            if (d > 0)
+            {
+                const float dRoot = sqrtf(d);
+                const float x1 = (-b + dRoot) / (2 * a);
+                const float x2 = (-b - dRoot) / (2 * a);
+                if (x1 >= 0 && x1 >= x2)
                 {
-                    Render::Drawing::DrawInterfaceString(hud, L"True", FVector2D(800.0f, 245.0f), Render::Drawing::Colour::Green, false);
+                    bestAim.location += relativeVelocity * x1;
+                }
+                else if (x2 >= 0)
+                {
+                    bestAim.location += relativeVelocity * x2;
                 }
 
-                Render::Drawing::DrawInterfaceString(hud, L"Pitch Min: " + std::to_wstring(cameraManager->ViewPitchMin), FVector2D(1000.0f, 200.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Pitch Max: " + std::to_wstring(cameraManager->ViewPitchMax), FVector2D(1000.0f, 215.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Yaw Min: " + std::to_wstring(cameraManager->ViewYawMin), FVector2D(1000.0f, 230.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Yaw Max: " + std::to_wstring(cameraManager->ViewYawMax), FVector2D(1000.0f, 245.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Roll Min: " + std::to_wstring(cameraManager->ViewRollMin), FVector2D(1000.0f, 260.0f), Render::Drawing::Colour::Red, false);
-                Render::Drawing::DrawInterfaceString(hud, L"Roll Max: " + std::to_wstring(cameraManager->ViewRollMax), FVector2D(1000.0f, 275.0f), Render::Drawing::Colour::Red, false);
-
-                if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }) && validateAngles)
+                //if (playerController->IsInputKeyDown(FKey{ "LeftMouseButton" }))
+                if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
                 {
-                    //playerController->ClientSetRotation(rotation, false);
-                    //playerController->ControlRotation = rotation;
+                    bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
+
+                    auto smoothness = 1.f / 5;
+                    Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(bestAim.delta.Yaw), FVector2D(200.0f, 200.0f), Render::Drawing::Colour::Red, false);
+                    Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(bestAim.delta.Pitch), FVector2D(200.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                    playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
+                    playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
                 }
             }
         }

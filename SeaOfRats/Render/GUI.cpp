@@ -172,7 +172,7 @@ namespace Render
                         ImGui::Text("Entities");
                         ImGui::Checkbox("Player", &config.esp.player.enable);
                         ImGui::Checkbox("Skeleton", &config.esp.skeleton.enable);
-                        ImGui::Checkbox("Shark", &config.esp.shark.enable);
+                        //ImGui::Checkbox("Shark", &config.esp.shark.enable);
                         //ImGui::Checkbox("Kraken", &config->krakenESP);
                         //ImGui::Checkbox("Kraken Tentacle", &config->krakenTentacleESP);
                         ImGui::Checkbox("Animal", &config.esp.animal.enable);
@@ -185,15 +185,15 @@ namespace Render
                         //ImGui::Checkbox("Far Ship", &config->farShipESP);
                         //ImGui::Checkbox("Skeleton Ship", &config->skeletonShipESP);
                         //ImGui::Checkbox("Ghost Ship", &config->ghostShipESP);
-                        ImGui::Checkbox("Rowboat", &config.esp.rowboat.enable);
+                        //ImGui::Checkbox("Rowboat", &config.esp.rowboat.enable);
 
                         ImGui::Separator();
 
                         ImGui::Text("Misc");
                         ImGui::Checkbox("Item", &config.esp.item.enable);
-                        ImGui::Checkbox("Barrel", &config.esp.barrel.enable);
-                        ImGui::Checkbox("Shipwreck", &config.esp.shipwreck.enable);
-                        ImGui::Checkbox("Storm", &config.esp.storm.enable);
+                        //ImGui::Checkbox("Barrel", &config.esp.barrel.enable);
+                        //ImGui::Checkbox("Shipwreck", &config.esp.shipwreck.enable);
+                        //ImGui::Checkbox("Storm", &config.esp.storm.enable);
                         //ImGui::Checkbox("Event", &config->eventESP);
                         ImGui::Checkbox("Map", &config.esp.map.enable);
                         ImGui::Checkbox("Debug", &config.esp.debug.enable);
@@ -214,7 +214,7 @@ namespace Render
 
                     if (ImGui::BeginTabItem("Aimbot"))
                     {
-                        ImGui::Checkbox("Enabled", &config.aim.player.enable);
+                        ImGui::Checkbox("Enabled", &config.aim.enable);
                         ImGui::EndTabItem();
                     }
                 }

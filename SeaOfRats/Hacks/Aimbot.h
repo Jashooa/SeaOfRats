@@ -8,8 +8,8 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        void Init(AHUD* hud);
-        void SetNearest(UGameViewportClient* client, AActor* actor);
+        void Init(UGameViewportClient* client);
+        void CalculateAim(UGameViewportClient* client, AActor* actor);
         void Aim(UGameViewportClient* client, AHUD* hud);
     }
 }

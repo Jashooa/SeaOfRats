@@ -43,9 +43,9 @@ namespace Render
             hud->Canvas->K2_DrawText(RobotoFont, static_cast<FString>(string.c_str()), newPosition, color, 1.0f, Colour::Black, FVector2D(0.0f, 0.0f), centreX, centreY, true, Colour::Black);
         }
 
-        void DrawCircle(AHUD* hud, const FVector2D& position, const FLinearColor& color, const float radius)
+        /*void DrawCircle(AHUD* hud, const FVector2D& position, const FLinearColor& color, const float radius)
         {
-        }
+        }*/
 
         void DrawRect(AHUD* hud, const FVector2D& minPosition, const FVector2D& maxPosition, const FLinearColor& color, const float thickness = 1.0f)
         {
@@ -70,18 +70,6 @@ namespace Render
             hud->DrawRect(Colour::Green, x, y, w * health, h);
         }
 
-        FVector RotateCorner(FVector origin, FVector corner, float theta)
-        {
-            float x = corner.X - origin.X;
-            float y = corner.Y - origin.Y;
-
-            return {
-                origin.X + ((x * UKismetMathLibrary::DegCos(theta)) - (y * UKismetMathLibrary::DegSin(theta))),
-                origin.Y + ((x * UKismetMathLibrary::DegSin(theta)) + (y * UKismetMathLibrary::DegCos(theta))),
-                corner.Z
-            };
-        }
-
         void DrawBoundingRect(UGameViewportClient* client, AHUD* hud, AActor* actor, const FLinearColor& color)
         {
             auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
@@ -89,24 +77,24 @@ namespace Render
             FVector origin, extent;
             actor->GetActorBounds(true, &origin, &extent);
             FRotator rotation = actor->K2_GetActorRotation();
-            float angle = std::fmodf(rotation.Yaw + 450.0f, 360.0f);
 
-            FVector tl = origin, br = origin;
-            tl.X -= extent.X;
-            tl.Z += extent.Z;
-            br.X += extent.X;
-            br.Z -= extent.Z;
+            FVector topLeft;
+            FVector bottomRight;
+            topLeft = { -extent.X, 0.f, extent.Z };
+            bottomRight = { extent.X, 0.f, -extent.Z };
 
-            tl = RotateCorner(origin, tl, angle);
-            br = RotateCorner(origin, br, angle);
+            FVector2D topLeftScreen, bottomRightScreen;
+            FTransform const transform(rotation);
 
-            FVector2D tlScreen, brScreen;
-            if (!playerController->ProjectWorldLocationToScreen(tl, &tlScreen) || !playerController->ProjectWorldLocationToScreen(br, &brScreen))
+            topLeft = transform.TransformPosition(topLeft) + origin;
+            bottomRight = transform.TransformPosition(bottomRight) + origin;
+
+            if (!playerController->ProjectWorldLocationToScreen(topLeft, &topLeftScreen) || !playerController->ProjectWorldLocationToScreen(bottomRight, &bottomRightScreen))
             {
                 return;
             }
 
-            DrawRect(hud, tlScreen, brScreen, color);
+            DrawRect(hud, topLeftScreen, bottomRightScreen, color);
         }
 
         void DrawBoundingBox(UGameViewportClient* client, AHUD* hud, AActor* actor, const FLinearColor& color)
@@ -116,81 +104,40 @@ namespace Render
             FVector origin, extent;
             actor->GetActorBounds(true, &origin, &extent);
             FRotator rotation = actor->K2_GetActorRotation();
-            //FVector forwardVector = actor->GetActorForwardVector();
-            //FRotator rotation = UKismetMathLibrary::Conv_VectorToRotator(forwardVector);
-            float angle = std::fmodf(rotation.Yaw + 450.0f, 360.0f);
-            //float yaw = UKismetMathLibrary::DegreesToRadians(angle);
-            //float yaw = UKismetMathLibrary::DegreesToRadians(rotation.Yaw);
-            //std::wstring rotateAmount = std::to_wstring(rotation.Yaw) + L" " + std::to_wstring(angle);
-            //DrawInterfaceString(hud, rotateAmount, FVector2D(500, 200), Colour::White, true, true);
 
-            FVector t1 = origin, t2 = origin, t3 = origin, t4 = origin, b1 = origin, b2 = origin, b3 = origin, b4 = origin;
-            t1.X -= extent.X;
-            t1.Y -= extent.Y;
-            t1.Z -= extent.Z;
-            t2.X += extent.X;
-            t2.Y -= extent.Y;
-            t2.Z -= extent.Z;
-            t3.X += extent.X;
-            t3.Y += extent.Y;
-            t3.Z -= extent.Z;
-            t4.X -= extent.X;
-            t4.Y += extent.Y;
-            t4.Z -= extent.Z;
+            FVector vertices[2][4];
+            vertices[0][0] = { -extent.X, -extent.Y,  -extent.Z };
+            vertices[0][1] = { extent.X, -extent.Y,  -extent.Z };
+            vertices[0][2] = { extent.X, extent.Y,  -extent.Z };
+            vertices[0][3] = { -extent.X, extent.Y, -extent.Z };
 
-            t1 = RotateCorner(origin, t1, angle);
-            t2 = RotateCorner(origin, t2, angle);
-            t3 = RotateCorner(origin, t3, angle);
-            t4 = RotateCorner(origin, t4, angle);
+            vertices[1][0] = { -extent.X, -extent.Y, extent.Z };
+            vertices[1][1] = { extent.X, -extent.Y, extent.Z };
+            vertices[1][2] = { extent.X, extent.Y, extent.Z };
+            vertices[1][3] = { -extent.X, extent.Y, extent.Z };
 
-            FVector2D ts1, ts2, ts3, ts4;
-            if (!playerController->ProjectWorldLocationToScreen(t1, &ts1)
-                || !playerController->ProjectWorldLocationToScreen(t2, &ts2)
-                || !playerController->ProjectWorldLocationToScreen(t3, &ts3)
-                || !playerController->ProjectWorldLocationToScreen(t4, &ts4))
+            FVector2D screen[2][4];
+            FTransform const transform(rotation);
+
+            for (int32_t i = 0; i < 2; i++)
             {
-                return;
+                for (int32_t j = 0; j < 4; j++)
+                {
+                    auto& vertex = vertices[i][j];
+                    vertex = transform.TransformPosition(vertex) + origin;
+                    if (!playerController->ProjectWorldLocationToScreen(vertex, &screen[i][j]))
+                    {
+                        return;
+                    }
+                }
             }
 
-            b1.X -= extent.X;
-            b1.Y -= extent.Y;
-            b1.Z += extent.Z;
-            b2.X += extent.X;
-            b2.Y -= extent.Y;
-            b2.Z += extent.Z;
-            b3.X += extent.X;
-            b3.Y += extent.Y;
-            b3.Z += extent.Z;
-            b4.X -= extent.X;
-            b4.Y += extent.Y;
-            b4.Z += extent.Z;
-
-            b1 = RotateCorner(origin, b1, angle);
-            b2 = RotateCorner(origin, b2, angle);
-            b3 = RotateCorner(origin, b3, angle);
-            b4 = RotateCorner(origin, b4, angle);
-
-            FVector2D bs1, bs2, bs3, bs4;
-            if (!playerController->ProjectWorldLocationToScreen(b1, &bs1)
-                || !playerController->ProjectWorldLocationToScreen(b2, &bs2)
-                || !playerController->ProjectWorldLocationToScreen(b3, &bs3)
-                || !playerController->ProjectWorldLocationToScreen(b4, &bs4))
+            for (int32_t i = 0; i < 4; i++)
             {
-                return;
+                hud->Canvas->K2_DrawLine(screen[0][i], screen[0][(i + 1) % 4], 1.f, color);
+                hud->Canvas->K2_DrawLine(screen[1][i], screen[1][(i + 1) % 4], 1.f, color);
+                hud->Canvas->K2_DrawLine(screen[0][i], screen[1][i], 1.f, color);
             }
-
-            hud->Canvas->K2_DrawLine(ts1, ts2, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts2, ts3, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts3, ts4, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts4, ts1, 1.f, color);
-            hud->Canvas->K2_DrawLine(bs1, bs2, 1.f, color);
-            hud->Canvas->K2_DrawLine(bs2, bs3, 1.f, color);
-            hud->Canvas->K2_DrawLine(bs3, bs4, 1.f, color);
-            hud->Canvas->K2_DrawLine(bs4, bs1, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts1, bs1, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts2, bs2, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts3, bs3, 1.f, color);
-            hud->Canvas->K2_DrawLine(ts4, bs4, 1.f, color);
         }
     }
 }
