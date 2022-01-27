@@ -73,6 +73,12 @@ namespace Hacks
                 return;
             }
 
+            // Check if same team
+            if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), reinterpret_cast<AAthenaCharacter*>(actor)))
+            {
+                return;
+            }
+
             // Check if on screen
             auto location = actor->K2_GetActorLocation();
             FVector2D screen;
