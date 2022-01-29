@@ -13,10 +13,10 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 A;
-			struct FVector                 B;
-			float                          ReturnValue;
-		} params;
+			struct FVector A;
+			struct FVector B;
+			float ReturnValue;
+		} params{};
 		params.A = A;
 		params.B = B;
 

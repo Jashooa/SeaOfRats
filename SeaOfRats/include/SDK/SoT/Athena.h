@@ -82,7 +82,7 @@ namespace SDK
     // 0x0038
     struct FShipInternalWaterParams
     {
-        char pad_0x0038[0x0008];
+        char pad_0x0000[0x0008];
         float MaxWaterAmount; // 0x0008(0x0004)
         float MaxWaterHeight; // 0x000C(0x0004)
         char pad_0x0010[0x0028];

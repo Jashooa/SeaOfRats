@@ -9,9 +9,8 @@
 #include "include/spdlog/sinks/basic_file_sink.h"
 
 #include "Config.h"
-#include "Hooks/DirectX.h"
-#include "Hooks/Game.h"
-#include "Render/GUI.h"
+#include "Hooks.h"
+#include "GUI.h"
 
 SeaOfRats::SeaOfRats(HMODULE module)
 {
@@ -45,13 +44,10 @@ static DWORD WINAPI Load()
     spdlog::info("Loading Hooks");
 
     //config = std::make_unique<Config>();
-    gui = std::make_unique<Render::GUI::GUI>();
+    gui = std::make_unique<GUI::GUI>();
 
-    spdlog::info("Hooking DirectX");
-    Hooks::DirectX::Install();
-
-    spdlog::info("Hooking Game");
-    Hooks::Game::Install();
+    spdlog::info("Installing Hooks");
+    Hooks::Install();
 
     spdlog::info("Done Hooking");
     ExitThread(0);
@@ -69,13 +65,10 @@ static DWORD WINAPI Unload(HMODULE module)
 {
     spdlog::info("Unloading Hooks");
 
-    Sleep(50);
+    //Sleep(50);
 
-    spdlog::info("Unhooking Game");
-    Hooks::Game::Uninstall();
-
-    spdlog::info("Unhooking DirectX");
-    Hooks::DirectX::Uninstall();
+    spdlog::info("Uninstalling Hooks");
+    Hooks::Uninstall();
 
     gui->Destroy();
 

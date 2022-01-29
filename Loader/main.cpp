@@ -10,8 +10,8 @@ namespace fs = std::filesystem;
 DWORD GetProcessIdByName(const std::wstring& processName)
 {
     PVOID processSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    PROCESSENTRY32 processEntry;
-    processEntry.dwSize = sizeof(processEntry);
+    PROCESSENTRY32 processEntry{};
+    processEntry.dwSize = sizeof(PROCESSENTRY32);
 
     DWORD processId = 0;
     while (Process32Next(processSnapshot, &processEntry))
@@ -32,7 +32,8 @@ bool HasModule(const DWORD processId, const std::wstring& moduleName)
     bool status = false;
 
     PVOID moduleSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processId);
-    MODULEENTRY32 moduleEntry = { sizeof(MODULEENTRY32) };
+    MODULEENTRY32 moduleEntry = {};
+    moduleEntry.dwSize = sizeof(MODULEENTRY32);
 
     while (Module32Next(moduleSnapshot, &moduleEntry))
     {
@@ -113,6 +114,5 @@ int wmain(int argc, wchar_t* argv[])
     }
 
     std::wcout << L"Successfully injected." << std::endl;
-    system("pause");
     return 0;
 }

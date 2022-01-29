@@ -8,6 +8,6 @@ namespace Hacks
 {
     namespace Info
     {
-        void Render(UGameViewportClient* client, AHUD* hud);
+        void Render(UWorld* world);
     }
 }

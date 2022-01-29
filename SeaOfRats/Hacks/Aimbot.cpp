@@ -5,7 +5,7 @@
 #include "include/SDK/SDK.h"
 
 #include "Bones.h"
-#include "Render/Drawing.h"
+#include "Drawing.h"
 
 using namespace SDK;
 
@@ -29,13 +29,13 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        void Init(UGameViewportClient* client)
+        void Init(UWorld* world)
         {
             bestAim.target = nullptr;
             bestAim.best = FLT_MAX;
             playerWeapon = nullptr;
 
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             cameraLocation = playerController->PlayerCameraManager->GetCameraLocation();
             cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
@@ -51,14 +51,14 @@ namespace Hacks
             }
         }
 
-        void CalculateAim(UGameViewportClient* client, AActor* actor)
+        void CalculateAim(UWorld* world, AActor* actor)
         {
             if (!playerWeapon)
             {
                 return;
             }
 
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
 
             // Check if me
@@ -114,14 +114,14 @@ namespace Hacks
             }
         }
 
-        void Aim(UGameViewportClient* client, AHUD* hud)
+        void Aim(UWorld* world)
         {
             if (!bestAim.target)
             {
                 return;
             }
 
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
 
             auto boneLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
@@ -133,7 +133,7 @@ namespace Hacks
             }
             bestAim.location = boneLocation;
 
-            Render::Drawing::DrawActorString(hud, L"x", screen, Render::Drawing::Colour::Red);
+            Drawing::DrawString(L"x", screen, Drawing::Colour::Red);
 
             FVector localVelocity = localPlayer->GetVelocity();
             if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
@@ -177,8 +177,8 @@ namespace Hacks
                     bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
 
                     auto smoothness = 1.f / 5;
-                    Render::Drawing::DrawInterfaceString(hud, L"Yaw: " + std::to_wstring(bestAim.delta.Yaw), FVector2D(200.0f, 200.0f), Render::Drawing::Colour::Red, false);
-                    Render::Drawing::DrawInterfaceString(hud, L"Pitch: " + std::to_wstring(bestAim.delta.Pitch), FVector2D(200.0f, 215.0f), Render::Drawing::Colour::Red, false);
+                    Drawing::DrawString(L"Yaw: " + std::to_wstring(bestAim.delta.Yaw), FVector2D(200.0f, 200.0f), Drawing::Colour::Red, false);
+                    Drawing::DrawString(L"Pitch: " + std::to_wstring(bestAim.delta.Pitch), FVector2D(200.0f, 215.0f), Drawing::Colour::Red, false);
                     playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
                     playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
                 }

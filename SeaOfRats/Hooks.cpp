@@ -1,15 +1,19 @@
-#include "DirectX.h"
+#include "Hooks.h"
 
-#include "Windows.h"
+#include <Windows.h>
+#include <Psapi.h>
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
 
-#include "mutex"
-
+#include "include/SDK/SDK.h"
 #include "include/spdlog/spdlog.h"
 
-#include "Render/GUI.h"
+#include "GUI.h"
+#include "Hacks/Hacks.h"
+#include "Utilities/Memory.h"
 #include "Utilities/Hooking.h"
+
+using namespace SDK;
 
 static void** swapChainVTable = nullptr;
 using Present = HRESULT(__stdcall*)(IDXGISwapChain*, UINT, UINT);
@@ -26,15 +30,54 @@ static SetCursorProto OriginalSetCursor = nullptr;
 using SetCursorPosProto = BOOL(__stdcall*)(int, int);
 static SetCursorPosProto OriginalSetCursorPos = nullptr;
 
-static std::once_flag isInitialised;
-
 ID3D11Device* device = nullptr;
 ID3D11DeviceContext* immediateContext = nullptr;
 ID3D11RenderTargetView* renderTargetView = nullptr;
 
+static std::once_flag isInitialised;
+
+void HookGame()
+{
+    MODULEINFO modInfo{};
+    GetModuleInformation(GetCurrentProcess(), GetModuleHandle(nullptr), &modInfo, sizeof MODULEINFO);
+    const auto start = reinterpret_cast<uintptr_t>(modInfo.lpBaseOfDll);
+    const auto length = modInfo.SizeOfImage;
+    spdlog::info("Module Start: {:p}", reinterpret_cast<void*>(start));
+    spdlog::info("Module Length: 0x{:x}", length);
+
+    const auto gObjectsAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x89\x0D\x00\x00\x00\x00\x48\x8B\xDF\x48\x89\x5C\x24"), "xx????xxxxxxx");
+    const auto gObjectsOffset = *reinterpret_cast<uint32_t*>(gObjectsAddress + 2);
+    UObject::GObjects = reinterpret_cast<decltype(UObject::GObjects)>(gObjectsAddress + gObjectsOffset + 6);
+    spdlog::info("gObjectsAddress Address: {:p}", reinterpret_cast<void*>(gObjectsAddress));
+    spdlog::info("GObjects Address: {:p}", reinterpret_cast<void*>(UObject::GObjects));
+    spdlog::info("GObjects.Num(): {}", UObject::GetGlobalObjects().Num());
+
+    const auto gNamesAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\x1D\x00\x00\x00\x00\x48\x85\x00\x75\x3D"), "xxx????xx?xx");
+    const auto gNamesOffset = *reinterpret_cast<uint32_t*>(gNamesAddress + 3);
+    FName::GNames = reinterpret_cast<decltype(FName::GNames)>(*reinterpret_cast<uintptr_t*>(gNamesAddress + gNamesOffset + 7));
+    spdlog::info("gNamesAddress Address: {:p}", reinterpret_cast<void*>(gNamesAddress));
+    spdlog::info("GNames Address: {:p}", reinterpret_cast<void*>(FName::GNames));
+    spdlog::info("GNames.Num(): {}", FName::GetGlobalNames().Num());
+
+    const auto gWorldAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x88\x00\x00\x00\x00\x48\x85\xC9\x74\x06\x48\x8B\x49\x70"), "xxx????xxx????xxxxxxxxx");
+    const auto gWorldOffset = *reinterpret_cast<uint32_t*>(gWorldAddress + 3);
+    UWorld::GWorld = reinterpret_cast<decltype(UWorld::GWorld)>(gWorldAddress + gWorldOffset + 7);
+    spdlog::info("gWorldAddress Address: {:p}", reinterpret_cast<void*>(gWorldAddress));
+    spdlog::info("GWorld Address: {:p}", reinterpret_cast<void*>(UWorld::GWorld));
+
+    const auto uobject = UObject::FindObject<UObject>("Class CoreUObject.Object");
+    spdlog::info("Object Address: {:p}", reinterpret_cast<void*>(uobject));
+
+    const auto uclass = UObject::FindObject<UClass>("Class CoreUObject.Class");
+    spdlog::info("Class Address: {:p}", reinterpret_cast<void*>(uclass));
+
+    const auto uworld = UObject::FindObject<UWorld>("Class Engine.World");
+    spdlog::info("World Address: {:p}", reinterpret_cast<void*>(uworld));
+}
+
 void CreateRenderTarget(IDXGISwapChain* swapChain)
 {
-    ID3D11Texture2D* renderTarget;
+    ID3D11Texture2D* renderTarget = nullptr;
     swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&renderTarget));
     if (renderTarget != NULL)
     {
@@ -158,18 +201,18 @@ void UnhookMouse()
 
 namespace Hooks
 {
-    namespace DirectX
+    void Install()
     {
-        void Install()
-        {
-            HookD3D11();
-            HookMouse();
-        }
+        HookGame();
+        HookMouse();
+        HookD3D11();
+    }
 
-        void Uninstall()
-        {
-            UnhookD3D11();
-            UnhookMouse();
-        }
+    void Uninstall()
+    {
+        Lock.lock();
+        UnhookD3D11();
+        Lock.unlock();
+        UnhookMouse();
     }
 }

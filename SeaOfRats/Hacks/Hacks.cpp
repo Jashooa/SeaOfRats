@@ -4,51 +4,57 @@
 #include "include/spdlog/spdlog.h"
 
 #include "Config.h"
+#include "Drawing.h"
 #include "Hacks/Aimbot.h"
 #include "Hacks/ESP.h"
 #include "Hacks/Info.h"
 
 using namespace SDK;
 
-bool NullChecks(UGameViewportClient* client)
+bool NullChecks(UWorld* world)
 {
-    if (!client->World)
+    if (!world)
     {
         spdlog::warn("World null");
         return false;
     }
-    if (!client->World->GameState)
+    if (!world->GameState)
     {
         spdlog::warn("GameState null");
         return false;
     }
-    if (!client->World->GameState->IsA(AAthenaGameState::StaticClass()))
+    if (!world->GameState->IsA(AAthenaGameState::StaticClass()))
     {
         return false;
     }
-    if (!client->World->PersistentLevel)
-    {
-        spdlog::warn("PersistentLevel null");
-        return false;
-    }
-    if (!client->GameInstance)
+    if (!world->OwningGameInstance)
     {
         spdlog::warn("GameInstance null");
         return false;
     }
-    if (client->GameInstance->LocalPlayers.Num() < 1)
+    if (!world->PersistentLevel)
+    {
+        spdlog::warn("PersistentLevel null");
+        return false;
+    }
+    if (world->OwningGameInstance->LocalPlayers.Num() < 1)
     {
         spdlog::warn("LocalPlayers < 1");
         return false;
     }
-    if (!client->GameInstance->LocalPlayers[0]->PlayerController)
+    if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController)
     {
         spdlog::warn("PlayerController null");
         return false;
     }
-    if (!client->GameInstance->LocalPlayers[0]->PlayerController->Pawn)
+    if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn)
     {
         spdlog::warn("Pawn null");
+        return false;
+    }
+    if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->PlayerCameraManager)
+    {
+        spdlog::warn("PlayerCameraManager null");
         return false;
     }
     return true;
@@ -56,30 +62,16 @@ bool NullChecks(UGameViewportClient* client)
 
 namespace Hacks
 {
-    void Loop(UGameViewportClient* client, UCanvas* canvas)
+    void Loop()
     {
-        if (NullChecks(client))
+        UWorld* world = *UWorld::GWorld;
+
+        if (NullChecks(world))
         {
-            AHUD* hud = client->GameInstance->LocalPlayers[0]->PlayerController->MyHUD;
-            hud->Canvas = canvas;
-
-            UWorld* world = client->World;
-            if (!world)
-            {
-                spdlog::warn("World null");
-                return;
-            }
-
             ULevel* level = world->PersistentLevel;
-            if (!level)
-            {
-                spdlog::warn("PersistentLevel null");
-                return;
-            }
 
-            auto levels = world->Levels;
-
-            /*for (int32_t i = 6; i < levels.Num(); ++i)
+            /*auto levels = world->Levels;
+            for (int32_t i = 6; i < levels.Num(); ++i)
             {
                 auto actors = levels[i]->AActors;
 
@@ -96,7 +88,7 @@ namespace Hacks
                     {
                         if (config.esp.barrel.enable)
                         {
-                            ESP::DrawBarrel(client, hud, actor);
+                            ESP::DrawBarrel(world, hud, actor);
                         }
                         continue;
                     }
@@ -105,7 +97,8 @@ namespace Hacks
 
             if (config.aim.enable)
             {
-                Aimbot::Init(client);
+                spdlog::debug("Aimbot::Init");
+                Aimbot::Init(world);
             }
 
             auto actors = level->AActors;
@@ -119,7 +112,7 @@ namespace Hacks
                     continue;
                 }
 
-                if (actor == client->GameInstance->LocalPlayers[0]->PlayerController)
+                if (actor == world->OwningGameInstance->LocalPlayers[0]->PlayerController)
                 {
                     continue;
                 }
@@ -130,9 +123,11 @@ namespace Hacks
                     {
                         if (config.aim.player.enable)
                         {
-                            Aimbot::CalculateAim(client, actor);
+                            spdlog::debug("Aimbot::CalculateAim");
+                            Aimbot::CalculateAim(world, actor);
                         }
-                        ESP::DrawPlayer(client, hud, actor);
+                        spdlog::debug("ESP::DrawPlayer");
+                        ESP::DrawPlayer(world, actor);
                     }
                     continue;
                 }
@@ -143,9 +138,11 @@ namespace Hacks
                     {
                         if (config.aim.skeleton.enable)
                         {
-                            Aimbot::CalculateAim(client, actor);
+                            spdlog::debug("Aimbot::CalculateAim");
+                            Aimbot::CalculateAim(world, actor);
                         }
-                        ESP::DrawSkeleton(client, hud, actor);
+                        spdlog::debug("ESP::DrawSkeleton");
+                        ESP::DrawSkeleton(world, actor);
                     }
                     continue;
                 }
@@ -154,7 +151,7 @@ namespace Hacks
                 {
                     if (config.esp.shark.enable)
                     {
-                        ESP::DrawShark(client, hud, actor);
+                        ESP::DrawShark(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -163,7 +160,7 @@ namespace Hacks
                 {
                     if (config->krakenESP)
                     {
-                        ESP::DrawKraken(client, hud, actor);
+                        ESP::DrawKraken(world, hud, actor);
                     }
                     continue;
                 }
@@ -172,7 +169,7 @@ namespace Hacks
                 {
                     if (config->krakenTentacleESP)
                     {
-                        ESP::DrawKrakenTentacle(client, hud, actor);
+                        ESP::DrawKrakenTentacle(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -181,7 +178,8 @@ namespace Hacks
                 {
                     if (config.esp.animal.enable)
                     {
-                        ESP::DrawAnimal(client, hud, actor);
+                        spdlog::debug("ESP::DrawAnimal");
+                        ESP::DrawAnimal(world, actor);
                     }
                     continue;
                 }
@@ -190,7 +188,8 @@ namespace Hacks
                 {
                     if (config.esp.mermaid.enable)
                     {
-                        ESP::DrawMermaid(client, hud, actor);
+                        spdlog::debug("ESP::DrawMermaid");
+                        ESP::DrawMermaid(world, actor);
                     }
                     continue;
                 }
@@ -199,7 +198,8 @@ namespace Hacks
                 {
                     if (config.esp.ship.enable)
                     {
-                        ESP::DrawShip(client, hud, actor);
+                        spdlog::debug("ESP::DrawShip");
+                        ESP::DrawShip(world, actor);
                     }
                     continue;
                 }
@@ -208,7 +208,8 @@ namespace Hacks
                 {
                     if (config.esp.ship.enable)
                     {
-                        ESP::DrawShipFar(client, hud, actor);
+                        spdlog::debug("ESP::DrawShipFar");
+                        ESP::DrawShipFar(world, actor);
                     }
                     continue;
                 }
@@ -217,7 +218,7 @@ namespace Hacks
                 {
                     if (config->ghostShipESP)
                     {
-                        ESP::DrawGhostShip(client, hud, actor);
+                        ESP::DrawGhostShip(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -226,7 +227,7 @@ namespace Hacks
                 {
                     if (config.esp.rowboat.enable)
                     {
-                        ESP::DrawRowboat(client, hud, actor);
+                        ESP::DrawRowboat(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -235,7 +236,8 @@ namespace Hacks
                 {
                     if (config.esp.item.enable)
                     {
-                        ESP::DrawItem(client, hud, actor);
+                        spdlog::debug("ESP::DrawItem");
+                        ESP::DrawItem(world, actor);
                     }
                     continue;
                 }
@@ -244,7 +246,7 @@ namespace Hacks
                 {
                     if (config.esp.barrel.enable)
                     {
-                        ESP::DrawBarrel(client, hud, actor);
+                        ESP::DrawBarrel(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -253,7 +255,7 @@ namespace Hacks
                 {
                     if (config.esp.shipwreck.enable)
                     {
-                        ESP::DrawShipwreck(client, hud, actor);
+                        ESP::DrawShipwreck(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -262,7 +264,7 @@ namespace Hacks
                 {
                     if (config.esp.storm.enable)
                     {
-                        ESP::DrawStorm(client, hud, actor);
+                        ESP::DrawStorm(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -271,7 +273,7 @@ namespace Hacks
                 {
                     if (config->eventESP)
                     {
-                        ESP::DrawEvent(client, hud, actor);
+                        ESP::DrawEvent(world, hud, actor);
                     }
                     continue;
                 }*/
@@ -280,23 +282,26 @@ namespace Hacks
                 {
                     if (config.esp.map.enable)
                     {
-                        ESP::DrawMap(client, hud, actor);
+                        spdlog::debug("ESP::DrawMap");
+                        ESP::DrawMap(world, actor);
                     }
                     continue;
                 }
 
                 if (config.esp.debug.enable)
                 {
-                    ESP::DrawDebug(client, hud, actor);
+                    spdlog::debug("ESP::DrawDebug");
+                    ESP::DrawDebug(world, actor);
                 }
             }
 
             if (config.aim.enable)
             {
-                Aimbot::Aim(client, hud);
+                spdlog::debug("Aimbot::Aim");
+                Aimbot::Aim(world);
             }
 
-            Info::Render(client, hud);
+            Info::Render(world);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SDK
 		struct
 		{
 			class AActor* ReturnValue;
-		} params;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -28,8 +28,8 @@ namespace SDK
 
 		struct
 		{
-			bool                           ReturnValue;
-		} params;
+			bool ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -43,8 +43,8 @@ namespace SDK
 
 		struct
 		{
-			bool                           ReturnValue;
-		} params;
+			bool ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -59,7 +59,7 @@ namespace SDK
 		struct
 		{
 			TEnumAsByte<EPlayerActivityType> ReturnValue;
-		} params;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -74,7 +74,7 @@ namespace SDK
 		struct
 		{
 			class AShipInternalWater* ReturnValue;
-		} params;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -88,8 +88,8 @@ namespace SDK
 
 		struct
 		{
-			int                            ReturnValue;
-		} params;
+			int ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -105,8 +105,8 @@ namespace SDK
 		{
 			class AAthenaCharacter* Player1;
 			class AAthenaCharacter* Player2;
-			bool                           ReturnValue;
-		} params;
+			bool ReturnValue;
+		} params{};
 		params.Player1 = Player1;
 		params.Player2 = Player2;
 
@@ -125,8 +125,8 @@ namespace SDK
 		{
 			class UObject* WorldContext;
 			class AActor* Actor;
-			struct FGuid                   ReturnValue;
-		} params;
+			struct FGuid ReturnValue;
+		} params{};
 		params.WorldContext = WorldContext;
 		params.Actor = Actor;
 
@@ -145,8 +145,8 @@ namespace SDK
 		{
 			class AActor* Actor;
 			class AAthenaCharacter* Player;
-			bool                           ReturnValue;
-		} params;
+			bool ReturnValue;
+		} params{};
 		params.Actor = Actor;
 		params.Player = Player;
 
@@ -163,8 +163,8 @@ namespace SDK
 
 		struct
 		{
-			float                          ReturnValue;
-		} params;
+			float ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -178,8 +178,8 @@ namespace SDK
 
 		struct
 		{
-			float                          ReturnValue;
-		} params;
+			float ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -193,8 +193,8 @@ namespace SDK
 
 		struct
 		{
-			TArray<struct FGuid>           ReturnValue;
-		} params;
+			TArray<struct FGuid> ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -209,7 +209,7 @@ namespace SDK
 		struct
 		{
 			class AActor* ReturnValue;
-		} params;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -223,8 +223,8 @@ namespace SDK
 
 		struct
 		{
-			float                          ReturnValue;
-		} params;
+			float ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 

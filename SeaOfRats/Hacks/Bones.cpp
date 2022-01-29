@@ -2,7 +2,7 @@
 
 #include "include/SDK/SDK.h"
 
-#include "Render/Drawing.h"
+#include "Drawing.h"
 
 namespace Hacks
 {
@@ -31,7 +31,7 @@ namespace Hacks
         return boneLocation;
     }
 
-    void DrawBones(UGameViewportClient* client, AHUD* hud, AActor* actor)
+    void DrawBones(UWorld* world, AActor* actor)
     {
         std::list<std::list<uint8_t>> skeleton;
 
@@ -48,7 +48,7 @@ namespace Hacks
             return;
         }
 
-        auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+        auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
         auto character = reinterpret_cast<ACharacter*>(actor);
 
         auto mesh = character->Mesh;
@@ -61,7 +61,7 @@ namespace Hacks
 
             FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
             auto currentIndex = mesh->CurrentReadSpaceBases;
-            for (const auto bones : skeleton)
+            for (const auto& bones : skeleton)
             {
                 FVector2D previousBone;
 
@@ -80,7 +80,7 @@ namespace Hacks
 
                     if (previousBone.X != 0.0f && previousBone.Y != 0.0f)
                     {
-                        hud->Canvas->K2_DrawLine(previousBone, screenBone, 1.0f, Render::Drawing::Colour::White);
+                        Drawing::DrawLine(previousBone, screenBone, Drawing::Colour::White);
                     }
                     previousBone = screenBone;
                 }

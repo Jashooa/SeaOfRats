@@ -6,5 +6,5 @@ using namespace SDK;
 
 namespace Hacks
 {
-    void Loop(UGameViewportClient* client, UCanvas* canvas);
+    void Loop();
 }

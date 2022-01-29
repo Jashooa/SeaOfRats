@@ -8,8 +8,8 @@
 #include "include/spdlog/spdlog.h"
 
 #include "Config.h"
+#include "Drawing.h"
 #include "Hacks/Bones.h"
-#include "Render/Drawing.h"
 
 using namespace SDK;
 
@@ -17,9 +17,9 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawPlayer(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawPlayer(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto player = reinterpret_cast<AAthenaPlayerCharacter*>(actor);
 
@@ -45,13 +45,13 @@ namespace Hacks
 
             // Check friendly
             bool friendly = UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player);
-            FLinearColor colour = Render::Drawing::Colour::Red;
+            ImU32 colour = Drawing::Colour::Red;
             if (friendly)
             {
-                colour = Render::Drawing::Colour::Green;
+                colour = Drawing::Colour::Green;
             }
-            //Drawing::DrawBoundingBox(client, hud, actor, colour);
-            DrawBones(client, hud, actor);
+            //Drawing::DrawBoundingBox(world, actor, colour);
+            DrawBones(world, actor);
 
             // Get bounds
             FVector origin, extent;
@@ -77,7 +77,7 @@ namespace Hacks
 
                     // Draw name
                     FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    Render::Drawing::DrawActorString(hud, name, nameScreen, colour);
+                    Drawing::DrawString(hud, name, nameScreen, colour);
                 }*/
 
                 // Get name
@@ -87,7 +87,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, colour);
+                Drawing::DrawString(name, nameScreen, colour);
             }
 
             // Get bottom coordinates
@@ -102,7 +102,7 @@ namespace Hacks
                     FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
                     FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                     FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
-                    Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                    Drawing::DrawHealthBar(healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }
 
                 // Draw item info
@@ -118,16 +118,16 @@ namespace Hacks
                             std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
 
                             FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
-                            Render::Drawing::DrawActorString(hud, itemName, itemScreen, Render::Drawing::Colour::White);
+                            Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
                         }
                     }
                 }
             }
         }
 
-        void DrawSkeleton(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawSkeleton(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
 
@@ -144,9 +144,9 @@ namespace Hacks
             {
                 return;
             }
-            //Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
-            //Render::Drawing::DrawBoundingRect(client, hud, actor, Render::Drawing::Colour::White);
-            DrawBones(client, hud, actor);
+            //Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            //Drawing::DrawBoundingRect(client, hud, actor, Drawing::Colour::White);
+            DrawBones(world, actor);
 
             // Get bounds
             FVector origin, extent;
@@ -246,14 +246,14 @@ namespace Hacks
 
                     // Draw name
                     FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                    Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
                 }*/
                 int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
                 name += L" [" + std::to_wstring(distance) + L"m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
             }
 
             // Get bottom coordinates
@@ -284,16 +284,16 @@ namespace Hacks
                         {
                             std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
                             FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                            Render::Drawing::DrawActorString(hud, itemName, itemScreen, Render::Drawing::Colour::White);
+                            Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
                         }
                     }
                 }
             }
         }
 
-        /*void DrawShark(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawShark(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto shark = reinterpret_cast<ASharkPawn*>(actor);
 
@@ -332,7 +332,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
 
                 // Draw health bar
                 auto healthComponent = shark->HealthComponent;
@@ -341,14 +341,14 @@ namespace Hacks
                     FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                     FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                     FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                    Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }
             }
         }*/
 
-        /*void DrawKraken(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawKraken(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto kraken = reinterpret_cast<AKraken*>(actor);
 
@@ -359,7 +359,7 @@ namespace Hacks
             {
                 return;
             }
-            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
 
             // Get bounds
             FVector origin, extent;
@@ -380,18 +380,18 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
 
                 // Draw tentacles remaining
                 std::wstring tentaclesRemaining = L"Tentacles Remaining: " + std::to_wstring(kraken->NumTentaclesRemaining);
                 FVector2D tentaclesScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, tentaclesRemaining, tentaclesScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(hud, tentaclesRemaining, tentaclesScreen, Drawing::Colour::White);
             }
         }
 
-        void DrawKrakenTentacle(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawKrakenTentacle(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto tentacle = reinterpret_cast<AKrakenTentacle*>(actor);
 
@@ -402,7 +402,7 @@ namespace Hacks
             {
                 return;
             }
-            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
 
             // Get bounds
             FVector origin, extent;
@@ -423,7 +423,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
 
                 // Draw health bar
                 auto healthComponent = tentacle->HealthComponent;
@@ -432,14 +432,14 @@ namespace Hacks
                     FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                     FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
                     FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                    Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
+                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }
             }
         }*/
 
-        void DrawAnimal(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawAnimal(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto animal = reinterpret_cast<AFauna*>(actor);
 
@@ -476,13 +476,13 @@ namespace Hacks
                 name += L" [" + std::to_wstring(distance) + L"m]";
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
             }
         }
 
-        void DrawMermaid(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawMermaid(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto mermaid = reinterpret_cast<AMermaid*>(actor);
 
@@ -507,7 +507,7 @@ namespace Hacks
                 std::wstring name = L"Mermaid ";
 
                 // Check if my mermaid
-                auto localCrewId = UCrewFunctions::GetCrewIdFromActor(client->World, localPlayer);
+                auto localCrewId = UCrewFunctions::GetCrewIdFromActor(world, localPlayer);
                 auto crewIds = mermaid->GetCrewIdsResponsibleForSavingAsCopy();
                 for (int32_t i = 0; i < crewIds.Num(); ++i)
                 {
@@ -522,13 +522,13 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
             }
         }
 
-        void DrawShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawShip(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto ship = reinterpret_cast<AShip*>(actor);
 
@@ -547,7 +547,7 @@ namespace Hacks
                 return;
             }
 
-            //Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
+            Drawing::DrawBoundingBox(world, ship, Drawing::Colour::White);
 
             std::string actorName = actor->GetName();
             std::wstring name = L"Ship";
@@ -577,7 +577,7 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
 
             auto waterInfo = ship->GetInternalWater();
             if (waterInfo)
@@ -587,13 +587,13 @@ namespace Hacks
                 FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
                 float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
                 float waterLevel = waterMax - waterInfo->WaterAmount;
-                Render::Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, waterLevel, waterMax);
+                Drawing::DrawHealthBar(healthTopLeft, healthBottomRight, waterLevel, waterMax);
             }
         }
 
-        void DrawShipFar(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawShipFar(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto ship = reinterpret_cast<AShipNetProxy*>(actor);
 
@@ -640,12 +640,12 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
         }
 
-        /*void DrawGhostShip(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawGhostShip(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto ship = reinterpret_cast<AAggressiveGhostShip*>(actor);
 
@@ -682,17 +682,17 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
 
             // Draw hits remaining
             std::wstring hitsRemaining = L"Hits Remaining: " + std::to_wstring(ship->NumShotsLeftToKill);
             FVector2D hitsScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Render::Drawing::DrawActorString(hud, hitsRemaining, hitsScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(hud, hitsRemaining, hitsScreen, Drawing::Colour::White);
         }*/
 
-        /*void DrawRowboat(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawRowboat(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto rowboat = reinterpret_cast<ARowboat*>(actor);
 
@@ -727,13 +727,13 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
             }
         }*/
 
-        void DrawItem(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawItem(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto item = reinterpret_cast<ABootyProxy*>(actor);
 
@@ -764,22 +764,22 @@ namespace Hacks
             {
                 // Get colour
                 std::string rarity = itemInfo->Rarity.GetName();
-                FLinearColor colour = Render::Drawing::Colour::Blue;
+                ImU32 colour = Drawing::Colour::Blue;
                 if (rarity == "Common")
                 {
-                    colour = Render::Drawing::Colour::Grey;
+                    colour = Drawing::Colour::Grey;
                 }
                 else if (rarity == "Rare")
                 {
-                    colour = Render::Drawing::Colour::Green;
+                    colour = Drawing::Colour::Green;
                 }
                 else if (rarity == "Legendary")
                 {
-                    colour = Render::Drawing::Colour::Purple;
+                    colour = Drawing::Colour::Purple;
                 }
                 else if (rarity == "Mythical")
                 {
-                    colour = Render::Drawing::Colour::Orange;
+                    colour = Drawing::Colour::Orange;
                 }
 
                 // Get name
@@ -789,13 +789,13 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, colour);
+                Drawing::DrawString(name, nameScreen, colour);
             }
         }
 
-        /*void DrawBarrel(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawBarrel(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto barrel = reinterpret_cast<AStorageContainer*>(actor);
 
@@ -833,7 +833,7 @@ namespace Hacks
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
                 auto storageComponent = reinterpret_cast<UStorageContainerComponent*>(actor->GetComponentByClass(UStorageContainerComponent::StaticClass()));
 
                 if (storageComponent)
@@ -853,16 +853,16 @@ namespace Hacks
                             itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
 
                             FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.0f * (i + 1));
-                            Render::Drawing::DrawActorString(hud, itemName, itemNameScreen, Render::Drawing::Colour::White);
+                            Drawing::DrawString(hud, itemName, itemNameScreen, Drawing::Colour::White);
                         }
                     }
                 }
             }
         }*/
 
-        /*void DrawShipwreck(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawShipwreck(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto shipwreck = reinterpret_cast<AShipwreck*>(actor);
 
@@ -884,12 +884,12 @@ namespace Hacks
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
         }*/
 
-        /*void DrawStorm(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawStorm(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto storm = reinterpret_cast<AStorm*>(actor);
 
@@ -901,7 +901,7 @@ namespace Hacks
             {
                 return;
             }
-            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
 
             // Get name
             std::wstring name = storm->SubjectName.c_str();
@@ -911,12 +911,12 @@ namespace Hacks
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
         }*/
 
-        /*void DrawEvent(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        /*void DrawEvent(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto event = reinterpret_cast<AGameplayEventSignal*>(actor);
 
@@ -928,7 +928,7 @@ namespace Hacks
             {
                 return;
             }
-            Render::Drawing::DrawBoundingBox(client, hud, actor, Render::Drawing::Colour::White);
+            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
 
             // Get name
             std::wstring name = L"Event";
@@ -953,12 +953,12 @@ namespace Hacks
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Render::Drawing::DrawActorString(hud, name, nameScreen, Render::Drawing::Colour::White);
+            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
         }*/
 
-        void DrawMap(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawMap(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
             auto table = reinterpret_cast<AMapTable*>(actor);
 
@@ -978,7 +978,7 @@ namespace Hacks
 
             for (int32_t i = 0; i < pins.Num(); ++i)
             {
-                auto pin = pins[i];
+                auto& pin = pins[i];
                 FVector location((pin.X * 100.0f), (pin.Y * 100.0f), 100.0f);
 
                 FVector2D screen;
@@ -989,13 +989,13 @@ namespace Hacks
 
                 int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
                 std::wstring pinText = L"Map Pin [" + std::to_wstring(distance) + L"m]";
-                Render::Drawing::DrawActorString(hud, pinText, screen, Render::Drawing::Colour::White);
+                Drawing::DrawString(pinText, screen, Drawing::Colour::White);
             }
         }
 
-        void DrawDebug(UGameViewportClient* client, AHUD* hud, AActor* actor)
+        void DrawDebug(UWorld* world, AActor* actor)
         {
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
 
             auto location = actor->K2_GetActorLocation();
             FVector2D screen;
@@ -1061,7 +1061,7 @@ namespace Hacks
                 return;
             //name = actor->GetFullName();
             std::wstring namew(name.begin(), name.end());
-            Render::Drawing::DrawActorString(hud, namew, screen, Render::Drawing::Colour::Red);
+            Drawing::DrawString(namew, screen, Drawing::Colour::Red);
         }
     }
 }

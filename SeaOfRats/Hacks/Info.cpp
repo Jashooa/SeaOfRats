@@ -3,8 +3,10 @@
 #include "include/SDK/SDK.h"
 #include "include/spdlog/spdlog.h"
 
+#include <cmath>
+
 #include "Config.h"
-#include "Render/Drawing.h"
+#include "Drawing.h"
 
 using namespace SDK;
 
@@ -12,26 +14,17 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawCrosshair(AHUD* hud)
+        void DrawCrosshair()
         {
-            const float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-            const float centerY = static_cast<float>(hud->Canvas->SizeY) * 0.5f;
-            hud->Canvas->K2_DrawLine(FVector2D(centerX, centerY - 5), FVector2D(centerX, centerY + 5), 2, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-            hud->Canvas->K2_DrawLine(FVector2D(centerX - 5, centerY), FVector2D(centerX + 5, centerY), 2, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-
-            //hud->DrawLine(centerX, centerY - 5, centerX, centerY + 5, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-            //hud->DrawLine(centerX - 5, centerY, centerX + 5, centerY, FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+            const float centerX = std::trunc(Drawing::Window->Size.x * 0.5f);
+            const float centerY = std::trunc(Drawing::Window->Size.y *0.5f);
+            Drawing::DrawLine(FVector2D(centerX, centerY - 5), FVector2D(centerX, centerY + 5 + 1), Drawing::Colour::White);
+            Drawing::DrawLine(FVector2D(centerX - 5, centerY), FVector2D(centerX + 5 + 1, centerY), Drawing::Colour::White);
         }
 
-        void DrawPlayerList(UGameViewportClient* client, AHUD* hud)
+        void DrawPlayerList(UWorld* world)
         {
-            auto world = client->World;
-            if (!world)
-            {
-                return;
-            }
-
-            auto gameState = client->World->GameState;
+            auto gameState = world->GameState;
             if (!gameState)
             {
                 return;
@@ -74,7 +67,7 @@ namespace Hacks
                         break;
                 }
                 //shipType = shipType + L" " + UKismetGuidLibrary::Conv_GuidToString(crew.CrewId).c_str();
-                Render::Drawing::DrawInterfaceString(hud, shipType, FVector2D(positionX, positionY), Render::Drawing::Colour::White, false, false);
+                Drawing::DrawString(shipType, FVector2D(positionX, positionY), Drawing::Colour::White, false, false);
                 positionY += 15.0f;
                 for (int32_t j = 0; j < players.Num(); ++j)
                 {
@@ -157,14 +150,14 @@ namespace Hacks
                     {
                         name = name + L" - " + activity;
                     }
-                    Render::Drawing::DrawInterfaceString(hud, name, FVector2D(positionX + 10.0f, positionY), Render::Drawing::Colour::White, false, false);
+                    Drawing::DrawString(name, FVector2D(positionX + 10.0f, positionY), Drawing::Colour::White, false, false);
                     positionY += 15.0f;
                 }
                 positionY += 10.0f;
             }
         }
 
-        void DrawCompass(UGameViewportClient* client, AHUD* hud)
+        void DrawCompass(UWorld* world)
         {
             static std::vector<const wchar_t*> compassDirections = {
                 L"North",
@@ -185,7 +178,7 @@ namespace Hacks
                 L"North North West"
             };
 
-            auto playerController = client->GameInstance->LocalPlayers[0]->PlayerController;
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto cameraManager = playerController->PlayerCameraManager;
 
             if (!cameraManager)
@@ -198,14 +191,14 @@ namespace Hacks
             int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
             int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
 
-            float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-            Render::Drawing::DrawInterfaceString(hud, std::to_wstring(bearing), FVector2D(centerX, 10), Render::Drawing::Colour::White);
-            Render::Drawing::DrawInterfaceString(hud, compassDirections[index], FVector2D(centerX, 25), Render::Drawing::Colour::White);
+            float centerX = Drawing::Window->Size.x * 0.5f;
+            Drawing::DrawString(std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
+            Drawing::DrawString(compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
         }
 
-        void DrawOxygen(UGameViewportClient* client, AHUD* hud)
+        void DrawOxygen(UWorld* world)
         {
-            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
+            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
             if (!localPlayer->IsInWater())
             {
@@ -218,16 +211,16 @@ namespace Hacks
                 int oxygenLevel = static_cast<int>(drowningComponent->GetOxygenLevel() * 100.0f);
                 if (oxygenLevel < 100)
                 {
-                    float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
+                    float centerX = Drawing::Window->Size.x * 0.5f;
                     std::wstring oxygenText = L"Oxygen: " + std::to_wstring(oxygenLevel) + L"%";
-                    Render::Drawing::DrawInterfaceString(hud, oxygenText, FVector2D(centerX, 50), Render::Drawing::Colour::Red);
+                    Drawing::DrawString(oxygenText, FVector2D(centerX, 50), Drawing::Colour::Red);
                 }
             }
         }
 
-        void DrawWaterLevel(UGameViewportClient* client, AHUD* hud)
+        void DrawWaterLevel(UWorld* world)
         {
-            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
+            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
             auto ship = reinterpret_cast<AShip*>(localPlayer->GetCurrentShip());
             if (ship)
@@ -240,16 +233,16 @@ namespace Hacks
                     if (waterLevel > 10)
                     {
                         std::wstring waterText = L"Water Level: " + std::to_wstring(waterLevel) + L"%";
-                        float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-                        Render::Drawing::DrawInterfaceString(hud, waterText, FVector2D(centerX, 65), Render::Drawing::Colour::Red);
+                        float centerX = Drawing::Window->Size.x * 0.5f;
+                        Drawing::DrawString(waterText, FVector2D(centerX, 65), Drawing::Colour::Red);
                     }
                 }
             }
         }
 
-        void DrawAnchor(UGameViewportClient* client, AHUD* hud)
+        void DrawAnchor(UWorld* world)
         {
-            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(client->GameInstance->LocalPlayers[0]->PlayerController->Pawn);
+            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
             auto parent = localPlayer->GetAttachParentActor();
 
@@ -262,43 +255,49 @@ namespace Hacks
                     int32_t anchorLevel = static_cast<int32_t>(capstan->NetState.TargetRatio * 100.0f);
 
                     std::wstring capstanText = L"Anchor Level: " + std::to_wstring(anchorLevel) + L"%";
-                    float centerX = static_cast<float>(hud->Canvas->SizeX) * 0.5f;
-                    Render::Drawing::DrawInterfaceString(hud, capstanText, FVector2D(centerX, 80), Render::Drawing::Colour::Red);
+                    float centerX = Drawing::Window->Size.x * 0.5f;
+                    Drawing::DrawString(capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
                 }
             }
 
         }
 
-        void Render(UGameViewportClient* client, AHUD* hud)
+        void Render(UWorld* world)
         {
             if (config.info.crosshair)
             {
-                DrawCrosshair(hud);
+                spdlog::debug("DrawCrosshair");
+                DrawCrosshair();
             }
 
             if (config.info.playerList)
             {
-                DrawPlayerList(client, hud);
+                spdlog::debug("DrawPlayerList");
+                DrawPlayerList(world);
             }
 
             if (config.info.compass)
             {
-                DrawCompass(client, hud);
+                spdlog::debug("DrawCompass");
+                DrawCompass(world);
             }
 
             if (config.info.oxygen)
             {
-                DrawOxygen(client, hud);
+                spdlog::debug("DrawOxygen");
+                DrawOxygen(world);
             }
 
             if (config.info.waterLevel)
             {
-                DrawWaterLevel(client, hud);
+                spdlog::debug("DrawWaterLevel");
+                DrawWaterLevel(world);
             }
 
             if (config.info.anchor)
             {
-                DrawAnchor(client, hud);
+                spdlog::debug("DrawAnchor");
+                DrawAnchor(world);
             }
 
         }

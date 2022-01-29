@@ -205,6 +205,7 @@ namespace SDK
     class UWorld : public UObject
     {
     public:
+        static UWorld** GWorld;
         char pad_0x0028[0x0008];
         class ULevel* PersistentLevel; // 0x0030(0x0008)
         char pad_0x0038[0x0020];

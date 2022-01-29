@@ -6,6 +6,8 @@
 
 namespace SDK
 {
+	UWorld** UWorld::GWorld = nullptr;
+
 	// Function Engine.Actor.GetActorBounds
 	void AActor::GetActorBounds(bool bOnlyCollidingComponents, struct FVector* Origin, struct FVector* BoxExtent)
 	{
@@ -13,10 +15,10 @@ namespace SDK
 
 		struct
 		{
-			bool                           bOnlyCollidingComponents;
-			struct FVector                 Origin;
-			struct FVector                 BoxExtent;
-		} params;
+			bool bOnlyCollidingComponents;
+			struct FVector Origin;
+			struct FVector BoxExtent;
+		} params{};
 		params.bOnlyCollidingComponents = bOnlyCollidingComponents;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -35,7 +37,7 @@ namespace SDK
 		struct
 		{
 			class AActor* ReturnValue;
-		} params;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -51,7 +53,7 @@ namespace SDK
 		{
 			class UClass* ComponentClass;
 			class UActorComponent* ReturnValue;
-		} params;
+		} params{};
 		params.ComponentClass = ComponentClass;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -68,7 +70,7 @@ namespace SDK
 		{
 			class AActor* OtherActor;
 			float                          ReturnValue;
-		} params;
+		} params{};
 		params.OtherActor = OtherActor;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -84,7 +86,7 @@ namespace SDK
 		struct
 		{
 			class AActor* ReturnValue;
-		} params;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -98,8 +100,8 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 ReturnValue;
-		} params;
+			struct FVector ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -113,8 +115,8 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 ReturnValue;
-		} params;
+			struct FVector ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -128,8 +130,8 @@ namespace SDK
 
 		struct
 		{
-			struct FRotator                ReturnValue;
-		} params;
+			struct FRotator ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -143,8 +145,8 @@ namespace SDK
 
 		struct
 		{
-			bool                           ReturnValue;
-		} params;
+			bool ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -158,8 +160,8 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 ReturnValue;
-		} params;
+			struct FVector ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -173,8 +175,8 @@ namespace SDK
 
 		struct
 		{
-			struct FTransform              ReturnValue;
-		} params;
+			struct FTransform ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -189,10 +191,10 @@ namespace SDK
 		struct
 		{
 			class AActor* Other;
-			struct FVector                 ViewPoint;
-			bool                           bAlternateChecks;
-			bool                           ReturnValue;
-		} params;
+			struct FVector ViewPoint;
+			bool bAlternateChecks;
+			bool ReturnValue;
+		} params{};
 		params.Other = Other;
 		params.ViewPoint = ViewPoint;
 		params.bAlternateChecks = bAlternateChecks;
@@ -209,8 +211,8 @@ namespace SDK
 
 		struct
 		{
-			float                          Val;
-		} params;
+			float Val;
+		} params{};
 		params.Val = Val;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -223,8 +225,8 @@ namespace SDK
 
 		struct
 		{
-			float                          Val;
-		} params;
+			float Val;
+		} params{};
 		params.Val = Val;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -237,9 +239,9 @@ namespace SDK
 
 		struct
 		{
-			struct FKey                    Key;
-			bool                           ReturnValue;
-		} params;
+			struct FKey Key;
+			bool ReturnValue;
+		} params{};
 		params.Key = Key;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -254,10 +256,10 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 WorldLocation;
-			struct FVector2D               ScreenLocation;
-			bool                           ReturnValue;
-		} params;
+			struct FVector WorldLocation;
+			struct FVector2D ScreenLocation;
+			bool ReturnValue;
+		} params{};
 		params.WorldLocation = WorldLocation;
 
 		UObject::ProcessEvent(this, fn, &params);
@@ -275,12 +277,12 @@ namespace SDK
 
 		struct
 		{
-			struct FLinearColor            RectColor;
-			float                          ScreenX;
-			float                          ScreenY;
-			float                          ScreenW;
-			float                          ScreenH;
-		} params;
+			struct FLinearColor RectColor;
+			float ScreenX;
+			float ScreenY;
+			float ScreenW;
+			float ScreenH;
+		} params{};
 		params.RectColor = RectColor;
 		params.ScreenX = ScreenX;
 		params.ScreenY = ScreenY;
@@ -297,8 +299,8 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 ReturnValue;
-		} params;
+			struct FVector ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -312,8 +314,8 @@ namespace SDK
 
 		struct
 		{
-			struct FRotator                ReturnValue;
-		} params;
+			struct FRotator ReturnValue;
+		} params{};
 
 		UObject::ProcessEvent(this, fn, &params);
 
@@ -327,10 +329,10 @@ namespace SDK
 
 		struct
 		{
-			struct FGuid                   A;
-			struct FGuid                   B;
-			bool                           ReturnValue;
-		} params;
+			struct FGuid A;
+			struct FGuid B;
+			bool ReturnValue;
+		} params{};
 		params.A = A;
 		params.B = B;
 
@@ -347,10 +349,10 @@ namespace SDK
 
 		struct
 		{
-			struct FVector                 Start;
-			struct FVector                 Target;
-			struct FRotator                ReturnValue;
-		} params;
+			struct FVector Start;
+			struct FVector Target;
+			struct FRotator ReturnValue;
+		} params{};
 		params.Start = Start;
 		params.Target = Target;
 
@@ -367,9 +369,9 @@ namespace SDK
 
 		struct
 		{
-			struct FRotator                InRot;
-			struct FVector                 ReturnValue;
-		} params;
+			struct FRotator InRot;
+			struct FVector ReturnValue;
+		} params{};
 		params.InRot = InRot;
 
 		static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
@@ -385,10 +387,10 @@ namespace SDK
 
 		struct
 		{
-			struct FRotator                A;
-			struct FRotator                B;
-			struct FRotator                ReturnValue;
-		} params;
+			struct FRotator A;
+			struct FRotator B;
+			struct FRotator ReturnValue;
+		} params{};
 		params.A = A;
 		params.B = B;
 
@@ -405,9 +407,9 @@ namespace SDK
 
 		struct
 		{
-			struct FText                   InText;
-			class FString                  ReturnValue;
-		} params;
+			struct FText InText;
+			class FString ReturnValue;
+		} params{};
 		params.InText = InText;
 
 		static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetTextLibrary");
@@ -423,11 +425,11 @@ namespace SDK
 
 		struct
 		{
-			struct FVector2D               ScreenPositionA;
-			struct FVector2D               ScreenPositionB;
-			float                          Thickness;
-			struct FLinearColor            RenderColor;
-		} params;
+			struct FVector2D ScreenPositionA;
+			struct FVector2D ScreenPositionB;
+			float Thickness;
+			struct FLinearColor RenderColor;
+		} params{};
 		params.ScreenPositionA = ScreenPositionA;
 		params.ScreenPositionB = ScreenPositionB;
 		params.Thickness = Thickness;
@@ -444,17 +446,17 @@ namespace SDK
 		struct
 		{
 			class UFont* RenderFont;
-			class FString                  RenderText;
-			struct FVector2D               ScreenPosition;
-			struct FLinearColor            RenderColor;
-			float                          Kerning;
-			struct FLinearColor            ShadowColor;
-			struct FVector2D               ShadowOffset;
-			bool                           bCentreX;
-			bool                           bCentreY;
-			bool                           bOutlined;
-			struct FLinearColor            OutlineColor;
-		} params;
+			class FString RenderText;
+			struct FVector2D ScreenPosition;
+			struct FLinearColor RenderColor;
+			float Kerning;
+			struct FLinearColor ShadowColor;
+			struct FVector2D ShadowOffset;
+			bool bCentreX;
+			bool bCentreY;
+			bool bOutlined;
+			struct FLinearColor OutlineColor;
+		} params{};
 		params.RenderFont = RenderFont;
 		params.RenderText = RenderText;
 		params.ScreenPosition = ScreenPosition;

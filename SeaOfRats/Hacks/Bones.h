@@ -305,5 +305,5 @@ namespace Hacks
     };
 
     FVector GetBoneLocation(ACharacter* player, EBones bone);
-    void DrawBones(UGameViewportClient* client, AHUD* hud, AActor* actor);
+    void DrawBones(UWorld* world, AActor* actor);
 }

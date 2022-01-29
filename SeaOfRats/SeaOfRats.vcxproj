@@ -180,12 +180,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Drawing.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hacks\Aimbot.cpp" />
     <ClCompile Include="Hacks\Bones.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\Hacks.cpp" />
     <ClCompile Include="Hacks\Info.cpp" />
+    <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\SDK\SoT\Athena.cpp" />
     <ClCompile Include="include\SDK\SoT\Engine.cpp" />
@@ -193,11 +196,7 @@
     <ClCompile Include="include\SDK\UE4\Basic.cpp" />
     <ClCompile Include="include\SDK\UE4\CoreUObject.cpp" />
     <ClCompile Include="include\SDK\UE4\UE4.cpp" />
-    <ClCompile Include="Render\Drawing.cpp" />
-    <ClCompile Include="Render\GUI.cpp" />
     <ClCompile Include="SeaOfRats.cpp" />
-    <ClCompile Include="Hooks\DirectX.cpp" />
-    <ClCompile Include="Hooks\Game.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_dx11.cpp" />
@@ -207,12 +206,15 @@
     <ClCompile Include="Utilities\Hooking.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Drawing.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="Hacks\Aimbot.h" />
     <ClInclude Include="Hacks\Bones.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP.h" />
     <ClInclude Include="Hacks\Hacks.h" />
     <ClInclude Include="Hacks\Info.h" />
+    <ClInclude Include="Hooks.h" />
     <ClInclude Include="include\SDK\SDK.h" />
     <ClInclude Include="include\SDK\SoT\Athena.h" />
     <ClInclude Include="include\SDK\SoT\AthenaAI.h" />
@@ -234,11 +236,7 @@
     <ClInclude Include="include\SDK\UE4\UE4.h" />
     <ClInclude Include="include\SDK\UE4\Vector.h" />
     <ClInclude Include="include\SDK\UE4\Vector2D.h" />
-    <ClInclude Include="Render\Drawing.h" />
-    <ClInclude Include="Render\GUI.h" />
     <ClInclude Include="SeaOfRats.h" />
-    <ClInclude Include="Hooks\DirectX.h" />
-    <ClInclude Include="Hooks\Game.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />
     <ClInclude Include="include\imgui\imgui_impl_dx11.h" />
