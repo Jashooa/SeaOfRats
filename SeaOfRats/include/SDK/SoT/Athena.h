@@ -269,6 +269,12 @@ namespace SDK
         char pad_0x0500[0x019C];
         struct FName Rarity; // 0x069C(0x0008)
         char pad_0x06A4[0x0064];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.BootyItemInfo");
+            return ptr;
+        }
     };
 
     // Class Athena.WieldableItem

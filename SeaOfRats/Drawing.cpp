@@ -36,14 +36,12 @@ namespace Drawing
         Window->DrawList->AddLine(ImVec2(start.X, start.Y), ImVec2(end.X, end.Y), colour, thickness);
     }
 
-    void DrawString(const std::wstring string, const FVector2D& position, const ImU32 colour, bool centreX , bool centreY)
+    void DrawString(const std::string string, const FVector2D& position, const ImU32 colour, bool centreX , bool centreY)
     {
-        std::string text(string.begin(), string.end());
-
         ImVec2 newPosition(position.X, position.Y);
         if (centreX || centreY)
         {
-            auto textSize = ImGui::CalcTextSize(text.c_str());
+            auto textSize = ImGui::CalcTextSize(string.c_str());
             if (centreX)
             {
                 newPosition.x -= textSize.x * 0.5f;
@@ -55,13 +53,28 @@ namespace Drawing
             }
         }
 
-        Window->DrawList->AddText(ImVec2(newPosition.x + 1, newPosition.y + 1), Colour::Black, text.c_str());
-        Window->DrawList->AddText(newPosition, colour, text.c_str());
+        Window->DrawList->AddText(ImVec2(newPosition.x + 1, newPosition.y + 1), Colour::Black, string.c_str());
+        Window->DrawList->AddText(newPosition, colour, string.c_str());
     }
 
-    void DrawRect(const FVector2D& minPosition, const FVector2D& maxPosition, const ImU32 colour, const float thickness = 1.0f)
+    void DrawCircle(const FVector2D& position, const float radius, const ImU32 colour, const float thickness)
+    {
+        Window->DrawList->AddCircle(ImVec2(position.X, position.Y), radius, colour, 0, thickness);
+    }
+
+    void DrawCircleFilled(const FVector2D& position, const float radius, const ImU32 colour)
+    {
+        Window->DrawList->AddCircleFilled(ImVec2(position.X, position.Y), radius, colour, 0);
+    }
+
+    void DrawRect(const FVector2D& minPosition, const FVector2D& maxPosition, const ImU32 colour, const float thickness)
     {
         Window->DrawList->AddRect(ImVec2(minPosition.X, minPosition.Y), ImVec2(maxPosition.X, maxPosition.Y), colour, 0.0f, 0, thickness);
+    }
+
+    void DrawRectFilled(const FVector2D& minPosition, const FVector2D& maxPosition, const ImU32 colour)
+    {
+        Window->DrawList->AddRectFilled(ImVec2(minPosition.X, minPosition.Y), ImVec2(maxPosition.X, maxPosition.Y), colour, 0.0f, 0);
     }
 
     void DrawHealthBar(const FVector2D& minPosition, const FVector2D& maxPosition, float currentHealth, float maxHealth)
@@ -87,19 +100,22 @@ namespace Drawing
 
         FVector origin, extent;
         actor->GetActorBounds(true, &origin, &extent);
-        FRotator rotation = actor->K2_GetActorRotation();
+        /*FRotator rotation = actor->K2_GetActorRotation();
 
         FVector topLeft;
         FVector bottomRight;
         topLeft = { -extent.X, 0.f, extent.Z };
         bottomRight = { extent.X, 0.f, -extent.Z };
 
-        FVector2D topLeftScreen, bottomRightScreen;
         FTransform const transform(rotation);
 
         topLeft = transform.TransformPosition(topLeft) + origin;
-        bottomRight = transform.TransformPosition(bottomRight) + origin;
+        bottomRight = transform.TransformPosition(bottomRight) + origin;*/
 
+        FVector topLeft(origin.X - extent.X, origin.Y, origin.Z + extent.Z);
+        FVector bottomRight(origin.X + extent.X, origin.Y, origin.Z - extent.Z);
+
+        FVector2D topLeftScreen, bottomRightScreen;
         if (!playerController->ProjectWorldLocationToScreen(topLeft, &topLeftScreen) || !playerController->ProjectWorldLocationToScreen(bottomRight, &bottomRightScreen))
         {
             return;

@@ -61,13 +61,23 @@ namespace Hacks
 
             FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
             auto currentIndex = mesh->CurrentReadSpaceBases;
+            auto spaceBases = mesh->SpaceBasesArray[currentIndex];
+            if (spaceBases.Num() < 1)
+            {
+                return;
+            }
+
             for (const auto& bones : skeleton)
             {
                 FVector2D previousBone;
 
                 for (const auto bone : bones)
                 {
-                    FTransform boneTransform = mesh->SpaceBasesArray[currentIndex][static_cast<int>(bone)];
+                    if (bone >= spaceBases.Num())
+                    {
+                        return;
+                    }
+                    FTransform boneTransform = spaceBases[static_cast<int>(bone)];
                     FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
                     FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
                     FVector boneLocation = worldBoneMatrix.GetOrigin();

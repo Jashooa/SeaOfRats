@@ -23,7 +23,7 @@ namespace SDK
         struct FName Name;
         class UObject* Outer;
 
-        static inline class TUObjectArray& GetGlobalObjects()
+        static inline class TUObjectArray& GetObjects()
         {
             return GObjects->ObjObjects;
         }
@@ -35,9 +35,9 @@ namespace SDK
         template<typename T>
         static T* FindObject(const std::string& name)
         {
-            for (int i = 0; i < GetGlobalObjects().Num(); ++i)
+            for (int i = 0; i < GetObjects().Num(); ++i)
             {
-                auto object = GetGlobalObjects().GetByIndex(i);
+                auto object = GetObjects().GetByIndex(i);
 
                 if (object == nullptr)
                 {
@@ -60,7 +60,7 @@ namespace SDK
         template<typename T>
         static T* GetObjectCasted(std::size_t index)
         {
-            return static_cast<T*>(GetGlobalObjects().GetByIndex(index));
+            return static_cast<T*>(GetObjects().GetByIndex(index));
         }
 
         bool IsA(class UClass* cmp) const;

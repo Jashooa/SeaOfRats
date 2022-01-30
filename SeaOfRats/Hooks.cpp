@@ -50,14 +50,14 @@ void HookGame()
     UObject::GObjects = reinterpret_cast<decltype(UObject::GObjects)>(gObjectsAddress + gObjectsOffset + 6);
     spdlog::info("gObjectsAddress Address: {:p}", reinterpret_cast<void*>(gObjectsAddress));
     spdlog::info("GObjects Address: {:p}", reinterpret_cast<void*>(UObject::GObjects));
-    spdlog::info("GObjects.Num(): {}", UObject::GetGlobalObjects().Num());
+    spdlog::info("GObjects.Num(): {}", UObject::GetObjects().Num());
 
     const auto gNamesAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\x1D\x00\x00\x00\x00\x48\x85\x00\x75\x3D"), "xxx????xx?xx");
     const auto gNamesOffset = *reinterpret_cast<uint32_t*>(gNamesAddress + 3);
     FName::GNames = reinterpret_cast<decltype(FName::GNames)>(*reinterpret_cast<uintptr_t*>(gNamesAddress + gNamesOffset + 7));
     spdlog::info("gNamesAddress Address: {:p}", reinterpret_cast<void*>(gNamesAddress));
     spdlog::info("GNames Address: {:p}", reinterpret_cast<void*>(FName::GNames));
-    spdlog::info("GNames.Num(): {}", FName::GetGlobalNames().Num());
+    spdlog::info("GNames.Num(): {}", FName::GetNames().Num());
 
     const auto gWorldAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x88\x00\x00\x00\x00\x48\x85\xC9\x74\x06\x48\x8B\x49\x70"), "xxx????xxx????xxxxxxxxx");
     const auto gWorldOffset = *reinterpret_cast<uint32_t*>(gWorldAddress + 3);

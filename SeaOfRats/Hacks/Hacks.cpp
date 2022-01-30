@@ -121,7 +121,7 @@ namespace Hacks
                 {
                     if (config.esp.player.enable)
                     {
-                        if (config.aim.player.enable)
+                        if (config.aim.enable && config.aim.player.enable)
                         {
                             spdlog::debug("Aimbot::CalculateAim");
                             Aimbot::CalculateAim(world, actor);
@@ -136,7 +136,7 @@ namespace Hacks
                 {
                     if (config.esp.skeleton.enable)
                     {
-                        if (config.aim.skeleton.enable)
+                        if (config.aim.enable && config.aim.skeleton.enable)
                         {
                             spdlog::debug("Aimbot::CalculateAim");
                             Aimbot::CalculateAim(world, actor);

@@ -17,7 +17,7 @@ namespace Hacks
         void DrawCrosshair()
         {
             const float centerX = std::trunc(Drawing::Window->Size.x * 0.5f);
-            const float centerY = std::trunc(Drawing::Window->Size.y *0.5f);
+            const float centerY = std::trunc(Drawing::Window->Size.y * 0.5f);
             Drawing::DrawLine(FVector2D(centerX, centerY - 5), FVector2D(centerX, centerY + 5 + 1), Drawing::Colour::White);
             Drawing::DrawLine(FVector2D(centerX - 5, centerY), FVector2D(centerX + 5 + 1, centerY), Drawing::Colour::White);
         }
@@ -50,20 +50,20 @@ namespace Hacks
             {
                 FCrew crew = crews[i];
                 auto players = crew.Players;
-                std::wstring shipType;
+                std::string shipType;
                 switch (crew.CrewSessionTemplate.MaxMatchmakingPlayers)
                 {
                     case 2:
-                        shipType = L"Sloop";
+                        shipType = "Sloop";
                         break;
                     case 3:
-                        shipType = L"Brigantine";
+                        shipType = "Brigantine";
                         break;
                     case 4:
-                        shipType = L"Galleon";
+                        shipType = "Galleon";
                         break;
                     default:
-                        shipType = L"";
+                        shipType = "";
                         break;
                 }
                 //shipType = shipType + L" " + UKismetGuidLibrary::Conv_GuidToString(crew.CrewId).c_str();
@@ -72,83 +72,87 @@ namespace Hacks
                 for (int32_t j = 0; j < players.Num(); ++j)
                 {
                     auto player = reinterpret_cast<AAthenaPlayerState*>(players[j]);
-                    
-                    std::wstring activity = L"";
+                    if (!player)
+                    {
+                        continue;
+                    }
+
+                    std::string activity = "";
                     switch (player->GetPlayerActivity())
                     {
                         case EPlayerActivityType::EPlayerActivityType__None:
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Bailing:
-                            activity = L"Bailing";
+                            activity = "Bailing";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Cannon:
-                            activity = L"Cannon";
+                            activity = "Cannon";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Cannon_END:
-                            activity = L"Cannon";
+                            activity = "Cannon";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Capstan:
-                            activity = L"Capstan";
+                            activity = "Capstan";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Capstan_END:
-                            activity = L"Capstan";
+                            activity = "Capstan";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__CarryingBooty:
-                            activity = L"Carrying Booty";
+                            activity = "Carrying Booty";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__CarryingBooty_END:
-                            activity = L"Carrying Booty";
+                            activity = "Carrying Booty";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Dead:
-                            activity = L"Dead";
+                            activity = "Dead";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Dead_END:
-                            activity = L"Dead";
+                            activity = "Dead";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Digging:
-                            activity = L"Digging";
+                            activity = "Digging";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Dousing:
-                            activity = L"Dousing";
+                            activity = "Dousing";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__EmptyingBucket:
-                            activity = L"Emptying Bucket";
+                            activity = "Emptying Bucket";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Harpoon:
-                            activity = L"Harpoon";
+                            activity = "Harpoon";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Harpoon_END:
-                            activity = L"Harpoon";
+                            activity = "Harpoon";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__LoseHealth:
-                            activity = L"Losing Health";
+                            activity = "Losing Health";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Repairing:
-                            activity = L"Repairing";
+                            activity = "Repairing";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Sails:
-                            activity = L"Sails";
+                            activity = "Sails";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Sails_END:
-                            activity = L"Sails";
+                            activity = "Sails";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__UndoingRepair:
-                            activity = L"Undoing Repair";
+                            activity = "Undoing Repair";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Wheel:
-                            activity = L"Wheel";
+                            activity = "Wheel";
                             break;
                         case EPlayerActivityType::EPlayerActivityType__Wheel_END:
-                            activity = L"Wheel";
+                            activity = "Wheel";
                             break;
                         default:
                             break;
                     }
 
-                    std::wstring name = player->PlayerName.c_str();
+                    std::string name = player->PlayerName.ToString();
                     if (!activity.empty())
                     {
-                        name = name + L" - " + activity;
+                        name = name + " - " + activity;
                     }
                     Drawing::DrawString(name, FVector2D(positionX + 10.0f, positionY), Drawing::Colour::White, false, false);
                     positionY += 15.0f;
@@ -159,23 +163,23 @@ namespace Hacks
 
         void DrawCompass(UWorld* world)
         {
-            static std::vector<const wchar_t*> compassDirections = {
-                L"North",
-                L"North North East",
-                L"North East",
-                L"East North East",
-                L"East",
-                L"East South East",
-                L"South East",
-                L"South South East",
-                L"South",
-                L"South South West",
-                L"South West",
-                L"West South West",
-                L"West",
-                L"West North West",
-                L"North West",
-                L"North North West"
+            static std::vector<const char*> compassDirections = {
+                "North",
+                "North North East",
+                "North East",
+                "East North East",
+                "East",
+                "East South East",
+                "South East",
+                "South South East",
+                "South",
+                "South South West",
+                "South West",
+                "West South West",
+                "West",
+                "West North West",
+                "North West",
+                "North North West"
             };
 
             auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
@@ -192,7 +196,7 @@ namespace Hacks
             int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
 
             float centerX = Drawing::Window->Size.x * 0.5f;
-            Drawing::DrawString(std::to_wstring(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
+            Drawing::DrawString(std::to_string(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
             Drawing::DrawString(compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
         }
 
@@ -212,7 +216,7 @@ namespace Hacks
                 if (oxygenLevel < 100)
                 {
                     float centerX = Drawing::Window->Size.x * 0.5f;
-                    std::wstring oxygenText = L"Oxygen: " + std::to_wstring(oxygenLevel) + L"%";
+                    std::string oxygenText = "Oxygen: " + std::to_string(oxygenLevel) + "%";
                     Drawing::DrawString(oxygenText, FVector2D(centerX, 50), Drawing::Colour::Red);
                 }
             }
@@ -232,7 +236,7 @@ namespace Hacks
                     int32_t waterLevel = static_cast<int32_t>((waterInfo->WaterAmount / waterMax) * 100.0f);
                     if (waterLevel > 10)
                     {
-                        std::wstring waterText = L"Water Level: " + std::to_wstring(waterLevel) + L"%";
+                        std::string waterText = "Water Level: " + std::to_string(waterLevel) + "%";
                         float centerX = Drawing::Window->Size.x * 0.5f;
                         Drawing::DrawString(waterText, FVector2D(centerX, 65), Drawing::Colour::Red);
                     }
@@ -254,7 +258,7 @@ namespace Hacks
                     auto capstan = reinterpret_cast<ACapstan*>(parentParent);
                     int32_t anchorLevel = static_cast<int32_t>(capstan->NetState.TargetRatio * 100.0f);
 
-                    std::wstring capstanText = L"Anchor Level: " + std::to_wstring(anchorLevel) + L"%";
+                    std::string capstanText = "Anchor Level: " + std::to_string(anchorLevel) + "%";
                     float centerX = Drawing::Window->Size.x * 0.5f;
                     Drawing::DrawString(capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
                 }
@@ -266,7 +270,6 @@ namespace Hacks
         {
             if (config.info.crosshair)
             {
-                spdlog::debug("DrawCrosshair");
                 DrawCrosshair();
             }
 

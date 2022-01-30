@@ -81,9 +81,9 @@ namespace Hacks
                 }*/
 
                 // Get name
-                std::wstring name = player->PlayerState->PlayerName.c_str();
+                std::string name = player->PlayerState->PlayerName.ToString();
                 int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
+                name += " [" + std::to_string(distance) + "m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
@@ -106,19 +106,23 @@ namespace Hacks
                 }
 
                 // Draw item info
-                auto wieldedItem = reinterpret_cast<AWieldableItem*>(player->WieldedItemComponent->CurrentlyWieldedItem);
-                if (wieldedItem)
+                auto wieldedItemComponent = player->WieldedItemComponent;
+                if (wieldedItemComponent)
                 {
-                    auto itemInfo = wieldedItem->ItemInfo;
-                    if (itemInfo)
+                    auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem);
+                    if (wieldedItem)
                     {
-                        auto itemDesc = itemInfo->Desc;
-                        if (itemDesc)
+                        auto itemInfo = wieldedItem->ItemInfo;
+                        if (itemInfo)
                         {
-                            std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
+                            auto itemDesc = itemInfo->Desc;
+                            if (itemDesc)
+                            {
+                                std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
 
-                            FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
-                            Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
+                                FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
+                                Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
+                            }
                         }
                     }
                 }
@@ -144,8 +148,8 @@ namespace Hacks
             {
                 return;
             }
-            //Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-            //Drawing::DrawBoundingRect(client, hud, actor, Drawing::Colour::White);
+            //Drawing::DrawBoundingBox(world, actor, Drawing::Colour::White);
+            Drawing::DrawBoundingRect(world, actor, Drawing::Colour::White);
             DrawBones(world, actor);
 
             // Get bounds
@@ -158,72 +162,72 @@ namespace Hacks
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
                 // Get name
-                std::wstring name = L"Skeleton";
+                std::string name = "Skeleton";
                 /*if (skeleton->AssignedMesh)
                 {
                     std::string meshName = skeleton->AssignedMesh->GetName();
                     if (meshName.find("skellyshadow") != std::string::npos)
                     {
-                        name = L"Shadow " + name;
+                        name = "Shadow " + name;
                     }
                     else if (meshName.find("skellymetal") != std::string::npos)
                     {
-                        name = L"Metal " + name;
+                        name = "Metal " + name;
                     }
                     else if (meshName.find("skellyplant") != std::string::npos)
                     {
-                        name = L"Plant " + name;
+                        name = "Plant " + name;
                     }
                     else if (meshName.find("skellyash") != std::string::npos)
                     {
-                        name = L"Ashen " + name;
+                        name = "Ashen " + name;
                     }
 
                     if (meshName.find("_cap_") != std::string::npos)
                     {
-                        name += L" Captain";
+                        name += " Captain";
                     }
 
-                    name += L" Mesh: " + std::wstring(meshName.begin(), meshName.end());
+                    name += " Mesh: " + meshName;
 
                     if (skeleton->TeamColorTexture)
                     {
                         std::string skeletonColour = skeleton->TeamColorTexture->GetName();
                         /*if (skeletonColour.find("venom") != std::string::npos)
                         {
-                            name = L"Purple " + name;
+                            name = "Purple " + name;
                         }
                         else if (skeletonColour.find("shark") != std::string::npos)
                         {
-                            name = L"Blue " + name;
+                            name = "Blue " + name;
                         }
                         else if (skeletonColour.find("lightning") != std::string::npos)
                         {
-                            name = L"White " + name;
+                            name = "White " + name;
                         }
                         else if (skeletonColour.find("player") != std::string::npos)
                         {
-                            name = L"Pink " + name;
+                            name = "Pink " + name;
                         }
                         else if (skeletonColour.find("skeleton") != std::string::npos)
                         {
-                            name = L"Green " + name;
+                            name = "Green " + name;
                         }*/
                         /*if (skeletonColour.find("_red_") != std::string::npos)
                         {
-                            name = L"Red " + name;
+                            name = "Red " + name;
                         }
                         else if (skeletonColour.find("_green_") != std::string::npos)
                         {
-                            name = L"Green " + name;
+                            name = "Green " + name;
                         }
                         else if (skeletonColour.find("_blue_") != std::string::npos)
                         {
-                            name = L"Blue " + name;
+                            name = "Blue " + name;
                         }
                         else
                         {
-                            name += L" Texture: " + std::wstring(skeletonColour.begin(), skeletonColour.end());
+                            name += " Texture: " + skeletonColour;
                         }
                     }
                 }*/
@@ -249,7 +253,7 @@ namespace Hacks
                     Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
                 }*/
                 int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
+                name += " [" + std::to_string(distance) + "m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
@@ -273,18 +277,22 @@ namespace Hacks
                 }*/
 
                 // Draw item info
-                auto wieldedItem = reinterpret_cast<AWieldableItem*>(skeleton->WieldedItemComponent->CurrentlyWieldedItem);
-                if (wieldedItem)
+                auto wieldedItemComponent = skeleton->WieldedItemComponent;
+                if (wieldedItemComponent)
                 {
-                    auto itemInfo = wieldedItem->ItemInfo;
-                    if (itemInfo)
+                    auto wieldedItem = reinterpret_cast<AWieldableItem*>(skeleton->WieldedItemComponent->CurrentlyWieldedItem);
+                    if (wieldedItem)
                     {
-                        auto itemDesc = itemInfo->Desc;
-                        if (itemDesc)
+                        auto itemInfo = wieldedItem->ItemInfo;
+                        if (itemInfo)
                         {
-                            std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
-                            FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                            Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
+                            auto itemDesc = itemInfo->Desc;
+                            if (itemDesc)
+                            {
+                                std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
+                                FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                                Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
+                            }
                         }
                     }
                 }
@@ -471,9 +479,9 @@ namespace Hacks
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
                 // Get name
-                std::wstring name = UKismetTextLibrary::Conv_TextToString(animal->DisplayName).c_str();
+                std::string name = UKismetTextLibrary::Conv_TextToString(animal->DisplayName).ToString();
                 int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
+                name += " [" + std::to_string(distance) + "m]";
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                 Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
@@ -504,7 +512,7 @@ namespace Hacks
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
                 // Get name
-                std::wstring name = L"Mermaid ";
+                std::string name = "Mermaid ";
 
                 // Check if my mermaid
                 auto localCrewId = UCrewFunctions::GetCrewIdFromActor(world, localPlayer);
@@ -513,12 +521,12 @@ namespace Hacks
                 {
                     if (UKismetGuidLibrary::EqualEqual_GuidGuid(crewIds[i], localCrewId))
                     {
-                        name = L"My " + name;
+                        name = "My " + name;
                     }
                 }
 
                 int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
+                name += " [" + std::to_string(distance) + "m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
@@ -547,34 +555,34 @@ namespace Hacks
                 return;
             }
 
-            Drawing::DrawBoundingBox(world, ship, Drawing::Colour::White);
+            //Drawing::DrawBoundingBox(world, ship, Drawing::Colour::White);
 
             std::string actorName = actor->GetName();
-            std::wstring name = L"Ship";
+            std::string name = "Ship";
             if (actorName.find("Large") != std::string::npos)
             {
-                name = L"Galleon";
+                name = "Galleon";
             }
             else if (actorName.find("Medium") != std::string::npos)
             {
-                name = L"Brigantine";
+                name = "Brigantine";
             }
             else if (actorName.find("Small") != std::string::npos)
             {
-                name = L"Sloop";
+                name = "Sloop";
             }
 
             if (actorName.find("AI") != std::string::npos)
             {
-                name = L"Skeleton " + name;
+                name = "Skeleton " + name;
             }
 
             if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
             {
-                name = L"My " + name;
+                name = "My " + name;
             }
 
-            name += L" [" + std::to_wstring(distance) + L"m]";
+            name += " [" + std::to_string(distance) + "m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
             Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
@@ -613,31 +621,31 @@ namespace Hacks
             }
 
             std::string actorName = actor->GetName();
-            std::wstring name = L"Ship";
+            std::string name = "Ship";
             if (actorName.find("Large") != std::string::npos)
             {
-                name = L"Galleon";
+                name = "Galleon";
             }
             else if (actorName.find("Medium") != std::string::npos)
             {
-                name = L"Brigantine";
+                name = "Brigantine";
             }
             else if (actorName.find("Small") != std::string::npos)
             {
-                name = L"Sloop";
+                name = "Sloop";
             }
 
             if (actorName.find("AI") != std::string::npos)
             {
-                name = L"Skeleton " + name;
+                name = "Skeleton " + name;
             }
 
             if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
             {
-                name = L"My " + name;
+                name = "My " + name;
             }
 
-            name += L" [" + std::to_wstring(distance) + L"m]";
+            name += " [" + std::to_string(distance) + "m]";
 
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
             Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
@@ -745,14 +753,6 @@ namespace Hacks
                 return;
             }
 
-            // Get item info
-            auto itemInfo = reinterpret_cast<ABootyItemInfo*>(item->ItemInfo);
-            if (!itemInfo)
-            {
-                spdlog::warn("ItemInfo null");
-                return;
-            }
-
             // Get bounds
             FVector origin, extent;
             actor->GetActorBounds(true, &origin, &extent);
@@ -762,30 +762,45 @@ namespace Hacks
             FVector2D topScreen;
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
-                // Get colour
-                std::string rarity = itemInfo->Rarity.GetName();
                 ImU32 colour = Drawing::Colour::Blue;
-                if (rarity == "Common")
+
+                // Get item info
+                if (!item->ItemInfo)
                 {
-                    colour = Drawing::Colour::Grey;
-                }
-                else if (rarity == "Rare")
-                {
-                    colour = Drawing::Colour::Green;
-                }
-                else if (rarity == "Legendary")
-                {
-                    colour = Drawing::Colour::Purple;
-                }
-                else if (rarity == "Mythical")
-                {
-                    colour = Drawing::Colour::Orange;
+                    spdlog::warn("ItemInfo null");
+                    return;
                 }
 
+                if (item->ItemInfo->IsA(ABootyItemInfo::StaticClass()))
+                {
+                    auto bootyItemInfo = reinterpret_cast<ABootyItemInfo*>(item->ItemInfo);
+
+                    // Get colour
+                    std::string rarity = bootyItemInfo->Rarity.GetName();
+                    if (rarity == "Common")
+                    {
+                        colour = Drawing::Colour::Grey;
+                    }
+                    else if (rarity == "Rare")
+                    {
+                        colour = Drawing::Colour::Green;
+                    }
+                    else if (rarity == "Legendary")
+                    {
+                        colour = Drawing::Colour::Purple;
+                    }
+                    else if (rarity == "Mythical")
+                    {
+                        colour = Drawing::Colour::Orange;
+                    }
+                }
+
+                Drawing::DrawCircleFilled(screen, 3.0f, colour);
+
                 // Get name
-                std::wstring name = UKismetTextLibrary::Conv_TextToString(itemInfo->Desc->Title).c_str();
+                std::string name = UKismetTextLibrary::Conv_TextToString(item->ItemInfo->Desc->Title).ToString();
                 int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
+                name += " [" + std::to_string(distance) + "m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
@@ -963,12 +978,6 @@ namespace Hacks
             auto table = reinterpret_cast<AMapTable*>(actor);
 
             auto parentShip = actor->GetAttachParentActor();
-            /*auto currentShip = reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)->GetCurrentShip();
-            if (parentShip != currentShip)
-            {
-                return;
-            }*/
-
             if (!UCrewFunctions::IsActorMemberOfCharactersCrew(parentShip, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
             {
                 return;
@@ -988,7 +997,7 @@ namespace Hacks
                 }
 
                 int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
-                std::wstring pinText = L"Map Pin [" + std::to_wstring(distance) + L"m]";
+                std::string pinText = "Map Pin [" + std::to_string(distance) + "m]";
                 Drawing::DrawString(pinText, screen, Drawing::Colour::White);
             }
         }
@@ -1060,8 +1069,7 @@ namespace Hacks
             if (name.find("StaticMeshActor") != std::string::npos)
                 return;
             //name = actor->GetFullName();
-            std::wstring namew(name.begin(), name.end());
-            Drawing::DrawString(namew, screen, Drawing::Colour::Red);
+            Drawing::DrawString(name, screen, Drawing::Colour::Red);
         }
     }
 }

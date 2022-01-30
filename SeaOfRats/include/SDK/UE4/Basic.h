@@ -4,6 +4,9 @@
     #pragma pack(push, 0x8)
 #endif
 
+#include <Windows.h>
+
+#include <codecvt>
 #include <locale>
 #include <string>
 #include <unordered_set>
@@ -141,7 +144,7 @@ namespace SDK
 
         inline bool IsWide() const
         {
-            return Index & NAME_WIDE_MASK;
+            return (Index & NAME_WIDE_MASK);
         }
 
         inline const char* GetAnsiName() const
@@ -212,7 +215,7 @@ namespace SDK
 
             for (auto i : cache)
             {
-                if (!std::strcmp(GetGlobalNames()[i]->GetAnsiName(), nameToFind))
+                if (!std::strcmp(GetNames()[i]->GetAnsiName(), nameToFind))
                 {
                     ComparisonIndex = i;
 
@@ -220,11 +223,11 @@ namespace SDK
                 }
             }
 
-            for (auto i = 0; i < GetGlobalNames().Num(); ++i)
+            for (auto i = 0; i < GetNames().Num(); ++i)
             {
-                if (GetGlobalNames()[i] != nullptr)
+                if (GetNames()[i] != nullptr)
                 {
-                    if (!std::strcmp(GetGlobalNames()[i]->GetAnsiName(), nameToFind))
+                    if (!std::strcmp(GetNames()[i]->GetAnsiName(), nameToFind))
                     {
                         cache.insert(i);
 
@@ -237,14 +240,24 @@ namespace SDK
         }
 
         static TNameEntryArray* GNames;
-        static inline TNameEntryArray& GetGlobalNames()
+        static inline TNameEntryArray& GetNames()
         {
             return *GNames;
         }
 
+        inline bool IsValid()
+        {
+            return ComparisonIndex >= 0 && ComparisonIndex < GetNames().Num();
+        }
+
         inline const char* GetName() const
         {
-            return GetGlobalNames()[ComparisonIndex]->GetAnsiName();
+            auto nameEntry = GetNames()[ComparisonIndex];
+            if (!nameEntry)
+            {
+                return nullptr;
+            }
+            return nameEntry->GetAnsiName();
         }
 
         inline bool operator==(const FName& other) const
@@ -286,13 +299,22 @@ namespace SDK
 
         std::string ToString() const
         {
-            const auto length = std::wcslen(Data);
-
+            /*const auto length = std::wcslen(Data);
             std::string str(length, '\0');
+            std::use_facet<std::ctype<wchar_t>>(std::locale()).narrow(Data, Data + length, '?', &str[0]);*/
 
-            std::use_facet<std::ctype<wchar_t>>(std::locale()).narrow(Data, Data + length, '?', &str[0]);
+            const int length = WideCharToMultiByte(CP_UTF8, 0, Data, -1, NULL, 0, NULL, NULL);
+            char* buffer = new char[length];
+            int bytesWritten = WideCharToMultiByte(CP_UTF8, 0, Data, -1, buffer, length, NULL, NULL);
 
-            return str;
+            if (bytesWritten)
+            {
+                return std::string(buffer);
+            }
+            else
+            {
+                return std::string();
+            }
         }
     };
 
