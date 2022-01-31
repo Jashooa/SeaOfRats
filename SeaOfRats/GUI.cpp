@@ -124,6 +124,10 @@ namespace GUI
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr;
         io.LogFilename = nullptr;
+
+        io.Fonts->AddFontDefault();
+        io.Fonts->Build();
+        ImGui::GetDefaultFont()->AddRemapChar(0x2019, 0x0027);
     }
 
     void GUI::Initialise(HWND outputWindow, ID3D11Device* device, ID3D11DeviceContext* context)
