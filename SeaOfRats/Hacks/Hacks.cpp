@@ -74,7 +74,7 @@ namespace Hacks
 {
     void Loop()
     {
-        UWorld* world = *UWorld::GWorld;
+        UWorld* world = UAthenaGameViewportClient::GAthenaGameViewportClient->World;
 
         if (NullChecks(world))
         {

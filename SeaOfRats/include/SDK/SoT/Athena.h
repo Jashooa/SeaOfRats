@@ -127,7 +127,9 @@ namespace SDK
     public:
         char pad_0x0C00[0x0170];
         class UDrowningComponent* DrowningComponent; // 0x0D70(0x0008)
-        char pad_0x0D78[0x0D48];
+        char pad_0x0D78[0x0010];
+        class UTreasureMapCollectionComponent* TreasureMapCollectionComponent; // 0x0D88(0x0008)
+        char pad_0x0D90[0x0D30];
 
         static UClass* StaticClass()
         {
@@ -182,6 +184,7 @@ namespace SDK
     class UAthenaGameViewportClient : public UGameViewportClient
     {
     public:
+        static UAthenaGameViewportClient* GAthenaGameViewportClient;
         char pad_0x0250[0x0010];
     };
 
@@ -300,6 +303,14 @@ namespace SDK
     {
     public:
         char pad_0x00D8[0x0058];
+    };
+
+    // Class Athena.TreasureMap
+    // 0x0050 (0x07E0 - 0x0790)
+    class ATreasureMap : public ASkeletalMeshWieldableItem
+    {
+    public:
+        char pad_0x0790[0x0050];
     };
 
     // Class Athena.Ship
@@ -457,6 +468,17 @@ namespace SDK
             static auto ptr = UObject::FindObject<UClass>("Class Athena.ShipNetProxy");
             return ptr;
         }
+    };
+
+    // Class Athena.TreasureMapCollectionComponent
+    // 0x00F0 (0x01B8 - 0x00C8)
+    class UTreasureMapCollectionComponent : public UActorComponent
+    {
+    public:
+        char pad_0x00C8[0x00C0];
+        TArray<class ATreasureMap*> TreasureMaps; // 0x0188(0x0010)
+        TArray<struct FName> TreasureMapDestinationIslands; // 0x0198(0x0010)
+        char pad_0x01A8[0x0010];
     };
 
     // Class Athena.WieldedItemComponent

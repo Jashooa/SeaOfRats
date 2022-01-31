@@ -65,6 +65,9 @@ void HookGame()
     spdlog::info("gWorldAddress Address: {:p}", reinterpret_cast<void*>(gWorldAddress));
     spdlog::info("GWorld Address: {:p}", reinterpret_cast<void*>(UWorld::GWorld));
 
+    UAthenaGameViewportClient::GAthenaGameViewportClient = UObject::FindObject<UAthenaGameViewportClient>("AthenaGameViewportClient Transient.AthenaGameEngine_1.AthenaGameViewportClient_1");
+    spdlog::info("AthenaGameViewportClient Address: {:p}", reinterpret_cast<void*>(UAthenaGameViewportClient::GAthenaGameViewportClient));
+
     const auto uobject = UObject::FindObject<UObject>("Class CoreUObject.Object");
     spdlog::info("Object Address: {:p}", reinterpret_cast<void*>(uobject));
 

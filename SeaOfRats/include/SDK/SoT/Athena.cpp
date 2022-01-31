@@ -6,6 +6,8 @@
 
 namespace SDK
 {
+	UAthenaGameViewportClient* UAthenaGameViewportClient::GAthenaGameViewportClient = nullptr;
+
 	// Function Athena.AthenaCharacter.GetCurrentShip
 	class AActor* AAthenaCharacter::GetCurrentShip()
 	{

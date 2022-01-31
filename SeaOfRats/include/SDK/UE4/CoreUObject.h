@@ -150,6 +150,13 @@ namespace SDK
         int32_t EventGraphCallOffset;
         void* Func;
     };
+
+    // ScriptStruct CoreUObject.StringAssetReference
+    // 0x0010
+    struct FStringAssetReference
+    {
+        class FString AssetLongPathname; // 0x0000(0x0010)
+    };
 }
 
 #ifdef _MSC_VER
