@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 
+#include <filesystem>
 #include <string>
 
 #include "include/spdlog/spdlog.h"
@@ -16,20 +17,16 @@ SeaOfRats::SeaOfRats(HMODULE module)
 {
     this->module = module;
 
-    /*char* buffer;
-    size_t len;
-    _dupenv_s(&buffer, &len, "localappdata");
-    auto directory = static_cast<std::string>(buffer) + "\\SeaOfRats\\";
-    free(buffer);*/
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(module, buffer, MAX_PATH);
+    std::filesystem::path logPath = std::filesystem::path(buffer).remove_filename() / "log.txt";
 
-    DWORD len = 65535;
-    std::string dataDirectory;
-    dataDirectory.resize(len);
-    len = GetEnvironmentVariableA("localappdata", &dataDirectory[0], len);
-    dataDirectory.resize(len);
-    auto directory = dataDirectory + "\\SeaOfRats\\";
+    /*auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logPath.string(), true);
+    auto console_sink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+    spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ file_sink, console_sink })));*/
 
-    spdlog::set_default_logger(spdlog::basic_logger_mt("SeaOfRats", directory + "log.txt"));
+    spdlog::set_default_logger(spdlog::basic_logger_mt("file", logPath.string(), true));
+    spdlog::set_pattern("[%H:%M:%S.%e] [%^%L%$] %v");
     spdlog::flush_on(spdlog::level::debug);
 
 #if _DEBUG
@@ -41,7 +38,7 @@ SeaOfRats::SeaOfRats(HMODULE module)
 
 static DWORD WINAPI Load()
 {
-    spdlog::info("Loading Hooks");
+    spdlog::info("Loading");
 
     //config = std::make_unique<Config>();
     gui = std::make_unique<GUI::GUI>();
@@ -63,9 +60,7 @@ void SeaOfRats::Install()
 
 static DWORD WINAPI Unload(HMODULE module)
 {
-    spdlog::info("Unloading Hooks");
-
-    //Sleep(50);
+    spdlog::info("Unloading");
 
     spdlog::info("Uninstalling Hooks");
     Hooks::Uninstall();
@@ -74,6 +69,7 @@ static DWORD WINAPI Unload(HMODULE module)
 
     spdlog::info("Done Unloading");
     spdlog::shutdown();
+
     FreeLibraryAndExitThread(module, 0);
 }
 

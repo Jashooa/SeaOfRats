@@ -153,6 +153,7 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>
       </AdditionalDependencies>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
