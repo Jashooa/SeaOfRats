@@ -1,11 +1,11 @@
-#include "Aimbot.h"
+#include "Player.h"
 
 #include <float.h>
 
 #include "include/SDK/SDK.h"
 
-#include "Bones.h"
 #include "Drawing.h"
+#include "Hacks/Bones.h"
 
 using namespace SDK;
 
@@ -29,7 +29,7 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        void Init(UWorld* world)
+        void InitPlayer(UWorld* world)
         {
             bestAim.target = nullptr;
             bestAim.best = FLT_MAX;
@@ -51,7 +51,7 @@ namespace Hacks
             }
         }
 
-        void CalculateAim(UWorld* world, AActor* actor)
+        void CalculateAimPlayer(UWorld* world, AActor* actor)
         {
             if (!playerWeapon)
             {
@@ -114,7 +114,7 @@ namespace Hacks
             }
         }
 
-        void Aim(UWorld* world)
+        void AimPlayer(UWorld* world)
         {
             if (!bestAim.target)
             {

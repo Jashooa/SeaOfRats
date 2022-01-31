@@ -144,6 +144,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -166,6 +167,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -182,12 +184,23 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Drawing.cpp" />
     <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="Hacks\Aimbot.cpp" />
+    <ClCompile Include="Hacks\Aimbot\Player.cpp" />
     <ClCompile Include="Hacks\Bones.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
+    <ClCompile Include="Hacks\ESP\Animal.cpp" />
+    <ClCompile Include="Hacks\ESP\Item.cpp" />
+    <ClCompile Include="Hacks\ESP\Map.cpp" />
+    <ClCompile Include="Hacks\ESP\Mermaid.cpp" />
+    <ClCompile Include="Hacks\ESP\Player.cpp" />
+    <ClCompile Include="Hacks\ESP\Ship.cpp" />
+    <ClCompile Include="Hacks\ESP\Skeleton.cpp" />
     <ClCompile Include="Hacks\Hacks.cpp" />
-    <ClCompile Include="Hacks\Info.cpp" />
+    <ClCompile Include="Hacks\Info\Anchor.cpp" />
+    <ClCompile Include="Hacks\Info\Compass.cpp" />
+    <ClCompile Include="Hacks\Info\Oxygen.cpp" />
+    <ClCompile Include="Hacks\Info\PlayerList.cpp" />
+    <ClCompile Include="Hacks\Info\WaterLevel.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\SDK\SoT\Athena.cpp" />
@@ -208,12 +221,22 @@
   <ItemGroup>
     <ClInclude Include="Drawing.h" />
     <ClInclude Include="GUI.h" />
-    <ClInclude Include="Hacks\Aimbot.h" />
+    <ClInclude Include="Hacks\Aimbot\Player.h" />
     <ClInclude Include="Hacks\Bones.h" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="Hacks\ESP.h" />
+    <ClInclude Include="Hacks\ESP\Animal.h" />
+    <ClInclude Include="Hacks\ESP\Item.h" />
+    <ClInclude Include="Hacks\ESP\Map.h" />
+    <ClInclude Include="Hacks\ESP\Mermaid.h" />
+    <ClInclude Include="Hacks\ESP\Player.h" />
+    <ClInclude Include="Hacks\ESP\Ship.h" />
+    <ClInclude Include="Hacks\ESP\Skeleton.h" />
     <ClInclude Include="Hacks\Hacks.h" />
-    <ClInclude Include="Hacks\Info.h" />
+    <ClInclude Include="Hacks\Info\Anchor.h" />
+    <ClInclude Include="Hacks\Info\Compass.h" />
+    <ClInclude Include="Hacks\Info\Oxygen.h" />
+    <ClInclude Include="Hacks\Info\PlayerList.h" />
+    <ClInclude Include="Hacks\Info\WaterLevel.h" />
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="include\SDK\SDK.h" />
     <ClInclude Include="include\SDK\SoT\Athena.h" />

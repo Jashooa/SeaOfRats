@@ -58,6 +58,24 @@
     <Filter Include="Header Files\include\SDK\SoT">
       <UniqueIdentifier>{e6c7b811-767d-4b26-b9ef-73dae0bbeb0b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Hacks\ESP">
+      <UniqueIdentifier>{a1771dd0-0b72-45c8-bdec-36d9db873276}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Hacks\Info">
+      <UniqueIdentifier>{29d392b0-1527-47bd-9b98-cb2c3ff09330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hacks\ESP">
+      <UniqueIdentifier>{afc69324-8758-4abb-8d97-b81c3213609e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hacks\Info">
+      <UniqueIdentifier>{944958cd-8c8a-44e2-87e0-044754210149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Hacks\Aimbot">
+      <UniqueIdentifier>{daf262a2-c6fc-4438-ab61-04870093f577}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hacks\Aimbot">
+      <UniqueIdentifier>{172af2e5-45ef-4c63-980b-133a59a68a8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -90,14 +108,8 @@
     <ClCompile Include="Hacks\ESP.cpp">
       <Filter>Source Files\Hacks</Filter>
     </ClCompile>
-    <ClCompile Include="Hacks\Info.cpp">
-      <Filter>Source Files\Hacks</Filter>
-    </ClCompile>
     <ClCompile Include="SeaOfRats.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hacks\Aimbot.cpp">
-      <Filter>Source Files\Hacks</Filter>
     </ClCompile>
     <ClCompile Include="Hacks\Hacks.cpp">
       <Filter>Source Files\Hacks</Filter>
@@ -134,6 +146,45 @@
     </ClCompile>
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Animal.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Item.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Map.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Mermaid.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Player.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Ship.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Skeleton.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Info\PlayerList.cpp">
+      <Filter>Source Files\Hacks\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Info\Anchor.cpp">
+      <Filter>Source Files\Hacks\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Info\Compass.cpp">
+      <Filter>Source Files\Hacks\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Info\Oxygen.cpp">
+      <Filter>Source Files\Hacks\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Info\WaterLevel.cpp">
+      <Filter>Source Files\Hacks\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Aimbot\Player.cpp">
+      <Filter>Source Files\Hacks\Aimbot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -431,19 +482,10 @@
     <ClInclude Include="Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hacks\ESP.h">
-      <Filter>Header Files\Hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="Hacks\Info.h">
-      <Filter>Header Files\Hacks</Filter>
-    </ClInclude>
     <ClInclude Include="SeaOfRats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hacks\Hacks.h">
-      <Filter>Header Files\Hacks</Filter>
-    </ClInclude>
-    <ClInclude Include="Hacks\Aimbot.h">
       <Filter>Header Files\Hacks</Filter>
     </ClInclude>
     <ClInclude Include="Hacks\Bones.h">
@@ -523,6 +565,45 @@
     </ClInclude>
     <ClInclude Include="GUI.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Animal.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Item.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Map.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Mermaid.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Player.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Ship.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Skeleton.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Info\PlayerList.h">
+      <Filter>Header Files\Hacks\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Info\Anchor.h">
+      <Filter>Header Files\Hacks\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Info\Compass.h">
+      <Filter>Header Files\Hacks\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Info\Oxygen.h">
+      <Filter>Header Files\Hacks\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Info\WaterLevel.h">
+      <Filter>Header Files\Hacks\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Aimbot\Player.h">
+      <Filter>Header Files\Hacks\Aimbot</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

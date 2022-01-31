@@ -6,8 +6,8 @@ using namespace SDK;
 
 namespace Hacks
 {
-    namespace Info
+    namespace ESP
     {
-        void Render(UWorld* world);
+        void DrawMap(UWorld* world, AActor* actor);
     }
 }
