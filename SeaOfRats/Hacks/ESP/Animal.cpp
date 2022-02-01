@@ -35,7 +35,7 @@ namespace Hacks
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
             FVector2D topScreen;
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {

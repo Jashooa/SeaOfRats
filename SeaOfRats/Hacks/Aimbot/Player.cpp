@@ -1,7 +1,5 @@
 #include "Player.h"
 
-#include <float.h>
-
 #include "include/SDK/SDK.h"
 
 #include "Drawing.h"

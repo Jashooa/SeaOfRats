@@ -5,6 +5,7 @@
 
 #include "Config.h"
 #include "Drawing.h"
+#include "Hacks/Aimbot/Cannon.h"
 #include "Hacks/Aimbot/Player.h"
 #include "Hacks/ESP/Animal.h"
 #include "Hacks/ESP/Item.h"
@@ -105,7 +106,7 @@ namespace Hacks
                 }
             }*/
 
-            if (config.aim.enable)
+            if (config.aim.player.enable)
             {
                 spdlog::debug("Aimbot::InitPlayer");
                 Aimbot::InitPlayer(world);
@@ -129,13 +130,13 @@ namespace Hacks
 
                 if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
                 {
+                    if (config.aim.player.enable && config.aim.player.player)
+                    {
+                        spdlog::debug("Aimbot::CalculateAimPlayer");
+                        Aimbot::CalculateAimPlayer(world, actor);
+                    }
                     if (config.esp.player.enable)
                     {
-                        if (config.aim.enable && config.aim.player.enable)
-                        {
-                            spdlog::debug("Aimbot::CalculateAimPlayer");
-                            Aimbot::CalculateAimPlayer(world, actor);
-                        }
                         spdlog::debug("ESP::DrawPlayer");
                         ESP::DrawPlayer(world, actor);
                     }
@@ -144,13 +145,13 @@ namespace Hacks
 
                 if (actor->IsA(AAthenaAICharacter::StaticClass()))
                 {
+                    if (config.aim.player.enable && config.aim.player.skeleton)
+                    {
+                        spdlog::debug("Aimbot::CalculateAimPlayer");
+                        Aimbot::CalculateAimPlayer(world, actor);
+                    }
                     if (config.esp.skeleton.enable)
                     {
-                        if (config.aim.enable && config.aim.skeleton.enable)
-                        {
-                            spdlog::debug("Aimbot::CalculateAimPlayer");
-                            Aimbot::CalculateAimPlayer(world, actor);
-                        }
                         spdlog::debug("ESP::DrawSkeleton");
                         ESP::DrawSkeleton(world, actor);
                     }
@@ -305,7 +306,13 @@ namespace Hacks
                 }*/
             }
 
-            if (config.aim.enable)
+            if (config.aim.cannon.enable)
+            {
+                spdlog::debug("Aimbot::CannonTrace");
+                Aimbot::CannonTrace(world);
+            }
+
+            if (config.aim.player.enable)
             {
                 spdlog::debug("Aimbot::AimPlayer");
                 Aimbot::AimPlayer(world);

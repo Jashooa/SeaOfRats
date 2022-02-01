@@ -27,8 +27,6 @@ namespace Hacks
                 return;
             }
 
-            //Drawing::DrawBoundingBox(world, ship, Drawing::Colour::White);
-
             std::string actorName = actor->GetName();
             std::string name = "Ship";
             if (actorName.find("Large") != std::string::npos)
@@ -59,8 +57,7 @@ namespace Hacks
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
             Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
 
-            auto waterInfo = ship->GetInternalWater();
-            if (waterInfo)
+            if (const auto waterInfo = ship->GetInternalWater())
             {
                 FVector2D healthScreen = FVector2D(screen.X, screen.Y - 10.0f);
                 FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);

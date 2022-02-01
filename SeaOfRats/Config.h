@@ -121,17 +121,14 @@ public:
 
     struct
     {
-        bool enable = false;
+        bool enable = true;
 
         struct
         {
-            bool enable = true;
+            bool enable = false;
+            bool player = true;
+            bool skeleton = true;
         } player;
-
-        struct
-        {
-            bool enable = true;
-        } skeleton;
 
         struct
         {
@@ -140,7 +137,8 @@ public:
 
         struct
         {
-
+            bool enable = false;
+            bool path = true;
         } cannon;
     } aim;
 };

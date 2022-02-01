@@ -50,7 +50,7 @@ namespace Hacks
                         shipType = "";
                         break;
                 }
-                //shipType = shipType + L" " + UKismetGuidLibrary::Conv_GuidToString(crew.CrewId).c_str();
+
                 Drawing::DrawString(shipType, FVector2D(positionX, positionY), Drawing::Colour::White, false, false);
                 positionY += 15.0f;
                 for (int32_t j = 0; j < players.Num(); ++j)
@@ -61,7 +61,7 @@ namespace Hacks
                         continue;
                     }
 
-                    std::string activity = "";
+                    std::string activity{};
                     switch (player->GetPlayerActivity())
                     {
                         case EPlayerActivityType::EPlayerActivityType__None:
@@ -136,7 +136,7 @@ namespace Hacks
                     std::string name = player->PlayerName.ToString();
                     if (!activity.empty())
                     {
-                        name = name + " - " + activity;
+                        name += " - " + activity;
                     }
                     Drawing::DrawString(name, FVector2D(positionX + 10.0f, positionY), Drawing::Colour::White, false, false);
                     positionY += 15.0f;

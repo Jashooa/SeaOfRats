@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _MSC_VER
-    #pragma pack(push, 0x8)
+#pragma pack(push, 0x8)
 #endif
 
 #include "Engine.h"
@@ -10,6 +10,16 @@
 
 namespace SDK
 {
+    // Enum Athena.ELoadableState
+    enum class ELoadableState : uint8_t
+    {
+        ELoadableState__Unloaded = 0,
+        ELoadableState__Unloading = 1,
+        ELoadableState__Loading = 2,
+        ELoadableState__Loaded = 3,
+        ELoadableState__ELoadableState_MAX = 4
+    };
+
     // Enum Athena.EPlayerActivityType
     enum class EPlayerActivityType : uint8_t
     {
@@ -56,6 +66,15 @@ namespace SDK
         class TArray<class APlayerState*> Players; // 0x0020(0x0010)
         struct FCrewSessionTemplate CrewSessionTemplate; // 0x0030(0x0038)
         char pad_0x0068[0x0028];
+    };
+
+    // ScriptStruct Athena.LoadableComponentState
+    // 0x0010
+    struct FLoadableComponentState
+    {
+        TEnumAsByte<ELoadableState> LoadableState; // 0x0000(0x0001)
+        char pad_0x0001[0x0007]; // 0x0001(0x0007)
+        class UObject* LoadedItem; // 0x0008(0x0008)
     };
 
     // ScriptStruct Athena.WeaponProjectileParams
@@ -305,12 +324,48 @@ namespace SDK
         char pad_0x00D8[0x0058];
     };
 
+    // Class Athena.QuestBook
+    // 0x0360 (0x0AF0 - 0x0790)
+    class AQuestBook : public ASkeletalMeshWieldableItem
+    {
+    public:
+        char pad_0x0790[0x0360];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.QuestBook");
+            return ptr;
+        }
+    };
+
     // Class Athena.TreasureMap
     // 0x0050 (0x07E0 - 0x0790)
     class ATreasureMap : public ASkeletalMeshWieldableItem
     {
     public:
         char pad_0x0790[0x0050];
+    };
+
+    // Class Athena.Cannon
+    // 0x0700 (0x0C08 - 0x0508)
+    class ACannon : public AControllableObject
+    {
+    public:
+        char pad_0x0508[0x0040];
+        class ULoadableComponent* LoadableComponent; // 0x0548(0x0008)
+        char pad_0x0550[0x0054];
+        float ProjectileSpeed; // 0x05A4(0x0004)
+        float ProjectileGravityScale; // 0x05A8(0x0004)
+        char pad_0x05Ac[0x01A8];
+        float ServerPitch; // 0x0754(0x0004)
+        float ServerYaw; // 0x0758(0x0004)
+        char pad_0x075C[0x04AC];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.Cannon");
+            return ptr;
+        }
     };
 
     // Class Athena.Ship
@@ -398,6 +453,19 @@ namespace SDK
 
         float GetCurrentHealth();
         float GetMaxHealth();
+    };
+
+    // Class Athena.LoadableComponent
+    // 0x0118 (0x01E0 - 0x00C8)
+    class ULoadableComponent : public UActorComponent
+    {
+    public:
+        char pad_0x00C8[0x0008];
+        float LoadTime; // 0x00D0(0x0004)
+        float UnloadTime; // 0x00D4(0x0004)
+        char pad_0x00D8[0x00A0];
+        struct FLoadableComponentState LoadableComponentState; // 0x0178(0x0010)
+        char pad_0x0188[0x0058];
     };
 
     // Class Athena.MapTable
@@ -523,5 +591,5 @@ namespace SDK
 }
 
 #ifdef _MSC_VER
-    #pragma pack(pop)
+#pragma pack(pop)
 #endif

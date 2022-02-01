@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "include/imgui/imgui.h"
 #include "include/imgui/imgui_internal.h"
 #include "include/SDK/SDK.h"
@@ -31,6 +33,7 @@ namespace Drawing
     void DrawHealthBar(const FVector2D& minPosition, const FVector2D& maxPosition, float currentHealth, float maxHealth);
     void DrawBoundingRect(UWorld* world, AActor* actor, const ImU32 colour);
     void DrawBoundingBox(UWorld* world, AActor* actor, const ImU32 colour);
+    void DrawPath(UWorld* world, std::vector<FVector> path, const ImU32 colour);
 
     inline ImGuiWindow* Window = nullptr;
 }

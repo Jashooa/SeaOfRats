@@ -27,15 +27,15 @@ namespace Hacks
                 return;
             }
             //Drawing::DrawBoundingBox(world, actor, Drawing::Colour::White);
-            Drawing::DrawBoundingRect(world, actor, Drawing::Colour::White);
-            DrawBones(world, actor);
+            Drawing::DrawBoundingRect(world, actor, Drawing::Colour::Red);
+            //DrawBones(world, actor);
 
             // Get bounds
             FVector origin, extent;
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
             FVector2D topScreen;
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
@@ -139,7 +139,7 @@ namespace Hacks
             }
 
             // Get bottom coordinates
-            auto bottomLocation = FVector(origin.X, origin.Y, origin.Z - extent.Z);
+            auto bottomLocation = FVector(location.X, location.Y, location.Z - extent.Z);
             FVector2D bottomScreen;
             if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
             {
@@ -155,17 +155,13 @@ namespace Hacks
                 }*/
 
                 // Draw item info
-                auto wieldedItemComponent = skeleton->WieldedItemComponent;
-                if (wieldedItemComponent)
+                if (const auto wieldedItemComponent = skeleton->WieldedItemComponent)
                 {
-                    auto wieldedItem = reinterpret_cast<AWieldableItem*>(skeleton->WieldedItemComponent->CurrentlyWieldedItem);
-                    if (wieldedItem)
+                    if (const auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem))
                     {
-                        auto itemInfo = wieldedItem->ItemInfo;
-                        if (itemInfo)
+                        if (const auto itemInfo = wieldedItem->ItemInfo)
                         {
-                            auto itemDesc = itemInfo->Desc;
-                            if (itemDesc)
+                            if (const auto itemDesc = itemInfo->Desc)
                             {
                                 std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
                                 FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);

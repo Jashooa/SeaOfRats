@@ -239,17 +239,32 @@ namespace GUI
 
                 if (ImGui::BeginTabItem("Aimbot"))
                 {
+                    ImGui::Text("Global");
                     ImGui::Checkbox("Enabled", &config.aim.enable);
+
+                    ImGui::Separator();
+
+                    ImGui::Text("Player");
+                    ImGui::Checkbox("Enable", &config.aim.player.enable);
+                    ImGui::Checkbox("Players", &config.aim.player.player);
+                    ImGui::Checkbox("Skeletons", &config.aim.player.skeleton);
+
+                    ImGui::Separator();
+
+                    ImGui::Text("Cannon");
+                    ImGui::Checkbox("Enable", &config.aim.cannon.enable);
+                    ImGui::Checkbox("Path", &config.aim.cannon.path);
+
                     ImGui::EndTabItem();
                 }
-            }
 
-            ImGui::SameLine();
-            if (ImGui::Button("Unload"))
-            {
-                seaofrats->Uninstall();
+                if (ImGui::TabItemButton("Unload", ImGuiTabItemFlags_Trailing))
+                {
+                    seaofrats->Uninstall();
+                }
+
+                ImGui::EndTabBar();
             }
-            ImGui::EndTabBar();
 
             ImGui::End();
         }

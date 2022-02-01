@@ -93,12 +93,12 @@ namespace SDK
         inline TArray()
         {
             Data = nullptr;
-            Count = Max = 0;
+            ArrayNum = ArrayMax = 0;
         }
 
         inline int Num() const
         {
-            return Count;
+            return ArrayNum;
         }
 
         inline T& operator[](int i)
@@ -113,13 +113,42 @@ namespace SDK
 
         inline bool IsValidIndex(int i) const
         {
-            return i < Num();
+            return i >= 0 && i < ArrayNum;
+        }
+
+        inline void Push(T item)
+        {
+            if (ArrayNum == ArrayMax)
+            {
+                int32_t newMax = 0;
+                if (ArrayMax == 0)
+                {
+                    newMax++;
+                }
+                else
+                {
+                    newMax = ArrayMax * 2;
+                }
+                T* newData = new T[newMax];
+
+                for (int32_t i = 0; i < ArrayMax; ++i)
+                {
+                    newData[i] = Data[i];
+                }
+
+                delete[] Data;
+                ArrayMax = newMax;
+                Data = newData;
+            }
+
+            Data[ArrayNum] = item;
+            ArrayNum++;
         }
 
     private:
         T* Data;
-        int32_t Count;
-        int32_t Max;
+        int32_t ArrayNum;
+        int32_t ArrayMax;
     };
 
     class FNameEntry
@@ -274,9 +303,9 @@ namespace SDK
 
         FString(const wchar_t* other)
         {
-            Max = Count = *other ? static_cast<int>(std::wcslen(other)) + 1 : 0;
+            ArrayMax = ArrayNum = *other ? static_cast<int>(std::wcslen(other)) + 1 : 0;
 
-            if (Count)
+            if (ArrayNum)
             {
                 Data = const_cast<wchar_t*>(other);
             }
@@ -394,6 +423,47 @@ namespace SDK
     struct FText
     {
         char UnknownData00[0x38];
+    };
+
+    struct FWeakObjectPtr
+    {
+    public:
+        inline bool SerialNumbersMatch(FUObjectItem* ObjectItem) const
+        {
+            return ObjectItem->SerialNumber == ObjectSerialNumber;
+        }
+
+        bool IsValid() const;
+
+        UObject* Get() const;
+
+        int32_t ObjectIndex;
+        int32_t ObjectSerialNumber;
+    };
+
+    template<class T, class TWeakObjectPtrBase = FWeakObjectPtr>
+    struct TWeakObjectPtr : private TWeakObjectPtrBase
+    {
+    public:
+        inline T* Get() const
+        {
+            return (T*) TWeakObjectPtrBase::Get();
+        }
+
+        inline T& operator*() const
+        {
+            return *Get();
+        }
+
+        inline T* operator->() const
+        {
+            return Get();
+        }
+
+        inline bool IsValid() const
+        {
+            return TWeakObjectPtrBase::IsValid();
+        }
     };
 }
 

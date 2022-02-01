@@ -11,7 +11,6 @@ namespace Hacks
             auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
             auto parent = localPlayer->GetAttachParentActor();
-
             if (parent && parent->IsA(ACapstanArm::StaticClass()))
             {
                 auto parentParent = parent->GetParentActor();
@@ -25,7 +24,6 @@ namespace Hacks
                     Drawing::DrawString(capstanText, FVector2D(centerX, 80), Drawing::Colour::Red);
                 }
             }
-
         }
     }
 }

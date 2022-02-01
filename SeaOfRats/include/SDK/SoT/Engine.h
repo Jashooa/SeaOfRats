@@ -1,11 +1,108 @@
 #pragma once
 
 #ifdef _MSC_VER
-    #pragma pack(push, 0x8)
+#pragma pack(push, 0x8)
 #endif
 
 namespace SDK
 {
+    // Enum Engine.EDrawDebugTrace
+    enum class EDrawDebugTrace : uint8_t
+    {
+        EDrawDebugTrace__None = 0,
+        EDrawDebugTrace__ForOneFrame = 1,
+        EDrawDebugTrace__ForDuration = 2,
+        EDrawDebugTrace__Persistent = 3,
+        EDrawDebugTrace__EDrawDebugTrace_MAX = 4
+    };
+
+    // Enum Engine.ETraceTypeQuery
+    enum class ETraceTypeQuery : uint8_t
+    {
+        TraceTypeQuery1 = 0,
+        TraceTypeQuery2 = 1,
+        TraceTypeQuery3 = 2,
+        TraceTypeQuery4 = 3,
+        TraceTypeQuery5 = 4,
+        TraceTypeQuery6 = 5,
+        TraceTypeQuery7 = 6,
+        TraceTypeQuery8 = 7,
+        TraceTypeQuery9 = 8,
+        TraceTypeQuery10 = 9,
+        TraceTypeQuery11 = 10,
+        TraceTypeQuery12 = 11,
+        TraceTypeQuery13 = 12,
+        TraceTypeQuery14 = 13,
+        TraceTypeQuery15 = 14,
+        TraceTypeQuery16 = 15,
+        TraceTypeQuery17 = 16,
+        TraceTypeQuery18 = 17,
+        TraceTypeQuery19 = 18,
+        TraceTypeQuery20 = 19,
+        TraceTypeQuery21 = 20,
+        TraceTypeQuery22 = 21,
+        TraceTypeQuery23 = 22,
+        TraceTypeQuery24 = 23,
+        TraceTypeQuery25 = 24,
+        TraceTypeQuery26 = 25,
+        TraceTypeQuery27 = 26,
+        TraceTypeQuery28 = 27,
+        TraceTypeQuery29 = 28,
+        TraceTypeQuery30 = 29,
+        TraceTypeQuery31 = 30,
+        TraceTypeQuery32 = 31,
+        TraceTypeQuery_MAX = 32,
+        ETraceTypeQuery_MAX = 33
+    };
+
+    // Enum Engine.ECollisionChannel
+    enum class ECollisionChannel : uint8_t
+    {
+        ECC_WorldStatic = 0,
+        ECC_WorldDynamic = 1,
+        ECC_Pawn = 2,
+        ECC_Visibility = 3,
+        ECC_Camera = 4,
+        ECC_PhysicsBody = 5,
+        ECC_Vehicle = 6,
+        ECC_Destructible = 7,
+        ECC_EngineTraceChannel1 = 8,
+        ECC_EngineTraceChannel2 = 9,
+        ECC_EngineTraceChannel3 = 10,
+        ECC_EngineTraceChannel4 = 11,
+        ECC_EngineTraceChannel5 = 12,
+        ECC_EngineTraceChannel6 = 13,
+        ECC_GameTraceChannel1 = 14,
+        ECC_GameTraceChannel2 = 15,
+        ECC_GameTraceChannel3 = 16,
+        ECC_GameTraceChannel4 = 17,
+        ECC_GameTraceChannel5 = 18,
+        ECC_GameTraceChannel6 = 19,
+        ECC_GameTraceChannel7 = 20,
+        ECC_GameTraceChannel8 = 21,
+        ECC_GameTraceChannel9 = 22,
+        ECC_GameTraceChannel10 = 23,
+        ECC_GameTraceChannel11 = 24,
+        ECC_GameTraceChannel12 = 25,
+        ECC_GameTraceChannel13 = 26,
+        ECC_GameTraceChannel14 = 27,
+        ECC_GameTraceChannel15 = 28,
+        ECC_GameTraceChannel16 = 29,
+        ECC_GameTraceChannel17 = 30,
+        ECC_GameTraceChannel18 = 31,
+        ECC_OverlapAll_Deprecated = 32,
+        ECC_MAX = 33
+    };
+
+    // ScriptStruct Engine.HitResult
+    // 0x0080
+    struct FHitResult
+    {
+        char pad_0x0000[0x0064];
+        TWeakObjectPtr<class AActor> Actor; // 0x0064(0x0008)
+        char pad_0x006C[0x0014];
+    };
+
     // Class Engine.ActorComponent
     // 0x00A0 (0x00C8 - 0x0028)
     class UActorComponent : public UObject
@@ -56,6 +153,7 @@ namespace SDK
 
         bool IsVisible();
         struct FVector K2_GetComponentLocation();
+        struct FRotator K2_GetComponentRotation();
         struct FTransform K2_GetComponentToWorld();
     };
 
@@ -265,6 +363,7 @@ namespace SDK
     class UKismetGuidLibrary : public UBlueprintFunctionLibrary
     {
     public:
+        static class FString Conv_GuidToString(const struct FGuid& InGuid);
         static bool EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B);
     };
 
@@ -273,9 +372,18 @@ namespace SDK
     class UKismetMathLibrary : public UBlueprintFunctionLibrary
     {
     public:
+        static struct FVector Conv_RotatorToVector(const struct FRotator& InRot);
         static struct FRotator FindLookAtRotation(const struct FVector& Start, const struct FVector& Target);
         static struct FVector GetForwardVector(const struct FRotator& InRot);
         static struct FRotator NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B);
+    };
+
+    // Class Engine.KismetSystemLibrary
+    // 0x0000 (0x0028 - 0x0028)
+    class UKismetSystemLibrary : public UBlueprintFunctionLibrary
+    {
+    public:
+        static bool LineTraceSingle_NEW(class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, TEnumAsByte<ETraceTypeQuery> TraceChannel, bool bTraceComplex, TArray<class AActor*> ActorsToIgnore, TEnumAsByte<EDrawDebugTrace> DrawDebugType, bool bIgnoreSelf, struct FHitResult* OutHit);
     };
 
     // Class Engine.KismetTextLibrary
@@ -321,5 +429,5 @@ namespace SDK
 }
 
 #ifdef _MSC_VER
-    #pragma pack(pop)
+#pragma pack(pop)
 #endif

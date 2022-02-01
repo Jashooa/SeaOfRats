@@ -18,6 +18,12 @@ namespace SDK
         inline FRotator(float InPitch, float InYaw, float InRoll) : Pitch(InPitch), Yaw(InYaw), Roll(InRoll)
         {}
 
+        inline FRotator operator+=(const FRotator& R)
+        {
+            Pitch += R.Pitch; Yaw += R.Yaw; Roll += R.Roll;
+            return *this;
+        }
+
         struct FQuat Quaternion() const;
     };
 }

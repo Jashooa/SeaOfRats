@@ -186,6 +186,9 @@
     <ClCompile Include="Hacks\Aimbot\Player.cpp">
       <Filter>Source Files\Hacks\Aimbot</Filter>
     </ClCompile>
+    <ClCompile Include="Hacks\Aimbot\Cannon.cpp">
+      <Filter>Source Files\Hacks\Aimbot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\spdlog\sinks\android_sink.h">
@@ -603,6 +606,9 @@
       <Filter>Header Files\Hacks\Info</Filter>
     </ClInclude>
     <ClInclude Include="Hacks\Aimbot\Player.h">
+      <Filter>Header Files\Hacks\Aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Aimbot\Cannon.h">
       <Filter>Header Files\Hacks\Aimbot</Filter>
     </ClInclude>
   </ItemGroup>

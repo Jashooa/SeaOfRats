@@ -34,12 +34,12 @@ namespace Hacks
             }
 
             // Check friendly
-            bool friendly = UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player);
             ImU32 colour = Drawing::Colour::Red;
-            if (friendly)
+            if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player))
             {
                 colour = Drawing::Colour::Green;
             }
+
             //Drawing::DrawBoundingBox(world, actor, colour);
             DrawBones(world, actor);
 
@@ -48,7 +48,7 @@ namespace Hacks
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
+            auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
             FVector2D topScreen;
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
@@ -70,18 +70,21 @@ namespace Hacks
                     Drawing::DrawString(hud, name, nameScreen, colour);
                 }*/
 
-                // Get name
-                std::string name = player->PlayerState->PlayerName.ToString();
-                int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-                name += " [" + std::to_string(distance) + "m]";
+                if (const auto playerState = player->PlayerState)
+                {
+                    // Get name
+                    std::string name = playerState->PlayerName.ToString();
+                    int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                    name += " [" + std::to_string(distance) + "m]";
 
-                // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawString(name, nameScreen, colour);
+                    // Draw name
+                    FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                    Drawing::DrawString(name, nameScreen, colour);
+                }
             }
 
             // Get bottom coordinates
-            auto bottomLocation = FVector(origin.X, origin.Y, origin.Z - extent.Z);
+            auto bottomLocation = FVector(location.X, location.Y, location.Z - extent.Z);
             FVector2D bottomScreen;
             if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
             {
@@ -96,20 +99,15 @@ namespace Hacks
                 }
 
                 // Draw item info
-                auto wieldedItemComponent = player->WieldedItemComponent;
-                if (wieldedItemComponent)
+                if (const auto wieldedItemComponent = player->WieldedItemComponent)
                 {
-                    auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem);
-                    if (wieldedItem)
+                    if (const auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem))
                     {
-                        auto itemInfo = wieldedItem->ItemInfo;
-                        if (itemInfo)
+                        if (const auto itemInfo = wieldedItem->ItemInfo)
                         {
-                            auto itemDesc = itemInfo->Desc;
-                            if (itemDesc)
+                            if (const auto itemDesc = itemInfo->Desc)
                             {
                                 std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-
                                 FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
                                 Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
                             }

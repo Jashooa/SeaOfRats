@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 #include <string>
+#include <vector>
 
 #include "include/imgui/imgui.h"
 #include "include/imgui/imgui_internal.h"
@@ -100,6 +101,7 @@ namespace Drawing
 
         FVector origin, extent;
         actor->GetActorBounds(true, &origin, &extent);
+        origin = actor->K2_GetActorLocation();
         /*FRotator rotation = actor->K2_GetActorRotation();
 
         FVector topLeft;
@@ -131,11 +133,12 @@ namespace Drawing
         FVector origin, extent;
         actor->GetActorBounds(true, &origin, &extent);
         FRotator rotation = actor->K2_GetActorRotation();
+        origin = actor->K2_GetActorLocation();
 
         FVector vertices[2][4];
-        vertices[0][0] = { -extent.X, -extent.Y,  -extent.Z };
-        vertices[0][1] = { extent.X, -extent.Y,  -extent.Z };
-        vertices[0][2] = { extent.X, extent.Y,  -extent.Z };
+        vertices[0][0] = { -extent.X, -extent.Y, -extent.Z };
+        vertices[0][1] = { extent.X, -extent.Y, -extent.Z };
+        vertices[0][2] = { extent.X, extent.Y, -extent.Z };
         vertices[0][3] = { -extent.X, extent.Y, -extent.Z };
 
         vertices[1][0] = { -extent.X, -extent.Y, extent.Z };
@@ -144,7 +147,7 @@ namespace Drawing
         vertices[1][3] = { -extent.X, extent.Y, extent.Z };
 
         FVector2D screen[2][4];
-        FTransform const transform(rotation);
+        const FTransform transform(rotation);
 
         for (int32_t i = 0; i < 2; i++)
         {
@@ -165,5 +168,21 @@ namespace Drawing
             DrawLine(screen[1][i], screen[1][(i + 1) % 4], colour);
             DrawLine(screen[0][i], screen[1][i], colour);
         }
+    }
+
+    void DrawPath(UWorld* world, std::vector<FVector> path, const ImU32 colour)
+    {
+        auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+
+        for (auto point : path)
+        {
+            FVector2D screen{};
+            if (!playerController->ProjectWorldLocationToScreen(point, &screen))
+            {
+                break;
+            }
+            Window->DrawList->PathLineTo(ImVec2(screen.X, screen.Y));
+        }
+        Window->DrawList->PathStroke(colour);
     }
 }
