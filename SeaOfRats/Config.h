@@ -94,12 +94,12 @@ public:
         struct
         {
             bool enable = false;
-        } storm;
+        } map;
 
         struct
         {
             bool enable = false;
-        } map;
+        } lorebook;
 
         struct
         {
@@ -117,6 +117,7 @@ public:
         bool oxygen = false;
         bool waterLevel = false;
         bool anchor = false;
+        bool debug = false;
     } info;
 
     struct

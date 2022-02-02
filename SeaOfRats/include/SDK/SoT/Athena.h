@@ -226,6 +226,27 @@ namespace SDK
         char pad_0x0060[0x0078];
     };
 
+    // Class Athena.AthenaPlayerController
+    // 0x0D60 (0x1488 - 0x0728)
+    class AAthenaPlayerController : public APlayerController
+    {
+    public:
+        char pad_0x0728[0x0D60];
+    };
+
+    // Class Athena.OnlineAthenaPlayerController
+    // 0x00E8 (0x1570 - 0x1488)
+    class AOnlineAthenaPlayerController : public AAthenaPlayerController
+    {
+    public:
+        char pad_0x1488[0x0049];
+        bool IdleDisconnectEnabled; // 0x14D1(0x0001)
+        char pad_0x14D2[0x009E];
+
+        void ModifyActiveState(bool IsActive);
+        bool IsClientAndInActiveGameplay();
+    };
+
     // Class Athena.PickupableObject
     // 0x0130 (0x0528 - 0x03F8)
     class APickupableObject : public AInteractableBase
@@ -434,6 +455,23 @@ namespace SDK
         int GetNumShips();
     };
 
+    // Class Athena.ModalInteractionProxy
+    // 0x00A0 (0x0498 - 0x03F8)
+    class AModalInteractionProxy : public AInteractableBase
+    {
+    public:
+        char pad_0x03F8[0x0020];
+        struct FText DefaultTooltip; // 0x0418(0x0038)
+        struct FText DefaultDisplayName; // 0x0450(0x0038)
+        char pad_0x0488[0x0010];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.ModalInteractionProxy");
+            return ptr;
+        }
+    };
+
     // Class Athena.CrewFunctions
     // 0x0000 (0x0028 - 0x0028)
     class UCrewFunctions : public UBlueprintFunctionLibrary
@@ -498,6 +536,22 @@ namespace SDK
         }
 
         class TArray<struct FGuid> GetCrewIdsResponsibleForSavingAsCopy();
+    };
+
+    // Class Athena.NPCDialogComponent
+    // 0x0280 (0x0348 - 0x00C8)
+    class UNPCDialogComponent : public UActorComponent
+    {
+    public:
+        char pad_0x00C8[0x0008];
+        struct FText WelcomeMessage; // 0x00D0(0x0038)
+        char pad_0x0108[0x0240];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.NPCDialogComponent");
+            return ptr;
+        }
     };
 
     // Class Athena.ProjectileWeapon

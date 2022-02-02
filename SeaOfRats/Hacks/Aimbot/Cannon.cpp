@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "include/SDK/SDK.h"
-#include "include/spdlog/spdlog.h"
 
 #include "Drawing.h"
 
@@ -41,7 +40,7 @@ namespace Hacks
                 float launchSpeed = cannon->ProjectileSpeed;
 
                 FRotator angle = FRotator(cannon->ServerPitch, cannon->ServerYaw, 0.f);
-                FRotator compAngle = cannon->RootComponent->K2_GetComponentRotation();
+                FRotator compAngle = cannon->K2_GetActorRotation();
                 angle += compAngle;
 
                 FVector forwardVector = UKismetMathLibrary::Conv_RotatorToVector(angle);
@@ -71,19 +70,18 @@ namespace Hacks
                     velocity.Z = newZ;
                     FVector nextPosition = position + move;
                     FHitResult hitResult;
-                    bool hit = UKismetSystemLibrary::LineTraceSingle_NEW(cannon, position, nextPosition, ETraceTypeQuery::TraceTypeQuery3, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult);
+                    bool hit = UKismetSystemLibrary::LineTraceSingle_NEW(cannon, position, nextPosition, ETraceTypeQuery::TraceTypeQuery1, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult);
                     if (hit)
                     {
                         FVector2D screen{};
                         if (world->OwningGameInstance->LocalPlayers[0]->PlayerController->ProjectWorldLocationToScreen(nextPosition, &screen))
                         {
-                            ImU32 colour = Drawing::Colour::Red;
-                            //if (hitResult.Actor.Get() && hitResult.Actor.Get()->IsA(AShip::StaticClass()))
-                            if (hitResult.Actor.Get())
+                            ImU32 colour = Drawing::Colour::Green;
+                            /*if (hitResult.Actor.Get() && hitResult.Actor.Get()->IsA(AShip::StaticClass()))
                             {
                                 colour = Drawing::Colour::Green;
                             }
-                            //Drawing::DrawString(hitResult.Actor.Get()->GetName(), screen, colour);
+                            Drawing::DrawString(hitResult.Actor.Get()->GetName(), screen, colour);*/
                             Drawing::DrawCircle(screen, 3.f, colour);
                         }
                         break;

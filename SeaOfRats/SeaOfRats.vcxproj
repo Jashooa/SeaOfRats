@@ -191,6 +191,8 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\ESP\Animal.cpp" />
+    <ClCompile Include="Hacks\ESP\LoreBook.cpp" />
+    <ClCompile Include="Hacks\Info\Debug.cpp" />
     <ClCompile Include="Hacks\ESP\Item.cpp" />
     <ClCompile Include="Hacks\ESP\Map.cpp" />
     <ClCompile Include="Hacks\ESP\Mermaid.cpp" />
@@ -228,6 +230,8 @@
     <ClInclude Include="Hacks\Bones.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP\Animal.h" />
+    <ClInclude Include="Hacks\ESP\LoreBook.h" />
+    <ClInclude Include="Hacks\Info\Debug.h" />
     <ClInclude Include="Hacks\ESP\Item.h" />
     <ClInclude Include="Hacks\ESP\Map.h" />
     <ClInclude Include="Hacks\ESP\Mermaid.h" />

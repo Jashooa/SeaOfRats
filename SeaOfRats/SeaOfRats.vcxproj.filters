@@ -189,6 +189,12 @@
     <ClCompile Include="Hacks\Aimbot\Cannon.cpp">
       <Filter>Source Files\Hacks\Aimbot</Filter>
     </ClCompile>
+    <ClCompile Include="Hacks\Info\Debug.cpp">
+      <Filter>Source Files\Hacks\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\LoreBook.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\spdlog\sinks\android_sink.h">
@@ -610,6 +616,12 @@
     </ClInclude>
     <ClInclude Include="Hacks\Aimbot\Cannon.h">
       <Filter>Header Files\Hacks\Aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Info\Debug.h">
+      <Filter>Header Files\Hacks\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\LoreBook.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

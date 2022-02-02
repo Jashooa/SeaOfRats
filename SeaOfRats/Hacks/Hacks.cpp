@@ -9,6 +9,7 @@
 #include "Hacks/Aimbot/Player.h"
 #include "Hacks/ESP/Animal.h"
 #include "Hacks/ESP/Item.h"
+#include "Hacks/ESP/LoreBook.h"
 #include "Hacks/ESP/Map.h"
 #include "Hacks/ESP/Mermaid.h"
 #include "Hacks/ESP/Player.h"
@@ -16,6 +17,7 @@
 #include "Hacks/ESP/Ship.h"
 #include "Hacks/Info/Anchor.h"
 #include "Hacks/Info/Compass.h"
+#include "Hacks/Info/Debug.h"
 #include "Hacks/Info/Oxygen.h"
 #include "Hacks/Info/PlayerList.h"
 #include "Hacks/Info/WaterLevel.h"
@@ -71,6 +73,8 @@ bool NullChecks(UWorld* world)
     return true;
 }
 
+bool done = false;
+
 namespace Hacks
 {
     void Loop()
@@ -81,30 +85,36 @@ namespace Hacks
         {
             ULevel* level = world->PersistentLevel;
 
-            /*auto levels = world->Levels;
-            for (int32_t i = 6; i < levels.Num(); ++i)
+            /*if (!done)
             {
-                auto actors = levels[i]->AActors;
-
-                for (int32_t j = 0; j < actors.Num(); ++j)
+                auto levels = world->Levels;
+                for (int32_t i = 0; i < levels.Num(); ++i)
                 {
-                    AActor* actor = actors[j];
-
-                    if (!actor)
+                    auto actors = levels[i]->AActors;
+                    spdlog::debug("Level: " + std::to_string(i));
+                    for (int32_t j = 0; j < actors.Num(); ++j)
                     {
-                        continue;
-                    }
+                        AActor* actor = actors[j];
 
-                    if (actor->IsA(AStorageContainer::StaticClass()))
-                    {
-                        if (config.esp.barrel.enable)
+                        if (!actor)
                         {
-                            ESP::DrawBarrel(world, hud, actor);
+                            continue;
                         }
-                        continue;
+
+                        if (actor->IsA(AStorageContainer::StaticClass()))
+                        {
+                            if (config.esp.barrel.enable)
+                            {
+                                ESP::DrawBarrel(world, hud, actor);
+                            }
+                            continue;
+                        }
+                        spdlog::debug(actor->GetFullName());
                     }
                 }
-            }*/
+            }
+
+            done = true;*/
 
             if (config.aim.player.enable)
             {
@@ -297,18 +307,21 @@ namespace Hacks
                         ESP::DrawEvent(world, hud, actor);
                     }
                     continue;
-                }
-
-                if (config.esp.debug.enable)
-                {
-                    spdlog::debug("DrawDebug");
-                    DrawDebug(world, actor);
                 }*/
+
+                if (actor->IsA(AModalInteractionProxy::StaticClass()))
+                {
+                    if (config.esp.lorebook.enable)
+                    {
+                        spdlog::debug("ESP::DrawLoreBook");
+                        ESP::DrawLoreBook(world, actor);
+                    }
+                    continue;
+                }
             }
 
-            if (config.aim.cannon.enable)
+            if (config.aim.cannon.path)
             {
-                spdlog::debug("Aimbot::CannonTrace");
                 Aimbot::CannonTrace(world);
             }
 
@@ -354,6 +367,12 @@ namespace Hacks
             {
                 spdlog::debug("Info::DrawAnchor");
                 Info::DrawAnchor(world);
+            }
+
+            if (config.info.debug)
+            {
+                spdlog::debug("Info::DrawDebug");
+                Info::DrawDebug(world);
             }
         }
     }

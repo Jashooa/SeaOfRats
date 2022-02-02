@@ -195,65 +195,51 @@ namespace GUI
                 if (ImGui::BeginTabItem("ESP"))
                 {
                     ImGui::Text("Entities");
-                    ImGui::Checkbox("Player", &config.esp.player.enable);
-                    ImGui::Checkbox("Skeleton", &config.esp.skeleton.enable);
-                    //ImGui::Checkbox("Shark", &config.esp.shark.enable);
-                    //ImGui::Checkbox("Kraken", &config->krakenESP);
-                    //ImGui::Checkbox("Kraken Tentacle", &config->krakenTentacleESP);
-                    ImGui::Checkbox("Animal", &config.esp.animal.enable);
-                    ImGui::Checkbox("Mermaid", &config.esp.mermaid.enable);
-
-                    ImGui::Separator();
-
-                    ImGui::Text("Ships");
-                    ImGui::Checkbox("Ship", &config.esp.ship.enable);
-                    //ImGui::Checkbox("Far Ship", &config->farShipESP);
-                    //ImGui::Checkbox("Skeleton Ship", &config->skeletonShipESP);
-                    //ImGui::Checkbox("Ghost Ship", &config->ghostShipESP);
-                    //ImGui::Checkbox("Rowboat", &config.esp.rowboat.enable);
+                    ImGui::Checkbox("Player##ESP", &config.esp.player.enable);
+                    ImGui::Checkbox("Skeleton##ESP", &config.esp.skeleton.enable);
+                    ImGui::Checkbox("Ship##ESP", &config.esp.ship.enable);
+                    ImGui::Checkbox("Animal##ESP", &config.esp.animal.enable);
+                    ImGui::Checkbox("Mermaid##ESP", &config.esp.mermaid.enable);
 
                     ImGui::Separator();
 
                     ImGui::Text("Misc");
-                    ImGui::Checkbox("Item", &config.esp.item.enable);
-                    //ImGui::Checkbox("Barrel", &config.esp.barrel.enable);
-                    //ImGui::Checkbox("Shipwreck", &config.esp.shipwreck.enable);
-                    //ImGui::Checkbox("Storm", &config.esp.storm.enable);
-                    //ImGui::Checkbox("Event", &config->eventESP);
-                    ImGui::Checkbox("Map", &config.esp.map.enable);
-                    ImGui::Checkbox("Debug", &config.esp.debug.enable);
+                    ImGui::Checkbox("Item##ESP", &config.esp.item.enable);
+                    ImGui::Checkbox("Map##ESP", &config.esp.map.enable);
+                    ImGui::Checkbox("Lore Book##ESP", &config.esp.lorebook.enable);
 
                     ImGui::EndTabItem();
                 }
 
                 if (ImGui::BeginTabItem("Info"))
                 {
-                    ImGui::Checkbox("Crosshair", &config.info.crosshair);
-                    ImGui::Checkbox("Playerlist", &config.info.playerList);
-                    ImGui::Checkbox("Compass", &config.info.compass);
-                    ImGui::Checkbox("Oxygen", &config.info.oxygen);
-                    ImGui::Checkbox("Water Level", &config.info.waterLevel);
-                    ImGui::Checkbox("Anchor", &config.info.anchor);
+                    ImGui::Checkbox("Crosshair##Info", &config.info.crosshair);
+                    ImGui::Checkbox("Playerlist##Info", &config.info.playerList);
+                    ImGui::Checkbox("Compass##Info", &config.info.compass);
+                    ImGui::Checkbox("Oxygen##Info", &config.info.oxygen);
+                    ImGui::Checkbox("Water Level##Info", &config.info.waterLevel);
+                    ImGui::Checkbox("Anchor##Info", &config.info.anchor);
+                    ImGui::Checkbox("Debug##Info", &config.info.debug);
                     ImGui::EndTabItem();
                 }
 
                 if (ImGui::BeginTabItem("Aimbot"))
                 {
                     ImGui::Text("Global");
-                    ImGui::Checkbox("Enabled", &config.aim.enable);
+                    ImGui::Checkbox("Enabled##Aim", &config.aim.enable);
 
                     ImGui::Separator();
 
                     ImGui::Text("Player");
-                    ImGui::Checkbox("Enable", &config.aim.player.enable);
-                    ImGui::Checkbox("Players", &config.aim.player.player);
-                    ImGui::Checkbox("Skeletons", &config.aim.player.skeleton);
+                    ImGui::Checkbox("Enable##PlayerAim", &config.aim.player.enable);
+                    ImGui::Checkbox("Players##PlayerAim", &config.aim.player.player);
+                    ImGui::Checkbox("Skeletons##PlayerAim", &config.aim.player.skeleton);
 
                     ImGui::Separator();
 
                     ImGui::Text("Cannon");
-                    ImGui::Checkbox("Enable", &config.aim.cannon.enable);
-                    ImGui::Checkbox("Path", &config.aim.cannon.path);
+                    ImGui::Checkbox("Enable##CannonAim", &config.aim.cannon.enable);
+                    ImGui::Checkbox("Path##CannonAim", &config.aim.cannon.path);
 
                     ImGui::EndTabItem();
                 }

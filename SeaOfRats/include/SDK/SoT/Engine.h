@@ -94,12 +94,23 @@ namespace SDK
         ECC_MAX = 33
     };
 
+    // ScriptStruct Engine.ActorPtr
+    // 0x0008
+    struct FActorPtr
+    {
+        class AActor* Actor; // 0x0000(0x0008)
+    };
+
     // ScriptStruct Engine.HitResult
     // 0x0080
     struct FHitResult
     {
-        char pad_0x0000[0x0064];
-        TWeakObjectPtr<class AActor> Actor; // 0x0064(0x0008)
+        char pad_0x0000[0x0008];
+        float Distance; // 0x0008(0x0004)
+        struct FVector Location; // 0x000C(0x000C)
+        struct FVector ImpactPoint; // 0x0018(0x000C)
+        char pad_0x0024[0x0040];
+        struct TWeakObjectPtr<class AActor> Actor; // 0x0064(0x0008)
         char pad_0x006C[0x0014];
     };
 
@@ -116,9 +127,22 @@ namespace SDK
     class AActor : public UObject
     {
     public:
-        char pad_0x0028[0x0148];
+        char pad_0x0028[0x0060];
+        class AActor* Owner; // 0x0088(0x0008)
+        char pad_0x0090[0x00E0];
         class USceneComponent* RootComponent; // 0x0170(0x0008)
-        char pad_0x0178[0x0258];
+        char pad_0x0178[0x0030];
+        struct FActorPtr ParentComponentActor; // 0x01A8(0x0008)
+        class TArray<TWeakObjectPtr<class AActor>> ChildComponentActors; // 0x01B0(0x0010)
+        char pad_0x01C0[0x0010];
+        class TArray<struct FName> Tags; // 0x01D0(0x0010)
+        char pad_0x1E0[0x0148];
+        TArray<class UActorComponent*> BlueprintCreatedComponents; // 0x0328(0x0010)
+        TArray<class UActorComponent*> InstanceComponents; // 0x0338(0x0010)
+        char pad_0x0348[0x0008];
+        TArray<class AActor*> ChildActorInterfaceProviders; // 0x0350(0x0010)
+        char pad_0x0360[0x0070];
+
 
         void GetActorBounds(bool bOnlyCollidingComponents, struct FVector* Origin, struct FVector* BoxExtent);
         class AActor* GetAttachParentActor();

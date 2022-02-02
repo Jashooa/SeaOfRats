@@ -68,6 +68,35 @@ namespace SDK
         return params.ReturnValue;
     }
 
+    // Function Athena.OnlineAthenaPlayerController.IsClientAndInActiveGameplay
+    bool AOnlineAthenaPlayerController::IsClientAndInActiveGameplay()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.OnlineAthenaPlayerController.IsClientAndInActiveGameplay");
+
+        struct
+        {
+            bool ReturnValue;
+        } params{};
+
+        UObject::ProcessEvent(this, fn, &params);
+
+        return params.ReturnValue;
+    }
+
+    // Function Athena.OnlineAthenaPlayerController.ModifyActiveState
+    void AOnlineAthenaPlayerController::ModifyActiveState(bool IsActive)
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.OnlineAthenaPlayerController.ModifyActiveState");
+
+        struct
+        {
+            bool IsActive;
+        } params{};
+        params.IsActive = IsActive;
+
+        UObject::ProcessEvent(this, fn, &params);
+    }
+
     // Function Athena.Ship.GetInternalWater
     class AShipInternalWater* AShip::GetInternalWater()
     {
