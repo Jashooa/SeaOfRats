@@ -20,7 +20,13 @@ namespace Hacks
             FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
             auto currentIndex = mesh->CurrentReadSpaceBases;
 
-            FTransform boneTransform = mesh->SpaceBasesArray[currentIndex][static_cast<int>(bone)];
+            auto spaceBases = mesh->SpaceBasesArray[currentIndex];
+            if (spaceBases.Num() < 1 || static_cast<uint8_t>(bone) >= spaceBases.Num())
+            {
+                return boneLocation;
+            }
+
+            FTransform boneTransform = spaceBases[static_cast<uint8_t>(bone)];
             FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
             FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
             boneLocation = worldBoneMatrix.GetOrigin();

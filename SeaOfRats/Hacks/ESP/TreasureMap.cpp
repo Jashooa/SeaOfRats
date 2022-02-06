@@ -100,8 +100,8 @@ namespace Hacks
                         const auto progress = riddleMapContents.Progress;
                         const auto steps = riddleMapContents.Text.Num();
 
-                        float x = Drawing::Window->Size.x * 0.5f;
-                        float y = 200.f;
+                        //float x = Drawing::Window->Size.x * 0.5f;
+                        //float y = 200.f;
 
                         //Drawing::DrawString("Progress: " + std::to_string(progress) + "/" + std::to_string(steps), FVector2D(x, y), Drawing::Colour::White, false);
 
