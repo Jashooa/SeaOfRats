@@ -247,6 +247,26 @@ namespace SDK
         return params.ReturnValue;
     }
 
+    // Function Athena.ActorFunctionLibrary.FindActorByName
+    class AActor* UActorFunctionLibrary::FindActorByName(class UObject* WorldContext, const class FString& ActorName)
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.ActorFunctionLibrary.FindActorByName");
+
+        struct
+        {
+            class UObject* WorldContext;
+            class FString ActorName;
+            class AActor* ReturnValue;
+        } params{};
+        params.WorldContext = WorldContext;
+        params.ActorName = ActorName;
+
+        static auto defaultObj = UObject::FindObject<UClass>("Class Athena.ActorFunctionLibrary");
+        UObject::ProcessEvent(defaultObj, fn, &params);
+
+        return params.ReturnValue;
+    }
+
     // Function Athena.DrowningComponent.GetOxygenLevel
     float UDrowningComponent::GetOxygenLevel()
     {

@@ -120,6 +120,8 @@ namespace SDK
     {
     public:
         char pad_0x0028[0x00A0];
+
+        class AActor* GetOwner();
     };
 
     // Class Engine.Actor
@@ -129,7 +131,8 @@ namespace SDK
     public:
         char pad_0x0028[0x0060];
         class AActor* Owner; // 0x0088(0x0008)
-        char pad_0x0090[0x00E0];
+        char pad_0x0090[0x00D0];
+        TArray<class AActor*> Children; // 0x0160(0x0010)
         class USceneComponent* RootComponent; // 0x0170(0x0008)
         char pad_0x0178[0x0030];
         struct FActorPtr ParentComponentActor; // 0x01A8(0x0008)

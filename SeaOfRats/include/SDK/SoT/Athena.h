@@ -49,6 +49,33 @@ namespace SDK
         EPlayerActivityType__EPlayerActivityType_MAX = 23
     };
 
+    // Enum Athena.ERiddleActions
+    enum class ERiddleActions : uint8_t
+    {
+        ERiddleActions__RaiseLanternAnyone = 0,
+        ERiddleActions__PlayAnyInstrumentAnyone = 1,
+        ERiddleActions__Dig = 2,
+        ERiddleActions__LookAtMap = 3,
+        ERiddleActions__NumActions = 4,
+        ERiddleActions__ERiddleActions_MAX = 5
+    };
+
+    // ScriptStruct Athena.TreasureMapTextEntry
+    // 0x0048
+    struct FTreasureMapTextEntry
+    {
+        class FString Name; // 0x0000(0x0010)
+        struct FText Substitution; // 0x0010(0x0038)
+    };
+
+    // ScriptStruct Athena.TreasureMapTextDesc
+    // 0x0048
+    struct FTreasureMapTextDesc
+    {
+        struct FText Pattern; // 0x0000(0x0038)
+        TArray<struct FTreasureMapTextEntry> Substitutions; // 0x0038(0x0010)
+    };
+
     // ScriptStruct Athena.CapstanNetState
     // 0x0008
     struct FCapstanNetState
@@ -97,6 +124,25 @@ namespace SDK
         char pad_0x00120[0x00B8];
     };
 
+    // ScriptStruct Athena.RiddleMapContents
+    // 0x0018
+    struct FRiddleMapContents
+    {
+        TArray<struct FTreasureMapTextDesc> Text; // 0x0000(0x0010)
+        int Progress; // 0x0010(0x0004)
+        char pad_0x0014[0x0004];
+    };
+
+    // ScriptStruct Athena.XMarksTheSpotMapMark
+    // 0x0010
+    struct FXMarksTheSpotMapMark
+    {
+        struct FVector2D Position; // 0x0000(0x0008)
+        float Rotation; // 0x0008(0x0004)
+        bool IsUnderground; // 0x000C(0x0001)
+        char pad_0x000D[0x0003];
+    };
+
     // ScriptStruct Athena.ShipInternalWaterParams
     // 0x0038
     struct FShipInternalWaterParams
@@ -105,6 +151,33 @@ namespace SDK
         float MaxWaterAmount; // 0x0008(0x0004)
         float MaxWaterHeight; // 0x000C(0x0004)
         char pad_0x0010[0x0028];
+    };
+
+    // ScriptStruct Athena.LandmarkReaction
+    // 0x0038
+    struct FLandmarkReaction
+    {
+        bool Enabled; // 0x0000(0x0001)
+        char pad_0x0001[0x0003];
+        float RelevantRadiusInMetres; // 0x0004(0x0004)
+        TArray<TEnumAsByte<ERiddleActions>> ActionsThatTriggerThisReaction; // 0x0008(0x0010)
+        char pad_0x0018[0x0020];
+    };
+
+    // ScriptStruct Athena.WorldMapIslandDataCaptureParams
+    // 0x0040
+    struct FWorldMapIslandDataCaptureParams
+    {
+        struct FVector CameraPosition; // 0x0000(0x000C)
+        struct FRotator CameraOrientation; // 0x000C(0x000C)
+        struct FVector WorldSpaceCameraPosition; // 0x0018(0x000C)
+        float CameraFOV; // 0x0024(0x0004)
+        float CameraAspect; // 0x0028(0x0004)
+        float CameraOrthoWidth; // 0x002C(0x0004)
+        float CameraNearClip; // 0x0030(0x0004)
+        float CameraFarClip; // 0x0034(0x0004)
+        int TextureWidth; // 0x0038(0x0004)
+        int TextureHeight; // 0x003C(0x0004)
     };
 
     // Class Athena.InteractableBase
@@ -189,7 +262,9 @@ namespace SDK
         class AShipService* ShipService; // 0x05C8(0x0008)
         char pad_0x05D0[0x0038];
         class ACrewService* CrewService; // 0x0608(0x0008)
-        char pad_0x0610[0x04E8];
+        char pad_0x0610[0x0010];
+        class AIslandService* IslandService; // 0x0620(0x0008)
+        char pad_0x0628[0x04D0];
 
         static UClass* StaticClass()
         {
@@ -493,6 +568,16 @@ namespace SDK
         float GetMaxHealth();
     };
 
+    // Class Athena.IslandService
+    // 0x0220 (0x05F0 - 0x03D0)
+    class AIslandService : public AActor
+    {
+    public:
+        char pad_0x03D0[0x0090];
+        class UIslandDataAsset* IslandDataAsset; // 0x0460(0x0008)
+        char pad_0x0468[0x0188];
+    };
+
     // Class Athena.LoadableComponent
     // 0x0118 (0x01E0 - 0x00C8)
     class ULoadableComponent : public UActorComponent
@@ -570,6 +655,23 @@ namespace SDK
         }
     };
 
+    // Class Athena.RiddleMap
+    // 0x0100 (0x08E0 - 0x07E0)
+    class ARiddleMap : public ATreasureMap
+    {
+    public:
+        char pad_0x07E0[0x0068];
+        struct FRiddleMapContents Contents; // 0x0848(0x0018)
+        struct FStringAssetReference MapInventoryTexturePath; // 0x0860(0x0010)
+        char pad_0x0870[0x0070];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.RiddleMap");
+            return ptr;
+        }
+    };
+
     // Class Athena.NetProxy
     // 0x0030 (0x0400 - 0x03D0)
     class ANetProxy : public AActor
@@ -592,6 +694,27 @@ namespace SDK
         }
     };
 
+    // Class Athena.XMarksTheSpotMap
+    // 0x0120 (0x0900 - 0x07E0)
+    class AXMarksTheSpotMap : public ATreasureMap
+    {
+    public:
+        char pad_0x07E0[0x0038];
+        class FString MapTexturePath; // 0x0818(0x0010)
+        struct FStringAssetReference MapInventoryTexturePath; // 0x0828(0x0010)
+        char pad_0x0838[0x0070];
+        TArray<struct FXMarksTheSpotMapMark> Marks; // 0x08A8(0x0010)
+        char pad_0x08B8[0x0018];
+        float Rotation; // 0x08D0(0x0004)
+        char pad_0x08D4[0x002C];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.XMarksTheSpotMap");
+            return ptr;
+        }
+    };
+
     // Class Athena.TreasureMapCollectionComponent
     // 0x00F0 (0x01B8 - 0x00C8)
     class UTreasureMapCollectionComponent : public UActorComponent
@@ -601,6 +724,12 @@ namespace SDK
         TArray<class ATreasureMap*> TreasureMaps; // 0x0188(0x0010)
         TArray<struct FName> TreasureMapDestinationIslands; // 0x0198(0x0010)
         char pad_0x01A8[0x0010];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.TreasureMapCollectionComponent");
+            return ptr;
+        }
     };
 
     // Class Athena.WieldedItemComponent
@@ -611,6 +740,14 @@ namespace SDK
         char pad_0x02B0[0x0010];
         class AActor* CurrentlyWieldedItem; // 0x02C0(0x0008)
         char pad_0x02C8[0x0118];
+    };
+
+    // Class Athena.ActorFunctionLibrary
+    // 0x0000 (0x0028 - 0x0028)
+    class UActorFunctionLibrary : public UBlueprintFunctionLibrary
+    {
+    public:
+        static class AActor* FindActorByName(class UObject* WorldContext, const class FString& ActorName);
     };
 
     // Class Athena.WieldableInterface
@@ -633,6 +770,22 @@ namespace SDK
         char pad_0x0420[0x0200];
     };
 
+    // Class Athena.Landmark
+    // 0x0288 (0x0658 - 0x03D0)
+    class ALandmark : public AActor
+    {
+    public:
+        char pad_0x03D0[0x0218];
+        TArray<struct FLandmarkReaction> Reactions; // 0x05E8(0x0010)
+        char pad_0x05F8[0x0060];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.Landmark");
+            return ptr;
+        }
+    };
+
     // Class Athena.DrowningComponent
     // 0x00F8 (0x01C0 - 0x00C8)
     class UDrowningComponent : public UActorComponent
@@ -641,6 +794,38 @@ namespace SDK
         char pad_0x00C8[0x00F8];
 
         float GetOxygenLevel();
+    };
+
+    // Class Athena.IslandDataAssetEntry
+    // 0x00E8 (0x0110 - 0x0028)
+    class UIslandDataAssetEntry : public UDataAsset
+    {
+    public:
+        struct FName IslandName; // 0x0028(0x0008)
+        char pad_0x0030[0x0010];
+        class UWorldMapIslandDataAsset* WorldMapData; // 0x0040(0x0008)
+        char pad_0x0048[0x0068];
+        struct FText LocalisedName; // 0x00B0(0x0038)
+        char pad_0x00E8[0x0028];
+    };
+
+    // Class Athena.IslandDataAsset
+    // 0x0030 (0x0058 - 0x0028)
+    class UIslandDataAsset : public UDataAsset
+    {
+    public:
+        char pad_0x0028[0x0020];
+        TArray<class UIslandDataAssetEntry*> IslandDataEntries; // 0x0048(0x0010)
+    };
+
+    // Class Athena.WorldMapIslandDataAsset
+    // 0x0050 (0x0078 - 0x0028)
+    class UWorldMapIslandDataAsset : public UDataAsset
+    {
+    public:
+        char pad_0x0028[0x0008];
+        struct FWorldMapIslandDataCaptureParams CaptureParams; // 0x0030(0x0040)
+        char pad_0x0070[0x0008];
     };
 }
 

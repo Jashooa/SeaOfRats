@@ -8,6 +8,21 @@ namespace SDK
 {
     UWorld** UWorld::GWorld = nullptr;
 
+    // Function Engine.ActorComponent.GetOwner
+    class AActor* UActorComponent::GetOwner()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.ActorComponent.GetOwner");
+
+        struct
+        {
+            class AActor* ReturnValue;
+        } params{};
+
+        UObject::ProcessEvent(this, fn, &params);
+
+        return params.ReturnValue;
+    }
+
     // Function Engine.Actor.GetActorBounds
     void AActor::GetActorBounds(bool bOnlyCollidingComponents, struct FVector* Origin, struct FVector* BoxExtent)
     {
@@ -73,7 +88,7 @@ namespace SDK
         struct
         {
             class AActor* OtherActor;
-            float                          ReturnValue;
+            float ReturnValue;
         } params{};
         params.OtherActor = OtherActor;
 

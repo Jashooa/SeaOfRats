@@ -131,7 +131,7 @@ namespace Hacks
             }
             bestAim.location = boneLocation;
 
-            Drawing::DrawString("x", screen, Drawing::Colour::Red);
+            //Drawing::DrawString("x", screen, Drawing::Colour::Red);
 
             FVector localVelocity = localPlayer->GetVelocity();
             if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
@@ -153,7 +153,7 @@ namespace Hacks
             //const float b = (relativeLocation * relativeVelocity * 2.f).Sum();
             const float b = temp.X + temp.Y + temp.Z;
             const float c = relativeLocation.SizeSquared();
-            const float d = b * b - 4 * a - c;
+            const float d = b * b - 4 * a * c;
 
             if (d > 0)
             {
@@ -169,14 +169,20 @@ namespace Hacks
                     bestAim.location += relativeVelocity * x2;
                 }
 
+                if (!playerController->ProjectWorldLocationToScreen(bestAim.location, &screen))
+                {
+                    return;
+                }
+                Drawing::DrawString("x", screen, Drawing::Colour::Red);
+                Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.0f, 200.0f), Drawing::Colour::Red, false);
+                Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.0f, 215.0f), Drawing::Colour::Red, false);
+
                 //if (playerController->IsInputKeyDown(FKey{ "LeftMouseButton" }))
                 if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
                 {
                     bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
 
-                    auto smoothness = 1.f / 3;
-                    Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.0f, 200.0f), Drawing::Colour::Red, false);
-                    Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.0f, 215.0f), Drawing::Colour::Red, false);
+                    auto smoothness = 1.f / 3.0f;
                     playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
                     playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
                 }

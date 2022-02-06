@@ -70,8 +70,7 @@ namespace Hacks
                     velocity.Z = newZ;
                     FVector nextPosition = position + move;
                     FHitResult hitResult;
-                    bool hit = UKismetSystemLibrary::LineTraceSingle_NEW(cannon, position, nextPosition, ETraceTypeQuery::TraceTypeQuery1, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult);
-                    if (hit)
+                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, position, nextPosition, ETraceTypeQuery::TraceTypeQuery1, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
                     {
                         FVector2D screen{};
                         if (world->OwningGameInstance->LocalPlayers[0]->PlayerController->ProjectWorldLocationToScreen(nextPosition, &screen))

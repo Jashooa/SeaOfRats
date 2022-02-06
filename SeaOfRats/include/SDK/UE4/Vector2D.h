@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Math.h"
+
 namespace SDK
 {
     // ScriptStruct CoreUObject.Vector2D
@@ -33,6 +35,16 @@ namespace SDK
         inline FVector2D operator/(const FVector2D& V) const
         {
             return FVector2D(X / V.X, Y / V.Y);
+        }
+
+        inline FVector2D GetRotated(const float AngleDeg) const
+        {
+            float S, C;
+            FMath::SinCos(&S, &C, FMath::DegreesToRadians(AngleDeg));
+
+            return FVector2D(
+                C * X - S * Y,
+                S * X + C * Y);
         }
     };
 }

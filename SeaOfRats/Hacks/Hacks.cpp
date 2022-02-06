@@ -15,6 +15,7 @@
 #include "Hacks/ESP/Player.h"
 #include "Hacks/ESP/Skeleton.h"
 #include "Hacks/ESP/Ship.h"
+#include "Hacks/ESP/TreasureMap.h"
 #include "Hacks/Info/Anchor.h"
 #include "Hacks/Info/Compass.h"
 #include "Hacks/Info/Debug.h"
@@ -73,8 +74,6 @@ bool NullChecks(UWorld* world)
     return true;
 }
 
-bool done = false;
-
 namespace Hacks
 {
     void Loop()
@@ -85,36 +84,30 @@ namespace Hacks
         {
             ULevel* level = world->PersistentLevel;
 
-            /*if (!done)
+            auto levels = world->Levels;
+            for (auto i = 6; i < levels.Num(); ++i)
             {
-                auto levels = world->Levels;
-                for (int32_t i = 0; i < levels.Num(); ++i)
+                auto actors = levels[i]->AActors;
+                for (auto j = 0; j < actors.Num(); ++j)
                 {
-                    auto actors = levels[i]->AActors;
-                    spdlog::debug("Level: " + std::to_string(i));
-                    for (int32_t j = 0; j < actors.Num(); ++j)
+                    AActor* actor = actors[j];
+
+                    if (!actor)
                     {
-                        AActor* actor = actors[j];
+                        continue;
+                    }
 
-                        if (!actor)
+                    if (actor->IsA(AModalInteractionProxy::StaticClass()))
+                    {
+                        if (config.esp.lorebook.enable)
                         {
-                            continue;
+                            spdlog::debug("ESP::DrawLoreBook");
+                            ESP::DrawLoreBook(world, actor);
                         }
-
-                        if (actor->IsA(AStorageContainer::StaticClass()))
-                        {
-                            if (config.esp.barrel.enable)
-                            {
-                                ESP::DrawBarrel(world, hud, actor);
-                            }
-                            continue;
-                        }
-                        spdlog::debug(actor->GetFullName());
+                        continue;
                     }
                 }
             }
-
-            done = true;*/
 
             if (config.aim.player.enable)
             {
@@ -124,7 +117,7 @@ namespace Hacks
 
             auto actors = level->AActors;
 
-            for (int32_t i = 0; i < actors.Num(); ++i)
+            for (auto i = 0; i < actors.Num(); ++i)
             {
                 AActor* actor = actors[i];
 
@@ -222,7 +215,6 @@ namespace Hacks
                 {
                     if (config.esp.map.enable)
                     {
-                        spdlog::debug("ESP::DrawMap");
                         ESP::DrawMap(world, actor);
                     }
                     continue;
@@ -318,6 +310,26 @@ namespace Hacks
                     }
                     continue;
                 }
+
+                if (actor->IsA(AXMarksTheSpotMap::StaticClass()))
+                {
+                    if (config.esp.treasuremap.enable)
+                    {
+                        spdlog::debug("ESP::DrawXMarksTheSpotMap");
+                        ESP::DrawXMarksTheSpotMap(world, actor);
+                    }
+                    continue;
+                }
+
+                if (actor->IsA(ARiddleMap::StaticClass()))
+                {
+                    if (config.esp.treasuremap.enable)
+                    {
+                        spdlog::debug("ESP::DrawRiddleMap");
+                        ESP::DrawRiddleMap(world, actor);
+                    }
+                    continue;
+                }
             }
 
             if (config.aim.cannon.path)
@@ -341,31 +353,26 @@ namespace Hacks
 
             if (config.info.playerList)
             {
-                spdlog::debug("Info::DrawPlayerList");
                 Info::DrawPlayerList(world);
             }
 
             if (config.info.compass)
             {
-                spdlog::debug("Info::DrawCompass");
                 Info::DrawCompass(world);
             }
 
             if (config.info.oxygen)
             {
-                spdlog::debug("Info::DrawOxygen");
                 Info::DrawOxygen(world);
             }
 
             if (config.info.waterLevel)
             {
-                spdlog::debug("Info::DrawWaterLevel");
                 Info::DrawWaterLevel(world);
             }
 
             if (config.info.anchor)
             {
-                spdlog::debug("Info::DrawAnchor");
                 Info::DrawAnchor(world);
             }
 

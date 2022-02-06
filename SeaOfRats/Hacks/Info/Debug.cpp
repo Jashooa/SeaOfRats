@@ -17,7 +17,7 @@ namespace Hacks
             FVector position = playerCamera->GetCameraLocation() + forwardVector;
             FVector lookPosition = playerCamera->GetCameraLocation() + (forwardVector * 10000.f);
             FHitResult hitResult;
-            bool hit = UKismetSystemLibrary::LineTraceSingle_NEW(localPlayer, position, lookPosition, ETraceTypeQuery::TraceTypeQuery1, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult);
+            bool hit = UKismetSystemLibrary::LineTraceSingle_NEW(localPlayer, position, lookPosition, ETraceTypeQuery::TraceTypeQuery4, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult);
 
             if (hit)
             {
@@ -52,6 +52,18 @@ namespace Hacks
                 if (const auto item = actor->ParentComponentActor.Actor)
                 {
                     Drawing::DrawString("ParentComponentActor: " + item->GetName(), FVector2D(x, y += 15.f), colour, false);
+                }
+
+                if (actor->Children.Num() > 0)
+                {
+                    Drawing::DrawString("Children:", FVector2D(x, y += 15.f), colour, false);
+                    for (int32_t i = 0; i < actor->Children.Num(); ++i)
+                    {
+                        if (const auto item = actor->Children[i])
+                        {
+                            Drawing::DrawString(item->GetName(), FVector2D(x + 10.f, y += 15.f), colour, false);
+                        }
+                    }
                 }
 
                 if (actor->ChildComponentActors.Num() > 0)

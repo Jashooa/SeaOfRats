@@ -50,5 +50,17 @@ namespace SDK
             float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
             *ScalarCos = sign * p;
         }
+
+        template<class T>
+        static inline auto RadiansToDegrees(T const& RadVal) -> decltype(RadVal* (180.f / PI))
+        {
+            return RadVal * (180.f / PI);
+        }
+
+        template<class T>
+        static inline auto DegreesToRadians(T const& DegVal) -> decltype(DegVal* (PI / 180.f))
+        {
+            return DegVal * (PI / 180.f);
+        }
     };
 }

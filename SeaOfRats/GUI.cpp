@@ -207,6 +207,7 @@ namespace GUI
                     ImGui::Checkbox("Item##ESP", &config.esp.item.enable);
                     ImGui::Checkbox("Map##ESP", &config.esp.map.enable);
                     ImGui::Checkbox("Lore Book##ESP", &config.esp.lorebook.enable);
+                    ImGui::Checkbox("Treasure Map##ESP", &config.esp.treasuremap.enable);
 
                     ImGui::EndTabItem();
                 }

@@ -93,7 +93,7 @@ public:
 
         struct
         {
-            bool enable = false;
+            bool enable = true;
         } map;
 
         struct
@@ -104,7 +104,7 @@ public:
         struct
         {
             bool enable = false;
-        } debug;
+        } treasuremap;
     } esp;
 
     struct
@@ -112,7 +112,7 @@ public:
         bool enable = false;
 
         bool crosshair = true;
-        bool playerList = false;
+        bool playerList = true;
         bool compass = false;
         bool oxygen = false;
         bool waterLevel = false;
