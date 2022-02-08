@@ -1,4 +1,4 @@
-#include "Animal.h"
+#include "Rowboat.h"
 
 #include "Drawing.h"
 
@@ -6,21 +6,11 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawAnimal(UWorld* world, AActor* actor)
+        void DrawRowboat(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
-            const auto animal = reinterpret_cast<AFauna*>(actor);
-
-            /*switch (animal->AIControllerParams->TeamID)
-            {
-                case EAthenaAITeam::Fauna_Chickens:
-                    break;
-                case EAthenaAITeam::Fauna_Pigs:
-                    break;
-                case EAthenaAITeam::Fauna_Snakes:
-                    break;
-            }*/
+            //const auto rowboat = reinterpret_cast<ARowboat*>(actor);
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
@@ -40,9 +30,21 @@ namespace Hacks
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
                 // Get name
-                std::string name = UKismetTextLibrary::Conv_TextToString(animal->DisplayName).ToString();
+                std::string name = "Rowboat";
+
+                const std::string actorName = actor->GetName();
+                if (actorName.find("Harpoon") != std::string::npos)
+                {
+                    name = "Harpoon " + name;
+                }
+                else if (actorName.find("Cannon") != std::string::npos)
+                {
+                    name = "Cannon " + name;
+                }
+
                 const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
                 name += " [" + std::to_string(distance) + "m]";
+
                 // Draw name
                 const FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                 Drawing::DrawString(name, nameScreen, Drawing::Colour::White);

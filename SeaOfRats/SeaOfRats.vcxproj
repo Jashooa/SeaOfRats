@@ -145,6 +145,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <UseFullPaths>false</UseFullPaths>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,6 +171,8 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <UseFullPaths>false</UseFullPaths>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -191,11 +195,13 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\ESP\Animal.cpp" />
+    <ClCompile Include="Hacks\ESP\GhostShip.cpp" />
     <ClCompile Include="Hacks\ESP\LoreBook.cpp" />
+    <ClCompile Include="Hacks\ESP\Storm.cpp" />
     <ClCompile Include="Hacks\ESP\TreasureMap.cpp" />
     <ClCompile Include="Hacks\Info\Debug.cpp" />
     <ClCompile Include="Hacks\ESP\Item.cpp" />
-    <ClCompile Include="Hacks\ESP\Map.cpp" />
+    <ClCompile Include="Hacks\ESP\MapPin.cpp" />
     <ClCompile Include="Hacks\ESP\Mermaid.cpp" />
     <ClCompile Include="Hacks\ESP\Player.cpp" />
     <ClCompile Include="Hacks\ESP\Ship.cpp" />
@@ -214,6 +220,7 @@
     <ClCompile Include="include\SDK\UE4\Basic.cpp" />
     <ClCompile Include="include\SDK\UE4\CoreUObject.cpp" />
     <ClCompile Include="include\SDK\UE4\UE4.cpp" />
+    <ClCompile Include="Hacks\ESP\Rowboat.cpp" />
     <ClCompile Include="SeaOfRats.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
@@ -231,11 +238,13 @@
     <ClInclude Include="Hacks\Bones.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP\Animal.h" />
+    <ClInclude Include="Hacks\ESP\GhostShip.h" />
     <ClInclude Include="Hacks\ESP\LoreBook.h" />
+    <ClInclude Include="Hacks\ESP\Storm.h" />
     <ClInclude Include="Hacks\ESP\TreasureMap.h" />
     <ClInclude Include="Hacks\Info\Debug.h" />
     <ClInclude Include="Hacks\ESP\Item.h" />
-    <ClInclude Include="Hacks\ESP\Map.h" />
+    <ClInclude Include="Hacks\ESP\MapPin.h" />
     <ClInclude Include="Hacks\ESP\Mermaid.h" />
     <ClInclude Include="Hacks\ESP\Player.h" />
     <ClInclude Include="Hacks\ESP\Ship.h" />
@@ -268,6 +277,7 @@
     <ClInclude Include="include\SDK\UE4\UE4.h" />
     <ClInclude Include="include\SDK\UE4\Vector.h" />
     <ClInclude Include="include\SDK\UE4\Vector2D.h" />
+    <ClInclude Include="Hacks\ESP\Rowboat.h" />
     <ClInclude Include="SeaOfRats.h" />
     <ClInclude Include="include\imgui\imconfig.h" />
     <ClInclude Include="include\imgui\imgui.h" />
@@ -367,6 +377,7 @@
     <ClInclude Include="Utilities\General.h" />
     <ClInclude Include="Utilities\Memory.h" />
     <ClInclude Include="Utilities\Hooking.h" />
+    <ClInclude Include="include\SDK\SoT\Watercrafts.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

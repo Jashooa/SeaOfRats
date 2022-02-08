@@ -9,9 +9,9 @@ namespace Hacks
     {
         void DrawSkeleton(UWorld* world, AActor* actor)
         {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = playerController->Pawn;
+            const auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
 
             // Check if dead
             if (skeleton->IsDead())
@@ -20,7 +20,7 @@ namespace Hacks
             }
 
             // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
+            const auto location = actor->K2_GetActorLocation();
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
@@ -35,7 +35,7 @@ namespace Hacks
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
+            const auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
             FVector2D topScreen;
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
@@ -110,7 +110,7 @@ namespace Hacks
                     }
                 }*/
 
-                float worldDistance = localPlayer->GetDistanceTo(actor);
+                const float worldDistance = localPlayer->GetDistanceTo(actor);
 
                 /*auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
                 bool isNameplateShown = false;
@@ -130,27 +130,26 @@ namespace Hacks
                     FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                     Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
                 }*/
-                int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                const int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
                 name += " [" + std::to_string(distance) + "m]";
 
                 // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                const FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                 Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
             }
 
             // Get bottom coordinates
-            auto bottomLocation = FVector(location.X, location.Y, location.Z - extent.Z);
+            const auto bottomLocation = FVector(location.X, location.Y, location.Z - extent.Z);
             FVector2D bottomScreen;
             if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
             {
 
                 // Draw health bar
-                /*auto healthComponent = skeleton->HealthComponent;
-                if (healthComponent)
+                /*if (const auto healthComponent = skeleton->HealthComponent)
                 {
-                    FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                    FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
+                    const FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                    const FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
+                    const FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
                     Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
                 }*/
 
@@ -163,8 +162,8 @@ namespace Hacks
                         {
                             if (const auto itemDesc = itemInfo->Desc)
                             {
-                                std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-                                FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
+                                const std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
+                                const FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
                                 Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
                             }
                         }

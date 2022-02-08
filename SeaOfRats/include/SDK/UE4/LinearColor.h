@@ -12,9 +12,11 @@ namespace SDK
         float A; // 0x000C(0x0004)
 
         inline FLinearColor() : R(0.f), G(0.f), B(0.f), A(0.f)
-        {}
+        {
+        }
 
         inline FLinearColor(float InR, float InG, float InB, float InA = 1.f) : R(InR), G(InG), B(InB), A(InA)
-        {}
+        {
+        }
     };
 }

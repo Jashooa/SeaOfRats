@@ -46,11 +46,12 @@ public:
         struct
         {
             bool enable = false;
-            bool skeleton = false;
-            bool name = false;
-            bool health = false;
-            BoxType boxType = BoxType::None;
         } rowboat;
+
+        struct
+        {
+            bool enable = false;
+        } ghostship;
 
         struct
         {
@@ -61,20 +62,17 @@ public:
         {
             bool enable = false;
             bool name = false;
-            BoxType boxType = BoxType::None;
         } item;
 
         struct
         {
             bool enable = false;
             bool name = false;
-            BoxType boxType = BoxType::None;
         } animal;
 
         struct
         {
             bool enable = false;
-            bool skeleton = false;
             bool name = false;
             bool health = false;
         } shark;
@@ -93,8 +91,8 @@ public:
 
         struct
         {
-            bool enable = true;
-        } map;
+            bool enable = false;
+        } mappin;
 
         struct
         {
@@ -105,6 +103,11 @@ public:
         {
             bool enable = false;
         } treasuremap;
+
+        struct
+        {
+            bool enable = false;
+        } storm;
     } esp;
 
     struct

@@ -1,7 +1,3 @@
-#ifdef _MSC_VER
-#pragma pack(push, 0x8)
-#endif
-
 #include "SDK/SDK.h"
 
 namespace SDK
@@ -582,7 +578,3 @@ namespace SDK
         UObject::ProcessEvent(this, fn, &params);
     }
 }
-
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif

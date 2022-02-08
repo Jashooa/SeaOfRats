@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-	#pragma pack(push, 0x8)
-#endif
-
 namespace SDK
 {
 	// ScriptStruct InputCore.Key
@@ -14,7 +10,3 @@ namespace SDK
 		char pad_0x0008[0x0018];
 	};
 }
-
-#ifdef _MSC_VER
-	#pragma pack(pop)
-#endif

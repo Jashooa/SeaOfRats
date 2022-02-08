@@ -6,7 +6,6 @@
 #include <string>
 
 #include "include/spdlog/spdlog.h"
-#include "include/spdlog/async.h"
 #include "include/spdlog/sinks/basic_file_sink.h"
 
 #include "Config.h"
@@ -25,13 +24,10 @@ SeaOfRats::SeaOfRats(HMODULE module)
     auto console_sink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
     spdlog::set_default_logger(std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({ file_sink, console_sink })));*/
 
-    spdlog::set_default_logger(spdlog::basic_logger_mt("file", logPath.string(), true));
+    spdlog::set_default_logger(spdlog::basic_logger_st("file", logPath.string(), true));
     spdlog::set_pattern("[%H:%M:%S.%e] [%^%L%$] %v");
-    spdlog::flush_on(spdlog::level::debug);
-
-#if _DEBUG
-    spdlog::set_level(spdlog::level::debug);
-#endif
+    spdlog::set_level(spdlog::level::info);
+    spdlog::flush_on(spdlog::level::info);
 
     spdlog::info("Initialising SeaOfRats");
 }

@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 namespace SDK
 {
     // Class Maths.VectorMaths
@@ -14,7 +10,3 @@ namespace SDK
         static float Distance(const FVector& A, const FVector& B);
     };
 }
-
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif

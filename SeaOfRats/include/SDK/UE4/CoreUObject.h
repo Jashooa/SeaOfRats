@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 #include <string>
 
 #include "Basic.h"
@@ -158,7 +154,3 @@ namespace SDK
         class FString AssetLongPathname; // 0x0000(0x0010)
     };
 }
-
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif

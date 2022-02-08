@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-#pragma pack(push, 0x8)
-#endif
-
 #include "Engine.h"
 #include "GameService.h"
 #include "Sessions.h"
@@ -58,6 +54,17 @@ namespace SDK
         ERiddleActions__LookAtMap = 3,
         ERiddleActions__NumActions = 4,
         ERiddleActions__ERiddleActions_MAX = 5
+    };
+
+    // Enum Athena.EAggressiveGhostShipType
+    enum class EAggressiveGhostShipType : uint8_t
+    {
+        EAggressiveGhostShipType__Grunt = 0,
+        EAggressiveGhostShipType__FormationGrunt = 1,
+        EAggressiveGhostShipType__FormationLeader = 2,
+        EAggressiveGhostShipType__CaptainFormationGrunt = 3,
+        EAggressiveGhostShipType__Captain = 4,
+        EAggressiveGhostShipType__EAggressiveGhostShipType_MAX = 5
     };
 
     // ScriptStruct Athena.TreasureMapTextEntry
@@ -694,6 +701,22 @@ namespace SDK
         }
     };
 
+    // Class Athena.Storm
+    // 0x0260 (0x0630 - 0x03D0)
+    class AStorm : public AActor
+    {
+    public:
+        char pad_0x03D0[0x0130];
+        class FString SubjectName; // 0x0500(0x0010)
+        char pad_0x0510[0x0120];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.Storm");
+            return ptr;
+        }
+    };
+
     // Class Athena.XMarksTheSpotMap
     // 0x0120 (0x0900 - 0x07E0)
     class AXMarksTheSpotMap : public ATreasureMap
@@ -796,6 +819,23 @@ namespace SDK
         float GetOxygenLevel();
     };
 
+    // Class Athena.AggressiveGhostShip
+    // 0x04B0 (0x0880 - 0x03D0)
+    class AAggressiveGhostShip : public AActor
+    {
+    public:
+        char pad_0x03D0[0x04B0];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.AggressiveGhostShip");
+            return ptr;
+        }
+
+        int GetNumShotsLeftToKill();
+        TEnumAsByte<EAggressiveGhostShipType> GetShipType();
+    };
+
     // Class Athena.IslandDataAssetEntry
     // 0x00E8 (0x0110 - 0x0028)
     class UIslandDataAssetEntry : public UDataAsset
@@ -828,7 +868,3 @@ namespace SDK
         char pad_0x0070[0x0008];
     };
 }
-
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif

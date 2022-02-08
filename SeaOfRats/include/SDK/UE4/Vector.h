@@ -13,13 +13,16 @@ namespace SDK
         float Z; // 0x0008(0x0004)
 
         inline FVector() : X(0.f), Y(0.f), Z(0.f)
-        {}
+        {
+        }
 
         inline FVector(float InF) : X(InF), Y(InF), Z(InF)
-        {}
+        {
+        }
 
         inline FVector(float InX, float InY, float InZ) : X(InX), Y(InY), Z(InZ)
-        {}
+        {
+        }
 
         inline FVector& operator=(const FVector& Other)
         {

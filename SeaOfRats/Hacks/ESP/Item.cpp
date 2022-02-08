@@ -8,12 +8,12 @@ namespace Hacks
     {
         void DrawItem(UWorld* world, AActor* actor)
         {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto item = reinterpret_cast<ABootyProxy*>(actor);
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = playerController->Pawn;
+            const auto item = reinterpret_cast<ABootyProxy*>(actor);
 
             // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
+            const auto location = actor->K2_GetActorLocation();
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
@@ -25,21 +25,22 @@ namespace Hacks
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
+            const auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
             FVector2D topScreen;
             if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
             {
                 // Get item info
                 if (const auto itemInfo = item->ItemInfo)
                 {
+                    // Colour
                     ImU32 colour = Drawing::Colour::Blue;
 
                     if (itemInfo->IsA(ABootyItemInfo::StaticClass()))
                     {
-                        auto bootyItemInfo = reinterpret_cast<ABootyItemInfo*>(itemInfo);
+                        const auto bootyItemInfo = reinterpret_cast<ABootyItemInfo*>(itemInfo);
 
                         // Get colour
-                        std::string rarity = bootyItemInfo->Rarity.GetName();
+                        const std::string rarity = bootyItemInfo->Rarity.GetName();
                         if (rarity == "Common")
                         {
                             colour = Drawing::Colour::Grey;
@@ -64,11 +65,11 @@ namespace Hacks
                     {
                         // Get name
                         std::string name = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-                        int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+                        const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
                         name += " [" + std::to_string(distance) + "m]";
 
                         // Draw name
-                        FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                        const FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
                         Drawing::DrawString(name, nameScreen, colour);
                     }
                 }

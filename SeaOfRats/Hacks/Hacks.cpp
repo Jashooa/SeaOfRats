@@ -1,82 +1,89 @@
 #include "Hacks.h"
 
+#include <Windows.h>
+#include <stdexcept>
+
 #include "include/SDK/SDK.h"
 #include "include/spdlog/spdlog.h"
 
 #include "Config.h"
 #include "Drawing.h"
-#include "Hacks/Aimbot/Cannon.h"
-#include "Hacks/Aimbot/Player.h"
-#include "Hacks/ESP/Animal.h"
-#include "Hacks/ESP/Item.h"
-#include "Hacks/ESP/LoreBook.h"
-#include "Hacks/ESP/Map.h"
-#include "Hacks/ESP/Mermaid.h"
-#include "Hacks/ESP/Player.h"
-#include "Hacks/ESP/Skeleton.h"
-#include "Hacks/ESP/Ship.h"
-#include "Hacks/ESP/TreasureMap.h"
-#include "Hacks/Info/Anchor.h"
-#include "Hacks/Info/Compass.h"
-#include "Hacks/Info/Debug.h"
-#include "Hacks/Info/Oxygen.h"
-#include "Hacks/Info/PlayerList.h"
-#include "Hacks/Info/WaterLevel.h"
+#include "SeaOfRats.h"
+#include "Aimbot/Cannon.h"
+#include "Aimbot/Player.h"
+#include "ESP/Animal.h"
+#include "ESP/GhostShip.h"
+#include "ESP/Item.h"
+#include "ESP/LoreBook.h"
+#include "ESP/MapPin.h"
+#include "ESP/Mermaid.h"
+#include "ESP/Player.h"
+#include "ESP/Rowboat.h"
+#include "ESP/Skeleton.h"
+#include "ESP/Ship.h"
+#include "ESP/Storm.h"
+#include "ESP/TreasureMap.h"
+#include "Info/Anchor.h"
+#include "Info/Compass.h"
+#include "Info/Debug.h"
+#include "Info/Oxygen.h"
+#include "Info/PlayerList.h"
+#include "Info/WaterLevel.h"
 
 using namespace SDK;
 
-bool NullChecks(UWorld* world)
-{
-    if (!world)
-    {
-        spdlog::warn("World null");
-        return false;
-    }
-    if (!world->GameState)
-    {
-        spdlog::warn("GameState null");
-        return false;
-    }
-    if (!world->GameState->IsA(AAthenaGameState::StaticClass()))
-    {
-        return false;
-    }
-    if (!world->OwningGameInstance)
-    {
-        spdlog::warn("GameInstance null");
-        return false;
-    }
-    if (!world->PersistentLevel)
-    {
-        spdlog::warn("PersistentLevel null");
-        return false;
-    }
-    if (world->OwningGameInstance->LocalPlayers.Num() < 1)
-    {
-        spdlog::warn("LocalPlayers < 1");
-        return false;
-    }
-    if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController)
-    {
-        spdlog::warn("PlayerController null");
-        return false;
-    }
-    if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn)
-    {
-        spdlog::warn("Pawn null");
-        return false;
-    }
-    if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->PlayerCameraManager)
-    {
-        spdlog::warn("PlayerCameraManager null");
-        return false;
-    }
-    return true;
-}
-
 namespace Hacks
 {
-    void Loop()
+    bool NullChecks(UWorld* world)
+    {
+        if (!world)
+        {
+            spdlog::warn("World null");
+            return false;
+        }
+        if (!world->GameState)
+        {
+            spdlog::warn("GameState null");
+            return false;
+        }
+        if (!world->GameState->IsA(AAthenaGameState::StaticClass()))
+        {
+            return false;
+        }
+        if (!world->OwningGameInstance)
+        {
+            spdlog::warn("GameInstance null");
+            return false;
+        }
+        if (!world->PersistentLevel)
+        {
+            spdlog::warn("PersistentLevel null");
+            return false;
+        }
+        if (world->OwningGameInstance->LocalPlayers.Num() < 1)
+        {
+            spdlog::warn("LocalPlayers < 1");
+            return false;
+        }
+        if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController)
+        {
+            spdlog::warn("PlayerController null");
+            return false;
+        }
+        if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn)
+        {
+            spdlog::warn("Pawn null");
+            return false;
+        }
+        if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->PlayerCameraManager)
+        {
+            spdlog::warn("PlayerCameraManager null");
+            return false;
+        }
+        return true;
+    }
+
+    void Hack()
     {
         UWorld* world = UAthenaGameViewportClient::GAthenaGameViewportClient->World;
 
@@ -84,13 +91,13 @@ namespace Hacks
         {
             ULevel* level = world->PersistentLevel;
 
-            auto levels = world->Levels;
-            for (auto i = 6; i < levels.Num(); ++i)
+            const auto levels = world->Levels;
+            for (auto levelIndex = 6; levelIndex < levels.Num(); ++levelIndex)
             {
-                auto actors = levels[i]->AActors;
-                for (auto j = 0; j < actors.Num(); ++j)
+                const auto actors = levels[levelIndex]->AActors;
+                for (auto actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
                 {
-                    AActor* actor = actors[j];
+                    AActor* actor = actors[actorIndex];
 
                     if (!actor)
                     {
@@ -101,8 +108,14 @@ namespace Hacks
                     {
                         if (config.esp.lorebook.enable)
                         {
-                            spdlog::debug("ESP::DrawLoreBook");
-                            ESP::DrawLoreBook(world, actor);
+                            try
+                            {
+                                ESP::DrawLoreBook(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::DrawLoreBook");
+                            }
                         }
                         continue;
                     }
@@ -111,15 +124,20 @@ namespace Hacks
 
             if (config.aim.player.enable)
             {
-                spdlog::debug("Aimbot::InitPlayer");
-                Aimbot::InitPlayer(world);
+                try
+                {
+                    Aimbot::InitPlayer(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::InitPlayer");
+                }
             }
 
-            auto actors = level->AActors;
-
-            for (auto i = 0; i < actors.Num(); ++i)
+            const auto actors = level->AActors;
+            for (auto actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
             {
-                AActor* actor = actors[i];
+                AActor* actor = actors[actorIndex];
 
                 if (!actor)
                 {
@@ -135,13 +153,25 @@ namespace Hacks
                 {
                     if (config.aim.player.enable && config.aim.player.player)
                     {
-                        spdlog::debug("Aimbot::CalculateAimPlayer");
-                        Aimbot::CalculateAimPlayer(world, actor);
+                        try
+                        {
+                            Aimbot::CalculateAimPlayer(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::CalculateAimPlayer");
+                        }
                     }
                     if (config.esp.player.enable)
                     {
-                        spdlog::debug("ESP::DrawPlayer");
-                        ESP::DrawPlayer(world, actor);
+                        try
+                        {
+                            ESP::DrawPlayer(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawPlayer");
+                        }
                     }
                     continue;
                 }
@@ -150,13 +180,25 @@ namespace Hacks
                 {
                     if (config.aim.player.enable && config.aim.player.skeleton)
                     {
-                        spdlog::debug("Aimbot::CalculateAimPlayer");
-                        Aimbot::CalculateAimPlayer(world, actor);
+                        try
+                        {
+                            Aimbot::CalculateAimPlayer(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::CalculateAimPlayer");
+                        }
                     }
                     if (config.esp.skeleton.enable)
                     {
-                        spdlog::debug("ESP::DrawSkeleton");
-                        ESP::DrawSkeleton(world, actor);
+                        try
+                        {
+                            ESP::DrawSkeleton(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawSkeleton");
+                        }
                     }
                     continue;
                 }
@@ -165,8 +207,14 @@ namespace Hacks
                 {
                     if (config.esp.ship.enable)
                     {
-                        spdlog::debug("ESP::DrawShip");
-                        ESP::DrawShip(world, actor);
+                        try
+                        {
+                            ESP::DrawShip(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawShip");
+                        }
                     }
                     continue;
                 }
@@ -175,8 +223,46 @@ namespace Hacks
                 {
                     if (config.esp.ship.enable)
                     {
-                        spdlog::debug("ESP::DrawShipFar");
-                        ESP::DrawShipFar(world, actor);
+                        try
+                        {
+                            ESP::DrawShipFar(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawShipFar");
+                        }
+                    }
+                    continue;
+                }
+
+                if (actor->IsA(AAggressiveGhostShip::StaticClass()))
+                {
+                    if (config.esp.ghostship.enable)
+                    {
+                        try
+                        {
+                            ESP::DrawGhostShip(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawGhostShip");
+                        }
+                    }
+                    continue;
+                }
+
+                if (actor->IsA(ARowboat::StaticClass()))
+                {
+                    if (config.esp.rowboat.enable)
+                    {
+                        try
+                        {
+                            ESP::DrawRowboat(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawRowboat");
+                        }
                     }
                     continue;
                 }
@@ -185,8 +271,14 @@ namespace Hacks
                 {
                     if (config.esp.animal.enable)
                     {
-                        spdlog::debug("ESP::DrawAnimal");
-                        ESP::DrawAnimal(world, actor);
+                        try
+                        {
+                            ESP::DrawAnimal(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawAnimal");
+                        }
                     }
                     continue;
                 }
@@ -195,8 +287,14 @@ namespace Hacks
                 {
                     if (config.esp.mermaid.enable)
                     {
-                        spdlog::debug("ESP::DrawMermaid");
-                        ESP::DrawMermaid(world, actor);
+                        try
+                        {
+                            ESP::DrawMermaid(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawMermaid");
+                        }
                     }
                     continue;
                 }
@@ -205,17 +303,30 @@ namespace Hacks
                 {
                     if (config.esp.item.enable)
                     {
-                        spdlog::debug("ESP::DrawItem");
-                        ESP::DrawItem(world, actor);
+                        try
+                        {
+                            ESP::DrawItem(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawItem");
+                        }
                     }
                     continue;
                 }
 
                 if (actor->IsA(AMapTable::StaticClass()))
                 {
-                    if (config.esp.map.enable)
+                    if (config.esp.mappin.enable)
                     {
-                        ESP::DrawMap(world, actor);
+                        try
+                        {
+                            ESP::DrawMapPin(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawMapPin");
+                        }
                     }
                     continue;
                 }
@@ -247,24 +358,6 @@ namespace Hacks
                     continue;
                 }
 
-                if (actor->IsA(AAggressiveGhostShip::StaticClass()))
-                {
-                    if (config->ghostShipESP)
-                    {
-                        ESP::DrawGhostShip(world, hud, actor);
-                    }
-                    continue;
-                }
-
-                if (actor->IsA(ARowboat::StaticClass()))
-                {
-                    if (config.esp.rowboat.enable)
-                    {
-                        ESP::DrawRowboat(world, hud, actor);
-                    }
-                    continue;
-                }
-
                 if (actor->IsA(AStorageContainer::StaticClass()))
                 {
                     if (config.esp.barrel.enable)
@@ -283,15 +376,6 @@ namespace Hacks
                     continue;
                 }
 
-                if (actor->IsA(AStorm::StaticClass()))
-                {
-                    if (config.esp.storm.enable)
-                    {
-                        ESP::DrawStorm(world, hud, actor);
-                    }
-                    continue;
-                }
-
                 if (actor->IsA(AGameplayEventSignal::StaticClass()))
                 {
                     if (config->eventESP)
@@ -305,8 +389,14 @@ namespace Hacks
                 {
                     if (config.esp.lorebook.enable)
                     {
-                        spdlog::debug("ESP::DrawLoreBook");
-                        ESP::DrawLoreBook(world, actor);
+                        try
+                        {
+                            ESP::DrawLoreBook(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawLoreBook");
+                        }
                     }
                     continue;
                 }
@@ -315,8 +405,14 @@ namespace Hacks
                 {
                     if (config.esp.treasuremap.enable)
                     {
-                        spdlog::debug("ESP::DrawXMarksTheSpotMap");
-                        ESP::DrawXMarksTheSpotMap(world, actor);
+                        try
+                        {
+                            ESP::DrawXMarksTheSpotMap(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawXMarksTheSpotMap");
+                        }
                     }
                     continue;
                 }
@@ -325,8 +421,30 @@ namespace Hacks
                 {
                     if (config.esp.treasuremap.enable)
                     {
-                        spdlog::debug("ESP::DrawRiddleMap");
-                        ESP::DrawRiddleMap(world, actor);
+                        try
+                        {
+                            ESP::DrawRiddleMap(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawRiddleMap");
+                        }
+                    }
+                    continue;
+                }
+
+                if (actor->IsA(AStorm::StaticClass()))
+                {
+                    if (config.esp.storm.enable)
+                    {
+                        try
+                        {
+                            ESP::DrawStorm(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawStorm");
+                        }
                     }
                     continue;
                 }
@@ -334,13 +452,26 @@ namespace Hacks
 
             if (config.aim.cannon.path)
             {
-                Aimbot::CannonTrace(world);
+                try
+                {
+                    Aimbot::CannonTrace(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::CannonTrace");
+                }
             }
 
             if (config.aim.player.enable)
             {
-                spdlog::debug("Aimbot::AimPlayer");
-                Aimbot::AimPlayer(world);
+                try
+                {
+                    Aimbot::AimPlayer(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::AimPlayer");
+                }
             }
 
             if (config.info.crosshair)
@@ -353,34 +484,88 @@ namespace Hacks
 
             if (config.info.playerList)
             {
-                Info::DrawPlayerList(world);
+                try
+                {
+                    Info::DrawPlayerList(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Info::DrawPlayerList");
+                }
             }
 
             if (config.info.compass)
             {
-                Info::DrawCompass(world);
+                try
+                {
+                    Info::DrawCompass(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Info::DrawCompass");
+                }
             }
 
             if (config.info.oxygen)
             {
-                Info::DrawOxygen(world);
+                try
+                {
+                    Info::DrawOxygen(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Info::DrawOxygen");
+                }
             }
 
             if (config.info.waterLevel)
             {
-                Info::DrawWaterLevel(world);
+                try
+                {
+                    Info::DrawWaterLevel(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Info::DrawWaterLevel");
+                }
             }
 
             if (config.info.anchor)
             {
-                Info::DrawAnchor(world);
+                try
+                {
+                    Info::DrawAnchor(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error(" Info::DrawAnchor");
+                }
             }
 
             if (config.info.debug)
             {
-                spdlog::debug("Info::DrawDebug");
-                Info::DrawDebug(world);
+                try
+                {
+                    Info::DrawDebug(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Info::DrawDebug");
+                }
             }
+        }
+    }
+
+    void Loop()
+    {
+        try
+        {
+            Hack();
+        }
+        catch (const std::exception& e)
+        {
+            spdlog::critical("Shutting Down. Critical Error: {}", e.what());
+            seaofrats->Uninstall();
         }
     }
 }

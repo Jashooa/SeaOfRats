@@ -18,25 +18,32 @@ namespace SDK
         unsigned char UnknownData01[0x4]; // 0x002C(0x0004)
 
         inline FTransform() : Rotation(0.f, 0.f, 0.f, 1.f), Translation(0.f), Scale3D(1.f)
-        {}
+        {
+        }
 
         inline FTransform(const FVector& InTranslation) : Rotation(FQuat::Identity), Translation(InTranslation), Scale3D(FVector(1.f))
-        {}
+        {
+        }
 
         inline FTransform(const FQuat& InRotation) : Rotation(InRotation), Translation(FVector::ZeroVector), Scale3D(FVector(1.f))
-        {}
+        {
+        }
 
         inline FTransform(const FRotator& InRotation) : Rotation(InRotation), Translation(FVector::ZeroVector), Scale3D(FVector(1.f))
-        {}
+        {
+        }
 
         inline FTransform(const FQuat& InRotation, const FVector& InTranslation, const FVector& InScale3D = FVector(1.f)) : Rotation(InRotation), Translation(InTranslation), Scale3D(InScale3D)
-        {}
+        {
+        }
 
         inline FTransform(const FRotator& InRotation, const FVector& InTranslation, const FVector& InScale3D = FVector(1.f)) : Rotation(InRotation), Translation(InTranslation), Scale3D(InScale3D)
-        {}
+        {
+        }
 
         inline FTransform(const FTransform& InTransform) : Rotation(InTransform.Rotation), Translation(InTransform.Translation), Scale3D(InTransform.Scale3D)
-        {}
+        {
+        }
 
         inline FVector TransformPosition(const FVector& V) const
         {

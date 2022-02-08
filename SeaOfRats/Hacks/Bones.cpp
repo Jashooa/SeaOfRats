@@ -9,26 +9,25 @@ namespace Hacks
     FVector GetBoneLocation(ACharacter* player, EBones bone)
     {
         FVector boneLocation(0.0f, 0.0f, 0.0f);
-        auto mesh = player->Mesh;
-        if (mesh)
+        if (const auto mesh = player->Mesh)
         {
             if (!mesh->IsVisible())
             {
                 return boneLocation;
             }
 
-            FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
-            auto currentIndex = mesh->CurrentReadSpaceBases;
+            const FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
+            const auto currentIndex = mesh->CurrentReadSpaceBases;
 
-            auto spaceBases = mesh->SpaceBasesArray[currentIndex];
+            const auto spaceBases = mesh->SpaceBasesArray[currentIndex];
             if (spaceBases.Num() < 1 || static_cast<uint8_t>(bone) >= spaceBases.Num())
             {
                 return boneLocation;
             }
 
-            FTransform boneTransform = spaceBases[static_cast<uint8_t>(bone)];
+            const FTransform boneTransform = spaceBases[static_cast<uint8_t>(bone)];
             FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
-            FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
+            const FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
             boneLocation = worldBoneMatrix.GetOrigin();
 
             return boneLocation;
@@ -54,20 +53,19 @@ namespace Hacks
             return;
         }
 
-        auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-        auto character = reinterpret_cast<ACharacter*>(actor);
+        const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+        const auto character = reinterpret_cast<ACharacter*>(actor);
 
-        auto mesh = character->Mesh;
-        if (mesh)
+        if (const auto mesh = character->Mesh)
         {
             if (!mesh->IsVisible())
             {
                 return;
             }
 
-            FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
-            auto currentIndex = mesh->CurrentReadSpaceBases;
-            auto spaceBases = mesh->SpaceBasesArray[currentIndex];
+            const FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
+            const auto currentIndex = mesh->CurrentReadSpaceBases;
+            const auto spaceBases = mesh->SpaceBasesArray[currentIndex];
             if (spaceBases.Num() < 1)
             {
                 return;
@@ -83,10 +81,10 @@ namespace Hacks
                     {
                         return;
                     }
-                    FTransform boneTransform = spaceBases[static_cast<int>(bone)];
+                    const FTransform boneTransform = spaceBases[static_cast<int>(bone)];
                     FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
-                    FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
-                    FVector boneLocation = worldBoneMatrix.GetOrigin();
+                    const FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
+                    const FVector boneLocation = worldBoneMatrix.GetOrigin();
 
                     FVector2D screenBone;
                     if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screenBone))

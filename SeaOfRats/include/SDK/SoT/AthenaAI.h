@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 #include "Athena.h"
 
 namespace SDK
@@ -32,7 +28,3 @@ namespace SDK
         }
     };
 }
-
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif

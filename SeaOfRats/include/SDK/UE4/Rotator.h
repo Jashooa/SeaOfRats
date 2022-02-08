@@ -13,10 +13,12 @@ namespace SDK
         float Roll; // 0x0008(0x0004)
 
         inline FRotator() : Pitch(0.f), Yaw(0.f), Roll(0.f)
-        {}
+        {
+        }
 
         inline FRotator(float InPitch, float InYaw, float InRoll) : Pitch(InPitch), Yaw(InYaw), Roll(InRoll)
-        {}
+        {
+        }
 
         inline FRotator operator+=(const FRotator& R)
         {

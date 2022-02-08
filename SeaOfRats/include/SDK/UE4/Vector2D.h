@@ -12,10 +12,12 @@ namespace SDK
         float Y; // 0x0004(0x0004)
 
         inline FVector2D() : X(0.f), Y(0.f)
-        {}
+        {
+        }
 
         inline FVector2D(float InX, float InY) : X(InX), Y(InY)
-        {}
+        {
+        }
 
         inline FVector2D operator+(const FVector2D& V) const
         {

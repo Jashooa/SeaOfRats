@@ -198,16 +198,19 @@ namespace GUI
                     ImGui::Checkbox("Player##ESP", &config.esp.player.enable);
                     ImGui::Checkbox("Skeleton##ESP", &config.esp.skeleton.enable);
                     ImGui::Checkbox("Ship##ESP", &config.esp.ship.enable);
+                    ImGui::Checkbox("Ghost Ship##ESP", &config.esp.ghostship.enable);
+                    ImGui::Checkbox("Rowboat##ESP", &config.esp.rowboat.enable);
                     ImGui::Checkbox("Animal##ESP", &config.esp.animal.enable);
                     ImGui::Checkbox("Mermaid##ESP", &config.esp.mermaid.enable);
+                    ImGui::Checkbox("Item##ESP", &config.esp.item.enable);
 
                     ImGui::Separator();
 
                     ImGui::Text("Misc");
-                    ImGui::Checkbox("Item##ESP", &config.esp.item.enable);
-                    ImGui::Checkbox("Map##ESP", &config.esp.map.enable);
+                    ImGui::Checkbox("Map Pin##ESP", &config.esp.mappin.enable);
                     ImGui::Checkbox("Lore Book##ESP", &config.esp.lorebook.enable);
                     ImGui::Checkbox("Treasure Map##ESP", &config.esp.treasuremap.enable);
+                    ImGui::Checkbox("Storm##ESP", &config.esp.storm.enable);
 
                     ImGui::EndTabItem();
                 }

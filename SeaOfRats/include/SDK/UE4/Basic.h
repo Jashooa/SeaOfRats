@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 #include <Windows.h>
 
 #include <codecvt>
@@ -233,10 +229,12 @@ namespace SDK
         int32_t Number;
 
         inline FName() : ComparisonIndex(0), Number(0)
-        {}
+        {
+        }
 
         inline FName(int32_t i) : ComparisonIndex(i), Number(0)
-        {}
+        {
+        }
 
         FName(const char* nameToFind) : ComparisonIndex(0), Number(0)
         {
@@ -299,7 +297,8 @@ namespace SDK
     {
     public:
         inline FString()
-        {}
+        {
+        }
 
         FString(const wchar_t* other)
         {
@@ -352,16 +351,20 @@ namespace SDK
     {
     public:
         inline TEnumAsByte()
-        {}
+        {
+        }
 
         inline TEnumAsByte(TEnum _value) : value(static_cast<uint8_t>(_value))
-        {}
+        {
+        }
 
         explicit inline TEnumAsByte(int32_t _value) : value(static_cast<uint8_t>(_value))
-        {}
+        {
+        }
 
         explicit inline TEnumAsByte(uint8_t _value) : value(_value)
-        {}
+        {
+        }
 
         inline operator TEnum() const
         {
@@ -466,7 +469,3 @@ namespace SDK
         }
     };
 }
-
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif

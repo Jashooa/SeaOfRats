@@ -1,4 +1,4 @@
-#include "LoreBook.h"
+#include "Storm.h"
 
 #include "Drawing.h"
 
@@ -6,40 +6,30 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawLoreBook(UWorld* world, AActor* actor)
+        void DrawStorm(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
-            const auto item = reinterpret_cast<AModalInteractionProxy*>(actor);
-
-            // Check if lorebook
-            if (item->GetName().find("LoreBook") == std::string::npos)
-            {
-                return;
-            }
+            const auto storm = reinterpret_cast<AStorm*>(actor);
 
             // Check if on-screen
-            const auto location = actor->K2_GetActorLocation();
+            auto location = actor->K2_GetActorLocation();
+            location.Z = 200.f * 100.f;
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
                 return;
             }
 
-            // Colour
-            ImU32 colour = Drawing::Colour::Yellow;
-            Drawing::DrawCircleFilled(screen, 3.0f, colour);
-
             // Get name
-            std::string name = item->GetName();
-            if (const auto dialog = reinterpret_cast<UNPCDialogComponent*>(item->GetComponentByClass(UNPCDialogComponent::StaticClass())))
-            {
-                name = UKismetTextLibrary::Conv_TextToString(dialog->WelcomeMessage).ToString();
-            }
+            std::string name = storm->SubjectName.ToString();
 
             // Get distance
             const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
             name += " [" + std::to_string(distance) + "m]";
+
+            // Colour
+            ImU32 colour = Drawing::Colour::White;
 
             // Draw name
             const FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);

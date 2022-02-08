@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 namespace SDK
 {
     // ScriptStruct Sessions.SessionTemplate
@@ -23,7 +19,3 @@ namespace SDK
         char pad_0x0034[0x0004];
     };
 }
-
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif

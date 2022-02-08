@@ -8,6 +8,6 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawMap(UWorld* world, AActor* actor);
+        void DrawStorm(UWorld* world, AActor* actor);
     }
 }

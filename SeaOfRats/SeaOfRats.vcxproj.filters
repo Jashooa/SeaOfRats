@@ -46,9 +46,6 @@
     <Filter Include="Source Files\include\SDK">
       <UniqueIdentifier>{670bee64-0b5d-46ac-bb02-9c878b47ae30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\include\SDK\SoT">
-      <UniqueIdentifier>{becc6dae-c565-40be-a662-ac13fc5939cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\include\SDK\UE4">
       <UniqueIdentifier>{c08e22d0-681a-4aed-bf94-9f218d545c18}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="Source Files\Hacks\Aimbot">
       <UniqueIdentifier>{172af2e5-45ef-4c63-980b-133a59a68a8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\include\SDK\SoT">
+      <UniqueIdentifier>{becc6dae-c565-40be-a662-ac13fc5939cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -153,7 +153,7 @@
     <ClCompile Include="Hacks\ESP\Item.cpp">
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
-    <ClCompile Include="Hacks\ESP\Map.cpp">
+    <ClCompile Include="Hacks\ESP\MapPin.cpp">
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
     <ClCompile Include="Hacks\ESP\Mermaid.cpp">
@@ -196,6 +196,15 @@
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
     <ClCompile Include="Hacks\ESP\TreasureMap.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Rowboat.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\GhostShip.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Storm.cpp">
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
   </ItemGroup>
@@ -584,7 +593,7 @@
     <ClInclude Include="Hacks\ESP\Item.h">
       <Filter>Header Files\Hacks\ESP</Filter>
     </ClInclude>
-    <ClInclude Include="Hacks\ESP\Map.h">
+    <ClInclude Include="Hacks\ESP\MapPin.h">
       <Filter>Header Files\Hacks\ESP</Filter>
     </ClInclude>
     <ClInclude Include="Hacks\ESP\Mermaid.h">
@@ -627,6 +636,18 @@
       <Filter>Header Files\Hacks\ESP</Filter>
     </ClInclude>
     <ClInclude Include="Hacks\ESP\TreasureMap.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Rowboat.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\Watercrafts.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\GhostShip.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Storm.h">
       <Filter>Header Files\Hacks\ESP</Filter>
     </ClInclude>
   </ItemGroup>

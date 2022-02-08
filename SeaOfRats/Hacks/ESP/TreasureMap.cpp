@@ -12,9 +12,9 @@ namespace Hacks
     {
         void GetIslandRiddleActorByName(UWorld* world, std::string islandName, std::string actorName, TArray<class AActor*>* outActors)
         {
-            auto levels = world->Levels;
+            const auto levels = world->Levels;
             ULevel* level{};
-            std::string islandRiddlesName(islandName + "_riddles");
+            const std::string islandRiddlesName(islandName + "_riddles");
             for (auto i = 6; i < levels.Num(); ++i)
             {
                 if (levels[i]->GetFullName().find(islandRiddlesName) != std::string::npos)
@@ -29,10 +29,10 @@ namespace Hacks
                 return;
             }
 
-            auto actors = level->AActors;
+            const auto actors = level->AActors;
             for (auto i = 0; i < actors.Num(); ++i)
             {
-                auto actor = actors[i];
+                const auto actor = actors[i];
                 if (!actor)
                 {
                     continue;
@@ -46,10 +46,10 @@ namespace Hacks
 
         void DrawRiddleMap(UWorld* world, AActor* actor)
         {
-            auto gameState = reinterpret_cast<AAthenaGameState*>(world->GameState);
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
-            auto riddleMap = reinterpret_cast<ARiddleMap*>(actor);
+            const auto gameState = reinterpret_cast<AAthenaGameState*>(world->GameState);
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
+            const auto riddleMap = reinterpret_cast<ARiddleMap*>(actor);
 
             // Not mine
             if (actor->GetAttachParentActor() != localPlayer)
@@ -85,13 +85,13 @@ namespace Hacks
                     continue;
                 }
 
-                std::string islandName = islandDataEntry->IslandName.GetName();
+                const std::string islandName = islandDataEntry->IslandName.GetName();
 
                 if (riddleMap->MapInventoryTexturePath.AssetLongPathname.ToString().find(islandName) != std::string::npos)
                 {
                     const auto worldMapCaptureParams = worldMapData->CaptureParams;
                     auto worldMapPosition = worldMapCaptureParams.WorldSpaceCameraPosition;
-                    worldMapPosition.Z = 100.f;
+                    worldMapPosition.Z = 0.f;
                     const auto distance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - worldMapPosition).Size() * 0.01f);
 
                     if (distance < 400)
@@ -105,9 +105,9 @@ namespace Hacks
 
                         //Drawing::DrawString("Progress: " + std::to_string(progress) + "/" + std::to_string(steps), FVector2D(x, y), Drawing::Colour::White, false);
 
-                        for (auto i = progress; i < steps; ++i)
+                        for (auto stepIndex = progress; stepIndex < steps; ++stepIndex)
                         {
-                            const auto text = riddleMapContents.Text[i];
+                            const auto text = riddleMapContents.Text[stepIndex];
                             //Drawing::DrawString("Step: " + std::to_string(i + 1), FVector2D(x, y += 15.f), Drawing::Colour::White, false);
 
                             std::string location{};
@@ -117,9 +117,9 @@ namespace Hacks
                             std::string CD{};
 
                             const auto substitutions = text.Substitutions;
-                            for (auto j = 0; j < substitutions.Num(); ++j)
+                            for (auto substitutionIndex = 0; substitutionIndex < substitutions.Num(); ++substitutionIndex)
                             {
-                                const auto substitution = substitutions[j];
+                                const auto substitution = substitutions[substitutionIndex];
                                 //Drawing::DrawString(substitution.Name.ToString() + ": " + UKismetTextLibrary::Conv_TextToString(substitution.Substitution).ToString(), FVector2D(x + 10.f, y += 15.f), Drawing::Colour::White, false);
 
                                 const auto name = substitution.Name.ToString();
@@ -152,13 +152,11 @@ namespace Hacks
 
                             if (!location.empty())
                             {
-                                std::wstring locationName(location.begin(), location.end());
-
                                 TArray<AActor*> locationActors{};
                                 GetIslandRiddleActorByName(world, islandName, location, &locationActors);
-                                for (auto k = 0; k < locationActors.Num(); ++k)
+                                for (auto locationIndex = 0; locationIndex < locationActors.Num(); ++locationIndex)
                                 {
-                                    auto locationActor = locationActors[k];
+                                    const auto locationActor = locationActors[locationIndex];
                                     if (!locationActor)
                                     {
                                         continue;
@@ -176,11 +174,16 @@ namespace Hacks
                                     if (playerController->ProjectWorldLocationToScreen(landmark->K2_GetActorLocation(), &landmarkScreen))
                                     {
                                         Drawing::DrawCircleFilled(landmarkScreen, 3.0f, Drawing::Colour::White);
-                                        std::string landmarkText = "Step " + std::to_string(i + 1);
+                                        std::string landmarkText = "Step " + std::to_string(stepIndex + 1);
                                         if (landmarkDistance > 20)
                                         {
                                             landmarkText += " [" + std::to_string(landmarkDistance) + "m]";
                                         }
+                                        if (!CD.empty())
+                                        {
+                                            landmarkText += " " + CD;
+                                        }
+
                                         Drawing::DrawString(landmarkText, FVector2D(landmarkScreen.X, landmarkScreen.Y - 15.f), Drawing::Colour::White);
 
                                         std::string sentence{};
@@ -201,13 +204,13 @@ namespace Hacks
                                         }
 
                                         std::string actions{};
-                                        for (auto l = 0; l < landmark->Reactions.Num(); ++l)
+                                        for (auto reactionIndex = 0; reactionIndex < landmark->Reactions.Num(); ++reactionIndex)
                                         {
-                                            auto reaction = landmark->Reactions[l];
+                                            const auto reaction = landmark->Reactions[reactionIndex];
 
-                                            for (auto m = 0; m < reaction.ActionsThatTriggerThisReaction.Num(); ++m)
+                                            for (auto actionIndex = 0; actionIndex < reaction.ActionsThatTriggerThisReaction.Num(); ++actionIndex)
                                             {
-                                                auto action = reaction.ActionsThatTriggerThisReaction[m];
+                                                const auto action = reaction.ActionsThatTriggerThisReaction[actionIndex];
                                                 switch (action)
                                                 {
                                                     case ERiddleActions::ERiddleActions__RaiseLanternAnyone:
@@ -234,7 +237,7 @@ namespace Hacks
                                         }
                                     }
 
-                                    if (!target.empty())
+                                    /*if (!target.empty())
                                     {
                                         std::wstring targetName(target.begin(), target.end());
 
@@ -245,7 +248,7 @@ namespace Hacks
                                             if (playerController->ProjectWorldLocationToScreen(targetActor->K2_GetActorLocation(), &targetScreen))
                                             {
                                                 Drawing::DrawCircleFilled(targetScreen, 3.0f, Drawing::Colour::White);
-                                                std::string targetText = "Step " + std::to_string(i + 1) + " Target";
+                                                std::string targetText = "Step " + std::to_string(stepIndex + 1) + " Target";
                                                 if (targetDistance > 20)
                                                 {
                                                     targetText += " [" + std::to_string(targetDistance) + "m]";
@@ -253,7 +256,7 @@ namespace Hacks
                                                 Drawing::DrawString(targetText, FVector2D(targetScreen.X, targetScreen.Y - 15.f), Drawing::Colour::White);
                                             }
                                         }
-                                    }
+                                    }*/
                                 }
                             }
                         }
@@ -265,7 +268,7 @@ namespace Hacks
                         {
                             auto name = UKismetTextLibrary::Conv_TextToString(islandDataEntry->LocalisedName).ToString();
                             name += " [" + std::to_string(distance) + "m]";
-                            Drawing::DrawString(name, screen, Drawing::Colour::White);
+                            Drawing::DrawString(name, FVector2D(screen.X, screen.Y - 15.f), Drawing::Colour::White);
                         }
                     }
                 }
@@ -274,10 +277,10 @@ namespace Hacks
 
         void DrawXMarksTheSpotMap(UWorld* world, AActor* actor)
         {
-            auto gameState = reinterpret_cast<AAthenaGameState*>(world->GameState);
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
-            auto xMarksTheSpotMap = reinterpret_cast<AXMarksTheSpotMap*>(actor);
+            const auto gameState = reinterpret_cast<AAthenaGameState*>(world->GameState);
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
+            const auto xMarksTheSpotMap = reinterpret_cast<AXMarksTheSpotMap*>(actor);
 
             // Not mine
             if (actor->GetAttachParentActor() != localPlayer)
@@ -312,25 +315,13 @@ namespace Hacks
                     continue;
                 }
 
-                std::string islandName = islandDataEntry->IslandName.GetName();
-
-                /*size_t index = 0;
-                while ((index = islandName.find(" ", index)) != std::string::npos)
-                {
-                    islandName = islandName.replace(index, index + 1, "_");
-                }
-                index = 0;
-                while ((index = islandName.find("\'")) != std::string::npos)
-                {
-                    islandName = islandName.replace(index, index + 1, "");
-                }*/
-
+                const std::string islandName = islandDataEntry->IslandName.GetName();
 
                 if (xMarksTheSpotMap->MapTexturePath.ToString().find(islandName) != std::string::npos)
                 {
                     const auto worldMapCaptureParams = worldMapData->CaptureParams;
                     auto worldMapPosition = worldMapCaptureParams.WorldSpaceCameraPosition;
-                    worldMapPosition.Z = 100.f;
+                    worldMapPosition.Z = 0.f;
                     const auto distance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - worldMapPosition).Size() * 0.01f);
 
                     if (distance < 400)
@@ -351,7 +342,7 @@ namespace Hacks
                                 worldMapCaptureParams.WorldSpaceCameraPosition.Z
                             );
 
-                            FVector endTracePosition(xMarkWorldLocation.X, xMarkWorldLocation.Y, -500.f);
+                            const FVector endTracePosition(xMarkWorldLocation.X, xMarkWorldLocation.Y, -500.f);
                             FHitResult hitResult;
                             if (UKismetSystemLibrary::LineTraceSingle_NEW(world, xMarkWorldLocation, endTracePosition, ETraceTypeQuery::TraceTypeQuery4, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
                             {
@@ -361,11 +352,16 @@ namespace Hacks
                             FVector2D screen;
                             if (playerController->ProjectWorldLocationToScreen(xMarkWorldLocation, &screen))
                             {
+                                ImU32 colour = Drawing::Colour::Red;
+                                if (mark.IsUnderground)
+                                {
+                                    colour = Drawing::Colour::Orange;
+                                }
                                 Drawing::DrawCircleFilled(screen, 8.0f, Drawing::Colour::White);
-                                Drawing::DrawCircleFilled(screen, 6.0f, Drawing::Colour::Red);
+                                Drawing::DrawCircleFilled(screen, 6.0f, colour);
                                 Drawing::DrawCircleFilled(screen, 4.0f, Drawing::Colour::White);
-                                Drawing::DrawCircleFilled(screen, 2.0f, Drawing::Colour::Red);
-                                int32_t markDistance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - xMarkWorldLocation).Size() * 0.01f);
+                                Drawing::DrawCircleFilled(screen, 2.0f, colour);
+                                const int32_t markDistance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - xMarkWorldLocation).Size() * 0.01f);
                                 if (markDistance > 20)
                                 {
                                     Drawing::DrawString(" [" + std::to_string(markDistance) + "m]", FVector2D(screen.X + 8.f, screen.Y - 1.f), Drawing::Colour::White, false);
@@ -380,14 +376,14 @@ namespace Hacks
                         {
                             auto name = UKismetTextLibrary::Conv_TextToString(islandDataEntry->LocalisedName).ToString();
                             name += " [" + std::to_string(distance) + "m]";
-                            Drawing::DrawString(name, screen, Drawing::Colour::White);
+                            Drawing::DrawString(name, FVector2D(screen.X, screen.Y - 15.f), Drawing::Colour::White);
                         }
                     }
                 }
             }
         }
 
-        void DrawTreasureMap(UWorld* world)
+        /*void DrawTreasureMap(UWorld* world)
         {
             auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
@@ -406,6 +402,6 @@ namespace Hacks
                     }
                 }
             }
-        }
+        }*/
     }
 }

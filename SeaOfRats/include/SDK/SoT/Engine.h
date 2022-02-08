@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _MSC_VER
-#pragma pack(push, 0x8)
-#endif
-
 namespace SDK
 {
     // Enum Engine.EDrawDebugTrace
@@ -454,7 +450,3 @@ namespace SDK
         char pad_0x0048[0x01C8];
     };
 }
-
-#ifdef _MSC_VER
-#pragma pack(pop)
-#endif

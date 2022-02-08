@@ -163,94 +163,6 @@ namespace Hacks
             }
         }*/
 
-        /*void DrawGhostShip(UWorld* world, AActor* actor)
-        {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto ship = reinterpret_cast<AAggressiveGhostShip*>(actor);
-
-            auto location = actor->K2_GetActorLocation();
-            location.Z += 25 * 100;
-
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-            {
-                return;
-            }
-
-            std::wstring name = L"Ghost Ship";
-            switch (ship->GetShipType())
-            {
-                case EAggressiveGhostShipType::EAggressiveGhostShipType__Grunt:
-                    name += L"Grunt Ship";
-                    break;
-                case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationGrunt:
-                    name += L"Ghost Flagship";
-                    break;
-                case EAggressiveGhostShipType::EAggressiveGhostShipType__FormationLeader:
-                    name += L"Ghost Captain Ship";
-                    break;
-                case EAggressiveGhostShipType::EAggressiveGhostShipType__CaptainFormationGrunt:
-                    name += L"Ashen Dragon Ship";
-                    break;
-                case EAggressiveGhostShipType::EAggressiveGhostShipType__Captain:
-                    name += L"The Burning Blade";
-                    break;
-            }
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
-
-            // Draw hits remaining
-            std::wstring hitsRemaining = L"Hits Remaining: " + std::to_wstring(ship->NumShotsLeftToKill);
-            FVector2D hitsScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawString(hud, hitsRemaining, hitsScreen, Drawing::Colour::White);
-        }*/
-
-        /*void DrawRowboat(UWorld* world, AActor* actor)
-        {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto rowboat = reinterpret_cast<ARowboat*>(actor);
-
-            // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-            {
-                return;
-            }
-
-            // Get bounds
-            FVector origin, extent;
-            actor->GetActorBounds(true, &origin, &extent);
-
-            // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-            FVector2D topScreen;
-            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-            {
-                // Get name
-                std::wstring name = L"Rowboat";
-
-                std::string actorName = actor->GetName();
-                if (actorName.find("Harpoon") != std::string::npos)
-                {
-                    name = L"Harpoon " + name;
-                }
-
-                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
-
-                // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
-            }
-        }*/
-
         /*void DrawBarrel(UWorld* world, AActor* actor)
         {
             auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
@@ -336,33 +248,6 @@ namespace Hacks
             // Get name
             //std::wstring name = UKismetTextLibrary::Conv_TextToString(shipwreck->LocalisedName).c_str();
             std::wstring name = L"Shipwreck";
-
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += L" [" + std::to_wstring(distance) + L"m]";
-
-            // Draw name
-            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
-        }*/
-
-        /*void DrawStorm(UWorld* world, AActor* actor)
-        {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto storm = reinterpret_cast<AStorm*>(actor);
-
-            // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            location.Z = 100.0f;
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-            {
-                return;
-            }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-
-            // Get name
-            std::wstring name = storm->SubjectName.c_str();
 
             int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
             name += L" [" + std::to_wstring(distance) + L"m]";

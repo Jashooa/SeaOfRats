@@ -1,7 +1,3 @@
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 #include "CoreUObject.h"
 
 #include <string>
@@ -59,7 +55,3 @@ namespace SDK
         return false;
     }
 }
-
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif

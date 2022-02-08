@@ -1,7 +1,3 @@
-#ifdef _MSC_VER
-    #pragma pack(push, 0x8)
-#endif
-
 #include "SDK/SDK.h"
 
 namespace SDK
@@ -281,8 +277,34 @@ namespace SDK
 
         return params.ReturnValue;
     }
-}
 
-#ifdef _MSC_VER
-    #pragma pack(pop)
-#endif
+    // Function Athena.AggressiveGhostShip.GetNumShotsLeftToKill
+    int AAggressiveGhostShip::GetNumShotsLeftToKill()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.AggressiveGhostShip.GetNumShotsLeftToKill");
+
+        struct
+        {
+            int ReturnValue;
+        } params{};
+
+        UObject::ProcessEvent(this, fn, &params);
+
+        return params.ReturnValue;
+    }
+
+    // Function Athena.AggressiveGhostShip.GetShipType
+    TEnumAsByte<EAggressiveGhostShipType> AAggressiveGhostShip::GetShipType()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.AggressiveGhostShip.GetShipType");
+
+        struct
+        {
+            TEnumAsByte<EAggressiveGhostShipType> ReturnValue;
+        } params{};
+
+        UObject::ProcessEvent(this, fn, &params);
+
+        return params.ReturnValue;
+    }
+}

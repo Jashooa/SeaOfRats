@@ -15,10 +15,12 @@ namespace SDK
         float W; // 0x000C(0x0004)
 
         inline FQuat() : X(0.f), Y(0.f), Z(0.f), W(0.f)
-        {}
+        {
+        }
 
         inline FQuat(float InX, float InY, float InZ, float InW) : X(InX), Y(InY), Z(InZ), W(InW)
-        {}
+        {
+        }
 
         inline FQuat(const struct FRotator& R)
         {
