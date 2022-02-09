@@ -35,15 +35,21 @@ namespace Hacks
                 const auto& pin = pins[pinIndex];
                 const FVector location((pin.X * 100.f), (pin.Y * 100.f), 0.f);
 
-                FVector2D screen;
-                if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+                // Check if on-screen
+                FVector2D position;
+                if (!playerController->ProjectWorldLocationToScreen(location, &position))
                 {
                     continue;
                 }
 
+                Drawing::DrawCircleFilled(position, 3.f, colour);
+
+                // Get distance
                 const int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);
+
+                // Draw
                 const std::string pinText = "Map Pin [" + std::to_string(distance) + "m]";
-                Drawing::DrawString(pinText, screen, colour);
+                Drawing::DrawString(pinText, { position.X, position.Y - 15.f }, colour);
             }
         }
     }

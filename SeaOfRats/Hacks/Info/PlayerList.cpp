@@ -8,7 +8,7 @@ namespace Hacks
     {
         void DrawPlayerList(UWorld* world)
         {
-            auto gameState = world->GameState;
+            const auto gameState = world->GameState;
             if (!gameState)
             {
                 return;
@@ -19,21 +19,21 @@ namespace Hacks
                 return;
             }
 
-            auto athenaGameState = reinterpret_cast<AAthenaGameState*>(gameState);
-            auto crewService = athenaGameState->CrewService;
+            const auto athenaGameState = reinterpret_cast<AAthenaGameState*>(gameState);
+            const auto crewService = athenaGameState->CrewService;
             if (!crewService)
             {
                 return;
             }
 
-            auto crews = crewService->Crews;
+            const auto crews = crewService->Crews;
 
-            float positionX = 10.0f;
-            float positionY = 120.0f;
-            for (int32_t i = 0; i < crews.Num(); ++i)
+            float positionX = 10.f;
+            float positionY = 200.f;
+            for (auto crewIndex = 0; crewIndex < crews.Num(); ++crewIndex)
             {
-                FCrew crew = crews[i];
-                auto players = crew.Players;
+                const FCrew crew = crews[crewIndex];
+                const auto players = crew.Players;
                 std::string shipType;
                 switch (crew.CrewSessionTemplate.MaxMatchmakingPlayers)
                 {
@@ -51,11 +51,10 @@ namespace Hacks
                         break;
                 }
 
-                Drawing::DrawString(shipType, FVector2D(positionX, positionY), Drawing::Colour::White, false, false);
-                positionY += 15.0f;
-                for (int32_t j = 0; j < players.Num(); ++j)
+                Drawing::DrawString(shipType, { positionX, positionY += 15.f }, Drawing::Colour::White, false, false);
+                for (auto playerIndex = 0; playerIndex < players.Num(); ++playerIndex)
                 {
-                    auto player = reinterpret_cast<AAthenaPlayerState*>(players[j]);
+                    const auto player = reinterpret_cast<AAthenaPlayerState*>(players[playerIndex]);
                     if (!player)
                     {
                         continue;
@@ -138,10 +137,9 @@ namespace Hacks
                     {
                         name += " - " + activity;
                     }
-                    Drawing::DrawString(name, FVector2D(positionX + 10.0f, positionY), Drawing::Colour::White, false, false);
-                    positionY += 15.0f;
+                    Drawing::DrawString(name, { positionX + 10.f, positionY += 15.f }, Drawing::Colour::White, false, false);
                 }
-                positionY += 10.0f;
+                positionY += 10.f;
             }
         }
     }

@@ -10,5 +10,6 @@ namespace Hacks
     {
         void DrawRiddleMap(UWorld* world, AActor* actor);
         void DrawXMarksTheSpotMap(UWorld* world, AActor* actor);
+        void DrawTornMap(UWorld* world, AActor* actor);
     }
 }

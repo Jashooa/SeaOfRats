@@ -81,6 +81,27 @@ public:
         {
             bool enable = false;
             bool name = false;
+            bool health = false;
+        } megalodon;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
+            bool health = false;
+        } siren;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
+            bool health = false;
+        } kraken;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
         } mermaid;
 
         struct
@@ -107,7 +128,17 @@ public:
         struct
         {
             bool enable = false;
+        } enchantedcompass;
+
+        struct
+        {
+            bool enable = false;
         } storm;
+
+        struct
+        {
+            bool enable = false;
+        } skeletonthrone;
     } esp;
 
     struct
@@ -122,6 +153,13 @@ public:
         bool anchor = false;
         bool debug = false;
     } info;
+
+    struct
+    {
+        bool enable = false;
+
+        bool antiafk = false;
+    } client;
 
     struct
     {

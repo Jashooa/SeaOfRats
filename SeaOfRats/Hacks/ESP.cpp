@@ -17,152 +17,6 @@ namespace Hacks
 {
     namespace ESP
     {
-        /*void DrawShark(UWorld* world, AActor* actor)
-        {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto shark = reinterpret_cast<ASharkPawn*>(actor);
-
-            switch (shark->AIControllerParams->TeamID)
-            {
-                case EAthenaAITeam::Sharks:
-                    break;
-                case EAthenaAITeam::TinyShark:
-                    break;
-            }
-
-            // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-            {
-                return;
-            }
-
-            // Get bounds
-            FVector origin, extent;
-            actor->GetActorBounds(true, &origin, &extent);
-
-            // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-            FVector2D topScreen;
-            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-            {
-                // Get name
-                std::wstring name = L"Shark";
-                std::string actorName = actor->GetName();
-                name += L" " + std::wstring(actorName.begin(), actorName.end());
-
-                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
-
-                // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
-
-                // Draw health bar
-                auto healthComponent = shark->HealthComponent;
-                if (healthComponent)
-                {
-                    FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                    FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-                }
-            }
-        }*/
-
-        /*void DrawKraken(UWorld* world, AActor* actor)
-        {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto kraken = reinterpret_cast<AKraken*>(actor);
-
-            // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-            {
-                return;
-            }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-
-            // Get bounds
-            FVector origin, extent;
-            actor->GetActorBounds(true, &origin, &extent);
-
-            // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-            FVector2D topScreen;
-            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-            {
-                // Get name
-                std::wstring name = L"Kraken";
-                std::string actorName = actor->GetName();
-                name += L" " + std::wstring(actorName.begin(), actorName.end());
-
-                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
-
-                // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
-
-                // Draw tentacles remaining
-                std::wstring tentaclesRemaining = L"Tentacles Remaining: " + std::to_wstring(kraken->NumTentaclesRemaining);
-                FVector2D tentaclesScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                Drawing::DrawString(hud, tentaclesRemaining, tentaclesScreen, Drawing::Colour::White);
-            }
-        }
-
-        void DrawKrakenTentacle(UWorld* world, AActor* actor)
-        {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            auto tentacle = reinterpret_cast<AKrakenTentacle*>(actor);
-
-            // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
-            {
-                return;
-            }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
-
-            // Get bounds
-            FVector origin, extent;
-            actor->GetActorBounds(true, &origin, &extent);
-
-            // Get top coordinates
-            auto topLocation = FVector(origin.X, origin.Y, origin.Z + extent.Z);
-            FVector2D topScreen;
-            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
-            {
-                // Get name
-                std::wstring name = L"Kraken Tentacle";
-                std::string actorName = actor->GetName();
-                name += L" " + std::wstring(actorName.begin(), actorName.end());
-
-                int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                name += L" [" + std::to_wstring(distance) + L"m]";
-
-                // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 25.0f);
-                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
-
-                // Draw health bar
-                auto healthComponent = tentacle->HealthComponent;
-                if (healthComponent)
-                {
-                    FVector2D healthScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                    FVector2D healthBottomRight = FVector2D(healthTopLeft.X + 100.0f, healthTopLeft.Y + 5.0f);
-                    Drawing::DrawHealthBar(hud, healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-                }
-            }
-        }*/
-
         /*void DrawBarrel(UWorld* world, AActor* actor)
         {
             auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
@@ -202,7 +56,7 @@ namespace Hacks
                 name += L" [" + std::to_wstring(distance) + L"m]";
 
                 // Draw name
-                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
+                FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.f);
                 Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
                 auto storageComponent = reinterpret_cast<UStorageContainerComponent*>(actor->GetComponentByClass(UStorageContainerComponent::StaticClass()));
 
@@ -222,7 +76,7 @@ namespace Hacks
                             std::wstring itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).c_str();
                             itemName = std::to_wstring(node.NumItems) + L"x " + itemName;
 
-                            FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.0f * (i + 1));
+                            FVector2D itemNameScreen = FVector2D(topScreen.X, nameScreen.Y + 15.f * (i + 1));
                             Drawing::DrawString(hud, itemName, itemNameScreen, Drawing::Colour::White);
                         }
                     }
@@ -238,7 +92,7 @@ namespace Hacks
 
             // Check if on-screen
             auto location = actor->K2_GetActorLocation();
-            location.Z = 100.0f;
+            location.Z = 100.f;
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
@@ -253,7 +107,7 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
-            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.f);
             Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
         }*/
 
@@ -265,7 +119,7 @@ namespace Hacks
 
             // Check if on-screen
             auto location = actor->K2_GetActorLocation();
-            location.Z = 100.0f;
+            location.Z = 100.f;
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
@@ -295,7 +149,7 @@ namespace Hacks
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
-            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
+            FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.f);
             Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
         }*/
 

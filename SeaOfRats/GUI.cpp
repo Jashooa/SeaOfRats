@@ -197,20 +197,34 @@ namespace GUI
                     ImGui::Text("Entities");
                     ImGui::Checkbox("Player##ESP", &config.esp.player.enable);
                     ImGui::Checkbox("Skeleton##ESP", &config.esp.skeleton.enable);
+                    ImGui::Checkbox("Animal##ESP", &config.esp.animal.enable);
+                    ImGui::Checkbox("Mermaid##ESP", &config.esp.mermaid.enable);
+                    ImGui::Checkbox("Siren##ESP", &config.esp.siren.enable);
+                    ImGui::Checkbox("Shark##ESP", &config.esp.shark.enable);
+                    ImGui::Checkbox("Megalodon##ESP", &config.esp.megalodon.enable);
+                    ImGui::Checkbox("Kraken##ESP", &config.esp.kraken.enable);
+
+                    ImGui::Separator();
+
+                    ImGui::Text("Vehicles");
                     ImGui::Checkbox("Ship##ESP", &config.esp.ship.enable);
                     ImGui::Checkbox("Ghost Ship##ESP", &config.esp.ghostship.enable);
                     ImGui::Checkbox("Rowboat##ESP", &config.esp.rowboat.enable);
-                    ImGui::Checkbox("Animal##ESP", &config.esp.animal.enable);
-                    ImGui::Checkbox("Mermaid##ESP", &config.esp.mermaid.enable);
+
+                    ImGui::Separator();
+
+                    ImGui::Text("Items");
                     ImGui::Checkbox("Item##ESP", &config.esp.item.enable);
+                    ImGui::Checkbox("Lore Book##ESP", &config.esp.lorebook.enable);
 
                     ImGui::Separator();
 
                     ImGui::Text("Misc");
                     ImGui::Checkbox("Map Pin##ESP", &config.esp.mappin.enable);
-                    ImGui::Checkbox("Lore Book##ESP", &config.esp.lorebook.enable);
-                    ImGui::Checkbox("Treasure Map##ESP", &config.esp.treasuremap.enable);
                     ImGui::Checkbox("Storm##ESP", &config.esp.storm.enable);
+                    ImGui::Checkbox("Treasure Map##ESP", &config.esp.treasuremap.enable);
+                    ImGui::Checkbox("Enchanted Compass##ESP", &config.esp.enchantedcompass.enable);
+                    ImGui::Checkbox("Skeleton Throne##ESP", &config.esp.skeletonthrone.enable);
 
                     ImGui::EndTabItem();
                 }
@@ -224,6 +238,12 @@ namespace GUI
                     ImGui::Checkbox("Water Level##Info", &config.info.waterLevel);
                     ImGui::Checkbox("Anchor##Info", &config.info.anchor);
                     ImGui::Checkbox("Debug##Info", &config.info.debug);
+                    ImGui::EndTabItem();
+                }
+
+                if (ImGui::BeginTabItem("Client"))
+                {
+                    ImGui::Checkbox("Anti AFK##Client", &config.client.antiafk);
                     ImGui::EndTabItem();
                 }
 

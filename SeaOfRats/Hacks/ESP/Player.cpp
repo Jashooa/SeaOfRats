@@ -27,101 +27,94 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            FVector2D position;
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
-
-            // Check friendly
-            ImU32 colour = Drawing::Colour::Red;
-            if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player))
-            {
-                colour = Drawing::Colour::Green;
-            }
-
-            //Drawing::DrawBoundingBox(world, actor, colour);
-            DrawBones(world, actor);
 
             // Get bounds
             FVector origin, extent;
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            const auto topLocation = FVector(location.X, location.Y, location.Z + extent.Z);
-            FVector2D topScreen;
-            if (playerController->ProjectWorldLocationToScreen(topLocation, &topScreen))
+            FVector2D topPosition;
+            if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z + extent.Z }, &topPosition))
             {
-
-                const float worldDistance = localPlayer->GetDistanceTo(actor);
-
-                /*auto namePlate = reinterpret_cast<UPlayerNameplateComponent*>(player->GetComponentByClass(UPlayerNameplateComponent::StaticClass()));
-                bool isNameplateShown = (worldDistance < namePlate->VisibleUntilWorldDistanceNonCrew) && playerController->LineOfSightTo(actor, FVector(0.0f, 0.0f, 0.0f), false);
-
-                if (!isNameplateShown)
-                {
-                    // Get name
-                    std::wstring name = player->PlayerState->PlayerName.c_str();
-                    int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-                    name += L" [" + std::to_wstring(distance) + L"m]";
-
-                    // Draw name
-                    FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    Drawing::DrawString(hud, name, nameScreen, colour);
-                }*/
-
-                if (const auto playerState = player->PlayerState)
-                {
-                    // Get name
-                    std::string name = playerState->PlayerName.ToString();
-                    const int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-                    name += " [" + std::to_string(distance) + "m]";
-
-                    // Draw name
-                    const FVector2D nameScreen = FVector2D(topScreen.X, topScreen.Y - 10.0f);
-                    Drawing::DrawString(name, nameScreen, colour);
-                }
+                return;
             }
 
             // Get bottom coordinates
-            const auto bottomLocation = FVector(location.X, location.Y, location.Z - extent.Z);
-            FVector2D bottomScreen;
-            if (playerController->ProjectWorldLocationToScreen(bottomLocation, &bottomScreen))
+            FVector2D bottomPosition;
+            if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z - extent.Z }, &bottomPosition))
             {
-                // Draw health bar
-                if (const auto healthComponent = player->HealthComponent)
-                {
-                    const FVector2D healthScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 10.0f);
-                    const FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                    const FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
-                    Drawing::DrawHealthBar(healthTopLeft, healthBottomRight, healthComponent->GetCurrentHealth(), healthComponent->GetMaxHealth());
-                }
+                return;
+            }
 
-                // Draw item info
-                if (const auto wieldedItemComponent = player->WieldedItemComponent)
+            // Colour
+            ImU32 colour = Drawing::Colour::Red;
+
+            // Check friendly
+            if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player))
+            {
+                colour = Drawing::Colour::Green;
+            }
+
+            // Draw box
+            Drawing::DrawBoundingRect(world, actor, colour);
+            DrawBones(world, actor);
+
+            // Get distance
+            const float worldDistance = localPlayer->GetDistanceTo(actor);
+
+            /*auto namePlate = reinterpret_cast<UPlayerNameplateComponent*>(player->GetComponentByClass(UPlayerNameplateComponent::StaticClass()));
+            bool isNameplateShown = (worldDistance < namePlate->VisibleUntilWorldDistanceNonCrew) && playerController->LineOfSightTo(actor, FVector(0.f, 0.f, 0.f), false);
+
+            if (!isNameplateShown)
+            {
+                // Get name
+                std::wstring name = player->PlayerState->PlayerName.c_str();
+                int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                name += L" [" + std::to_wstring(distance) + L"m]";
+
+                // Draw name
+                FVector2D nameScreen = FVector2D(topPosition.X, topPosition.Y - 10.f);
+                Drawing::DrawString(hud, name, nameScreen, colour);
+            }*/
+
+            if (const auto playerState = player->PlayerState)
+            {
+                // Get name
+                std::string name = playerState->PlayerName.ToString();
+                const int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                name += " [" + std::to_string(distance) + "m]";
+
+                // Draw name
+                Drawing::DrawString(name, { topPosition.X, topPosition.Y - 30.f }, colour);
+            }
+
+            // Draw health bar
+            if (const auto healthComponent = player->HealthComponent)
+            {
+                const float healthCurrent = healthComponent->GetCurrentHealth();
+                const float healthMax = healthComponent->GetMaxHealth();
+                Drawing::DrawHealthBar({ topPosition.X, topPosition.Y - 15.f }, healthCurrent, healthMax);
+            }
+
+            // Draw item info
+            if (const auto wieldedItemComponent = player->WieldedItemComponent)
+            {
+                if (const auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem))
                 {
-                    if (const auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem))
+                    if (const auto itemInfo = wieldedItem->ItemInfo)
                     {
-                        if (const auto itemInfo = wieldedItem->ItemInfo)
+                        if (const auto itemDesc = itemInfo->Desc)
                         {
-                            if (const auto itemDesc = itemInfo->Desc)
-                            {
-                                const std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-                                const FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
-                                Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);
-                            }
+                            const std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
+                            Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y + 15.f }, Drawing::Colour::White);
                         }
                     }
                 }
-
-                /*const auto wieldedItemComponent = player->WieldedItemComponent;
-                const auto wieldedItem = reinterpret_cast<AWieldableItem*>(wieldedItemComponent->CurrentlyWieldedItem);
-                const auto itemInfo = wieldedItem->ItemInfo;
-                const auto itemDesc = itemInfo->Desc;
-
-                const std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-                const FVector2D itemScreen = FVector2D(bottomScreen.X, bottomScreen.Y + 25.0f);
-                Drawing::DrawString(itemName, itemScreen, Drawing::Colour::White);*/
             }
         }
     }

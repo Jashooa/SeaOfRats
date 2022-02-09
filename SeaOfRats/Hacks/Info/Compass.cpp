@@ -8,7 +8,7 @@ namespace Hacks
     {
         void DrawCompass(UWorld* world)
         {
-            static std::vector<const char*> compassDirections = {
+            static const std::vector<std::string> compassDirections = {
                 "North",
                 "North North East",
                 "North East",
@@ -27,20 +27,20 @@ namespace Hacks
                 "North North West"
             };
 
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto cameraManager = playerController->PlayerCameraManager;
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto cameraManager = playerController->PlayerCameraManager;
             if (!cameraManager)
             {
                 return;
             }
 
-            auto rotation = cameraManager->GetCameraRotation();
-            int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
-            int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.0f)) * 0.04444444444f);
+            const auto rotation = cameraManager->GetCameraRotation();
+            const int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
+            const int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.f)) * 0.04444444444f);
 
-            float centerX = Drawing::Window->Size.x * 0.5f;
-            Drawing::DrawString(std::to_string(bearing), FVector2D(centerX, 10), Drawing::Colour::White);
-            Drawing::DrawString(compassDirections[index], FVector2D(centerX, 25), Drawing::Colour::White);
+            const FVector2D centre = Drawing::GetScreenCentre();
+            Drawing::DrawString(std::to_string(bearing), { centre.X, 10.f }, Drawing::Colour::White);
+            Drawing::DrawString(compassDirections[index], { centre.X, 25.f }, Drawing::Colour::White);
         }
     }
 }

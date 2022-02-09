@@ -20,18 +20,23 @@ namespace Hacks
             auto location = actor->K2_GetActorLocation();
             location.Z += 25.f * 100.f;
 
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            FVector2D position;
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
+            // Get distance
             const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            if (distance >= 1300)
+            if (distance >= 1500)
             {
                 return;
             }
 
+            // Colour
+            ImU32 colour = Drawing::Colour::Red;
+
+            // Get name
             const std::string actorName = actor->GetName();
             std::string name = "Ship";
             if (actorName.find("Large") != std::string::npos)
@@ -50,26 +55,27 @@ namespace Hacks
             if (actorName.find("AI") != std::string::npos)
             {
                 name = "Skeleton " + name;
+                colour = Drawing::Colour::Orange;
             }
 
             if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
             {
                 name = "My " + name;
+                colour = Drawing::Colour::Green;
             }
+
+            Drawing::DrawCircleFilled(position, 3.f, colour);
 
             name += " [" + std::to_string(distance) + "m]";
 
-            const FVector2D nameScreen = FVector2D(screen.X, screen.Y - 25.0f);
-            Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
+            // Draw name
+            Drawing::DrawString(name, { position.X, position.Y - 30.f }, colour);
 
             if (const auto waterInfo = ship->GetInternalWater())
             {
-                const FVector2D healthScreen = FVector2D(screen.X, screen.Y - 10.0f);
-                const FVector2D healthTopLeft = FVector2D(healthScreen.X - 50.0f, healthScreen.Y);
-                const FVector2D healthBottomRight = FVector2D(healthScreen.X + 50.0f, healthScreen.Y + 5.0f);
                 const float waterMax = waterInfo->InternalWaterParams.MaxWaterAmount;
                 const float waterLevel = waterMax - waterInfo->WaterAmount;
-                Drawing::DrawHealthBar(healthTopLeft, healthBottomRight, waterLevel, waterMax);
+                Drawing::DrawHealthBar({ position.X, position.Y - 15.f }, waterLevel, waterMax);
             }
         }
 
@@ -82,18 +88,23 @@ namespace Hacks
             auto location = actor->K2_GetActorLocation();
             location.Z += 25 * 100;
 
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            FVector2D position;
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
+            // Get distance
             const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            if (distance < 1300)
+            if (distance < 1500)
             {
                 return;
             }
 
+            // Colour
+            ImU32 colour = Drawing::Colour::Red;
+
+            // Get name
             const std::string actorName = actor->GetName();
             std::string name = "Ship";
             if (actorName.find("Large") != std::string::npos)
@@ -112,17 +123,21 @@ namespace Hacks
             if (actorName.find("AI") != std::string::npos)
             {
                 name = "Skeleton " + name;
+                colour = Drawing::Colour::Orange;
             }
 
             if (UCrewFunctions::IsActorMemberOfCharactersCrew(ship, reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer)))
             {
                 name = "My " + name;
+                colour = Drawing::Colour::Green;
             }
+
+            Drawing::DrawCircleFilled(position, 3.f, colour);
 
             name += " [" + std::to_string(distance) + "m]";
 
-            const FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.0f);
-            Drawing::DrawString(name, nameScreen, Drawing::Colour::White);
+            // Draw name
+            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
         }
     }
 }

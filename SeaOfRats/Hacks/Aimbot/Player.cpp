@@ -4,49 +4,55 @@
 
 #include "Drawing.h"
 #include "Hacks/Bones.h"
+#include "Utilities/Math.h"
 
 using namespace SDK;
 
-AActor* nearestActor = nullptr;
-float nearestDistance = FLT_MAX;
-FVector2D centerScreen;
 
-struct
-{
-    AActor* target = nullptr;
-    FVector location;
-    FRotator delta;
-    float best = FLT_MAX;
-} bestAim;
-
-FVector cameraLocation;
-FRotator cameraRotation;
-AProjectileWeapon* playerWeapon = nullptr;
 
 namespace Hacks
 {
     namespace Aimbot
     {
-        void InitPlayer(UWorld* world)
+        struct
+        {
+            AActor* target = nullptr;
+            FVector location;
+            FRotator delta;
+            float best = FLT_MAX;
+        } bestAim;
+
+        FVector cameraLocation;
+        FRotator cameraRotation;
+        AProjectileWeapon* playerWeapon = nullptr;
+        FVector2D centreScreen;
+        const float aimRadius = 200.f;
+
+        void InitAimPlayer(UWorld* world)
         {
             bestAim.target = nullptr;
             bestAim.best = FLT_MAX;
             playerWeapon = nullptr;
 
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
-            cameraLocation = playerController->PlayerCameraManager->GetCameraLocation();
-            cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = reinterpret_cast<AAthenaCharacter*>(playerController->Pawn);
 
-            auto wieldedItemComponent = reinterpret_cast<AAthenaCharacter*>(localPlayer)->WieldedItemComponent;
-            auto wieldedItem = wieldedItemComponent->CurrentlyWieldedItem;
-            if (wieldedItem)
+            centreScreen = Drawing::GetScreenCentre();
+
+            if (const auto wieldedItemComponent = localPlayer->WieldedItemComponent)
             {
-                if (wieldedItem->IsA(AProjectileWeapon::StaticClass()))
+                if (const auto wieldedItem = wieldedItemComponent->CurrentlyWieldedItem)
                 {
-                    playerWeapon = reinterpret_cast<AProjectileWeapon*>(wieldedItem);
+                    if (wieldedItem->IsA(AProjectileWeapon::StaticClass()))
+                    {
+                        playerWeapon = reinterpret_cast<AProjectileWeapon*>(wieldedItem);
+                        Drawing::DrawCircle(centreScreen, aimRadius, Drawing::Colour::Red);
+                    }
                 }
             }
+
+            cameraLocation = playerController->PlayerCameraManager->GetCameraLocation();
+            cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
         }
 
         void CalculateAimPlayer(UWorld* world, AActor* actor)
@@ -122,16 +128,27 @@ namespace Hacks
             auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             auto localPlayer = playerController->Pawn;
 
-            auto boneLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
+            FVector aimLocation;
+            if (bestAim.target->IsA(AAthenaPlayerCharacter::StaticClass()) || bestAim.target->IsA(AAthenaAICharacter::StaticClass()))
+            {
+                aimLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
+            }
+            else
+            {
+                aimLocation = bestAim.target->K2_GetActorLocation();
+            }
 
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screen))
+            FVector2D position;
+            if (!playerController->ProjectWorldLocationToScreen(aimLocation, &position))
             {
                 return;
             }
-            bestAim.location = boneLocation;
+            bestAim.location = aimLocation;
 
-            //Drawing::DrawString("x", screen, Drawing::Colour::Red);
+            if (!Utilities::PointInCircle(position, centreScreen, aimRadius))
+            {
+                return;
+            }
 
             FVector localVelocity = localPlayer->GetVelocity();
             if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
@@ -150,7 +167,6 @@ namespace Hacks
             const FVector relativeLocation = localPlayer->K2_GetActorLocation() - bestAim.location;
             const float a = relativeVelocity.Size() - bulletSpeed * bulletSpeed;
             const auto temp = relativeLocation * relativeVelocity * 2.f;
-            //const float b = (relativeLocation * relativeVelocity * 2.f).Sum();
             const float b = temp.X + temp.Y + temp.Z;
             const float c = relativeLocation.SizeSquared();
             const float d = b * b - 4 * a * c;
@@ -169,20 +185,21 @@ namespace Hacks
                     bestAim.location += relativeVelocity * x2;
                 }
 
-                if (!playerController->ProjectWorldLocationToScreen(bestAim.location, &screen))
+                if (!playerController->ProjectWorldLocationToScreen(bestAim.location, &position))
                 {
                     return;
                 }
-                Drawing::DrawString("x", screen, Drawing::Colour::Red);
-                Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.0f, 200.0f), Drawing::Colour::Red, false);
-                Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.0f, 215.0f), Drawing::Colour::Red, false);
+                Drawing::DrawString("x", position, Drawing::Colour::Red);
+                //Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.f, 200.f), Drawing::Colour::Red, false);
+                //Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.f, 215.f), Drawing::Colour::Red, false);
 
                 //if (playerController->IsInputKeyDown(FKey{ "LeftMouseButton" }))
-                if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
+                //if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
+                if ((GetAsyncKeyState(VK_LMENU) & 0x8000) != 0)
                 {
                     bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
 
-                    auto smoothness = 1.f / 3.0f;
+                    auto smoothness = 1.f / 5.f;
                     playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
                     playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
                 }

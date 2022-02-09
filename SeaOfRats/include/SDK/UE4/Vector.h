@@ -142,7 +142,6 @@ namespace SDK
 
         inline float Size() const
         {
-            //return FMath::Sqrt(X * X + Y * Y + Z * Z);
             return sqrtf(X * X + Y * Y + Z * Z);
         }
 

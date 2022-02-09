@@ -20,6 +20,11 @@ namespace SDK
         {
         }
 
+        inline FRotator operator-() const
+        {
+            return FRotator(-Pitch, -Yaw, -Roll);
+        }
+
         inline FRotator operator+=(const FRotator& R)
         {
             Pitch += R.Pitch; Yaw += R.Yaw; Roll += R.Roll;

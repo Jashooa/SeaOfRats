@@ -8,7 +8,7 @@ namespace Hacks
 {
     FVector GetBoneLocation(ACharacter* player, EBones bone)
     {
-        FVector boneLocation(0.0f, 0.0f, 0.0f);
+        FVector boneLocation(0.f, 0.f, 0.f);
         if (const auto mesh = player->Mesh)
         {
             if (!mesh->IsVisible())
@@ -92,7 +92,7 @@ namespace Hacks
                         continue;
                     }
 
-                    if (previousBone.X != 0.0f && previousBone.Y != 0.0f)
+                    if (previousBone.X != 0.f && previousBone.Y != 0.f)
                     {
                         Drawing::DrawLine(previousBone, screenBone, Drawing::Colour::White);
                     }

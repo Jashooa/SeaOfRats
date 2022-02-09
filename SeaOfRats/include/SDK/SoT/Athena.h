@@ -6,6 +6,16 @@
 
 namespace SDK
 {
+    // Enum Athena.ESwimmingCreatureType
+    enum class ESwimmingCreatureType : uint8_t
+    {
+        ESwimmingCreatureType__SwimmingCreature = 0,
+        ESwimmingCreatureType__Shark = 1,
+        ESwimmingCreatureType__TinyShark = 2,
+        ESwimmingCreatureType__Siren = 3,
+        ESwimmingCreatureType__ESwimmingCreatureType_MAX = 4
+    };
+
     // Enum Athena.ELoadableState
     enum class ELoadableState : uint8_t
     {
@@ -171,6 +181,25 @@ namespace SDK
         char pad_0x0018[0x0020];
     };
 
+    // ScriptStruct Athena.AggressiveGhostShipState
+    // 0x0008
+    struct FAggressiveGhostShipState
+    {
+        bool IsShipVisible; // 0x0000(0x0001)
+        bool IsShipDead; // 0x0001(0x0001)
+        char pad_0x0002[0x0002];
+        float ShipSpeed; // 0x0004(0x0004)
+    };
+
+    // ScriptStruct Athena.EnchantedCompassTarget
+    // 0x0018
+    struct FEnchantedCompassTarget
+    {
+        int TargetID; // 0x0000(0x0004)
+        struct FVector TargetLocation; // 0x0004(0x000C)
+        TWeakObjectPtr<class AActor> TargetActor; // 0x0010(0x0008)
+    };
+
     // ScriptStruct Athena.WorldMapIslandDataCaptureParams
     // 0x0040
     struct FWorldMapIslandDataCaptureParams
@@ -250,7 +279,10 @@ namespace SDK
     class AAthenaAICharacter : public AAthenaCharacter
     {
     public:
-        char pad_0x0C00[0x0660];
+        char pad_0x0C00[0x01C8];
+        class USkeletalMesh* AssignedMesh; // 0x0DC8(0x0008)
+        class UColorTexture* TeamColorTexture; // 0x0DD0(0x0008)
+        char pad_0x0DD8[0x0488];
 
         static UClass* StaticClass()
         {
@@ -267,11 +299,13 @@ namespace SDK
         char pad_0x0548[0x0070];
         char pad_0x05B8[0x0010];
         class AShipService* ShipService; // 0x05C8(0x0008)
-        char pad_0x05D0[0x0038];
+        char pad_0x05D0[0x0030];
+        class AStormService* StormService; // 0x0600(0x0008)
         class ACrewService* CrewService; // 0x0608(0x0008)
         char pad_0x0610[0x0010];
         class AIslandService* IslandService; // 0x0620(0x0008)
         char pad_0x0628[0x04D0];
+        class AKrakenService* KrakenService; // 0x06A0(0x0008)
 
         static UClass* StaticClass()
         {
@@ -325,6 +359,12 @@ namespace SDK
         bool IdleDisconnectEnabled; // 0x14D1(0x0001)
         char pad_0x14D2[0x009E];
 
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.OnlineAthenaPlayerController");
+            return ptr;
+        }
+
         void ModifyActiveState(bool IsActive);
         bool IsClientAndInActiveGameplay();
     };
@@ -353,6 +393,12 @@ namespace SDK
     {
     public:
         char pad_0x0628[0x0168];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.FloatingItemProxy");
+            return ptr;
+        }
     };
 
     // Class Athena.BootyProxy
@@ -701,6 +747,20 @@ namespace SDK
         }
     };
 
+    // Class Athena.SkeletonThrone
+    // 0x0050 (0x0420 - 0x03D0)
+    class ASkeletonThrone : public AActor
+    {
+    public:
+        char pad_0x03D0[0x0050];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.SkeletonThrone");
+            return ptr;
+        }
+    };
+
     // Class Athena.Storm
     // 0x0260 (0x0630 - 0x03D0)
     class AStorm : public AActor
@@ -713,6 +773,78 @@ namespace SDK
         static UClass* StaticClass()
         {
             static auto ptr = UObject::FindObject<UClass>("Class Athena.Storm");
+            return ptr;
+        }
+    };
+
+    // Class Athena.StormService
+    // 0x0068 (0x0438 - 0x03D0)
+    class AStormService : public AActor
+    {
+    public:
+        char pad_0x03D0[0x0050];
+        TArray<class AActor*> StormList; // 0x0420(0x0010)
+        char pad_0x0430[0x0008];
+    };
+
+    // Class Athena.SwimmingCreaturePawn
+    // 0x04C8 (0x0910 - 0x0448)
+    class ASwimmingCreaturePawn : public APawn
+    {
+    public:
+        char pad_0x0448[0x00A0];
+        class UHealthComponent* HealthComponent; // 0x04E8(0x0008)
+        char pad_0x04F0[0x003C];
+        TEnumAsByte<ESwimmingCreatureType> SwimmingCreatureType; // 0x052C(0x0001)
+        char pad_0x052D[0x03E3];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.SwimmingCreaturePawn");
+            return ptr;
+        }
+    };
+
+    // Class Athena.SharkPawn
+    // 0x0060 (0x0970 - 0x0910)
+    class ASharkPawn : public ASwimmingCreaturePawn
+    {
+    public:
+        char pad_0x0910[0x0060];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.SharkPawn");
+            return ptr;
+        }
+    };
+
+    // Class Athena.TinyShark
+    // 0x0050 (0x09C0 - 0x0970)
+    class ATinyShark : public ASharkPawn
+    {
+    public:
+        char pad_0x0970[0x0050];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.TinyShark");
+            return ptr;
+        }
+    };
+
+    // Class Athena.SirenPawn
+    // 0x0140 (0x0A50 - 0x0910)
+    class ASirenPawn : public ASwimmingCreaturePawn
+    {
+    public:
+        char pad_0x0910[0x0058];
+        class UWieldedItemComponent* WieldedItemComponent; // 0x0968(0x0008)
+        char pad_0x0970[0x00E0];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.SirenPawn");
             return ptr;
         }
     };
@@ -765,6 +897,14 @@ namespace SDK
         char pad_0x02C8[0x0118];
     };
 
+    // Class Athena.RenderToTextureMapBase
+    // 0x0060 (0x0840 - 0x07E0)
+    class ARenderToTextureMapBase : public ATreasureMap
+    {
+    public:
+        char pad_0x07E0[0x0060];
+    };
+
     // Class Athena.ActorFunctionLibrary
     // 0x0000 (0x0028 - 0x0028)
     class UActorFunctionLibrary : public UBlueprintFunctionLibrary
@@ -781,6 +921,13 @@ namespace SDK
         class AActor* GetActor();
     };
 
+    // Class Athena.PoseableMeshWieldableItem
+    // 0x0000 (0x0790 - 0x0790)
+    class APoseableMeshWieldableItem : public AWieldableItem
+    {
+    public:
+    };
+
     // Class Athena.ShipInternalWater
     // 0x0250 (0x0620 - 0x03D0)
     class AShipInternalWater : public AActor
@@ -791,6 +938,14 @@ namespace SDK
         float CurrentVisualWaterLevel; // 0x0418(0x0004)
         float WaterAmount; // 0x041C(0x0004)
         char pad_0x0420[0x0200];
+    };
+
+    // Class Athena.Compass
+    // 0x00E0 (0x0870 - 0x0790)
+    class ACompass : public APoseableMeshWieldableItem
+    {
+    public:
+        char pad_0x0790[0x00E0];
     };
 
     // Class Athena.Landmark
@@ -819,12 +974,33 @@ namespace SDK
         float GetOxygenLevel();
     };
 
+    // Class Athena.TornMap
+    // 0x00B0 (0x08F0 - 0x0840)
+    class ATornMap : public ARenderToTextureMapBase
+    {
+    public:
+        char pad_0x0840[0x0038];
+        TArray<struct FVector> TargetVisibility; // 0x0878(0x0010)
+        char pad_0x0888[0x0028];
+        int NumPieces; // 0x08B0(0x0004)
+        char pad_0x08B4[0x003C];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.TornMap");
+            return ptr;
+        }
+    };
+
     // Class Athena.AggressiveGhostShip
     // 0x04B0 (0x0880 - 0x03D0)
     class AAggressiveGhostShip : public AActor
     {
     public:
-        char pad_0x03D0[0x04B0];
+        char pad_0x03D0[0x0158];
+        struct FAggressiveGhostShipState ShipState; // 0x0528(0x0008)
+        bool HasMadeShipAppear; // 0x0530(0x0001)
+        char pad_0x0531[0x034F];
 
         static UClass* StaticClass()
         {
@@ -834,6 +1010,22 @@ namespace SDK
 
         int GetNumShotsLeftToKill();
         TEnumAsByte<EAggressiveGhostShipType> GetShipType();
+    };
+
+    // Class Athena.EnchantedCompass
+    // 0x00D0 (0x0940 - 0x0870)
+    class AEnchantedCompass : public ACompass
+    {
+    public:
+        char pad_0x0870[0x001C];
+        struct FEnchantedCompassTarget Target; // 0x088C(0x0018)
+        char pad_0x08A4[0x009C];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.EnchantedCompass");
+            return ptr;
+        }
     };
 
     // Class Athena.IslandDataAssetEntry

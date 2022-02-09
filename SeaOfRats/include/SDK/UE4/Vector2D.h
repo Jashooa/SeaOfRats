@@ -39,6 +39,11 @@ namespace SDK
             return FVector2D(X / V.X, Y / V.Y);
         }
 
+        inline float operator|(const FVector2D& V) const
+        {
+            return X * V.X + Y * V.Y;
+        }
+
         inline FVector2D GetRotated(const float AngleDeg) const
         {
             float S, C;
@@ -47,6 +52,33 @@ namespace SDK
             return FVector2D(
                 C * X - S * Y,
                 S * X + C * Y);
+        }
+
+        inline static float DotProduct(const FVector2D& A, const FVector2D& B)
+        {
+            return A | B;
+        }
+
+        inline static float DistSquared(const FVector2D& V1, const FVector2D& V2)
+        {
+            return FMath::Square(V2.X - V1.X) + FMath::Square(V2.Y - V1.Y);
+        }
+
+
+        inline static float Distance(const FVector2D& V1, const FVector2D& V2)
+        {
+            return sqrtf(FVector2D::DistSquared(V1, V2));
+        }
+
+        inline FVector2D GetSafeNormal(float Tolerance = SMALL_NUMBER)
+        {
+            const float SquareSum = X * X + Y * Y;
+            if (SquareSum > Tolerance)
+            {
+                const float Scale = FMath::InvSqrt(SquareSum);
+                return FVector2D(X * Scale, Y * Scale);
+            }
+            return FVector2D(0.f, 0.f);
         }
     };
 }

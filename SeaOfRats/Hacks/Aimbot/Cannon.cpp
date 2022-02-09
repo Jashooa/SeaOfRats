@@ -28,25 +28,25 @@ namespace Hacks
 
         void CannonTrace(UWorld* world)
         {
-            auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
+            const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
-            auto parent = localPlayer->GetAttachParentActor();
+            const auto parent = localPlayer->GetAttachParentActor();
             if (parent && parent->IsA(ACannon::StaticClass()))
             {
-                auto cannon = reinterpret_cast<ACannon*>(parent);
+                const auto cannon = reinterpret_cast<ACannon*>(parent);
 
-                float gravityScale = cannon->ProjectileGravityScale;
-                float gravity = 981.f * gravityScale;
-                float launchSpeed = cannon->ProjectileSpeed;
+                const float gravityScale = cannon->ProjectileGravityScale;
+                const float gravity = 981.f * gravityScale;
+                const float launchSpeed = cannon->ProjectileSpeed;
 
                 FRotator angle = FRotator(cannon->ServerPitch, cannon->ServerYaw, 0.f);
-                FRotator compAngle = cannon->K2_GetActorRotation();
+                const FRotator compAngle = cannon->K2_GetActorRotation();
                 angle += compAngle;
 
-                FVector forwardVector = UKismetMathLibrary::Conv_RotatorToVector(angle);
-                FVector position = cannon->K2_GetActorLocation();
-                position.Z += 100.f;
-                position += forwardVector * 150.f;
+                const FVector forwardVector = UKismetMathLibrary::Conv_RotatorToVector(angle);
+                FVector location = cannon->K2_GetActorLocation();
+                location.Z += 100.f;
+                location += forwardVector * 150.f;
 
                 FVector velocity = forwardVector * launchSpeed;
                 if (const auto parentShip = cannon->GetAttachParentActor())
@@ -58,9 +58,9 @@ namespace Hacks
                 const float interval = 0.1f;
                 TArray<AActor*> ignoreList;
                 ignoreList.Push(localPlayer);
-                for (int32_t i = 0; i < 500; ++i)
+                for (auto i = 0; i < 500; ++i)
                 {
-                    path.push_back(position);
+                    path.push_back(location);
                     float newZ = velocity.Z - (gravity * interval);
                     FVector move(
                         velocity.X * interval,
@@ -68,32 +68,31 @@ namespace Hacks
                         ((velocity.Z + newZ) * 0.5f) * interval
                     );
                     velocity.Z = newZ;
-                    FVector nextPosition = position + move;
+                    FVector nextLocation = location + move;
                     FHitResult hitResult;
-                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, position, nextPosition, ETraceTypeQuery::TraceTypeQuery1, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
+                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, location, nextLocation, ETraceTypeQuery::TraceTypeQuery1, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
                     {
-                        FVector2D screen{};
-                        if (world->OwningGameInstance->LocalPlayers[0]->PlayerController->ProjectWorldLocationToScreen(nextPosition, &screen))
+                        FVector2D position{};
+                        if (world->OwningGameInstance->LocalPlayers[0]->PlayerController->ProjectWorldLocationToScreen(nextLocation, &position))
                         {
-                            ImU32 colour = Drawing::Colour::Green;
+                            ImU32 colour = Drawing::Colour::Red;
                             /*if (hitResult.Actor.Get() && hitResult.Actor.Get()->IsA(AShip::StaticClass()))
                             {
                                 colour = Drawing::Colour::Green;
                             }
                             Drawing::DrawString(hitResult.Actor.Get()->GetName(), screen, colour);*/
-                            Drawing::DrawCircle(screen, 3.f, colour);
+                            Drawing::DrawCircle(position, 3.f, colour);
                         }
                         break;
                     }
-                    if (position == nextPosition)
+                    if (location == nextLocation)
                     {
                         break;
                     }
-                    position = nextPosition;
+                    location = nextLocation;
                 }
 
                 Drawing::DrawPath(world, path, Drawing::Colour::White);
-
             }
         }
     }

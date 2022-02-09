@@ -7,6 +7,7 @@ namespace SDK
     constexpr auto HALF_PI = 1.57079632679f;
     constexpr auto DEG_TO_RAD = PI / 180.f;
     constexpr auto DIVIDE_BY_2 = DEG_TO_RAD / 2.f;
+    constexpr auto SMALL_NUMBER = 1.e-8f;
 
     struct FMath
     {
@@ -61,6 +62,17 @@ namespace SDK
         static inline auto DegreesToRadians(T const& DegVal) -> decltype(DegVal* (PI / 180.f))
         {
             return DegVal * (PI / 180.f);
+        }
+
+        template<class T>
+        static inline T Square(const T A)
+        {
+            return A * A;
+        }
+
+        static inline float InvSqrt(float F)
+        {
+            return 1.0f / sqrtf(F);
         }
     };
 }

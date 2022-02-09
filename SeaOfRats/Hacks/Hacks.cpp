@@ -12,15 +12,21 @@
 #include "Aimbot/Cannon.h"
 #include "Aimbot/Player.h"
 #include "ESP/Animal.h"
+#include "ESP/EnchantedCompass.h"
 #include "ESP/GhostShip.h"
 #include "ESP/Item.h"
+#include "ESP/Kraken.h"
 #include "ESP/LoreBook.h"
 #include "ESP/MapPin.h"
+#include "ESP/Megalodon.h"
 #include "ESP/Mermaid.h"
 #include "ESP/Player.h"
 #include "ESP/Rowboat.h"
 #include "ESP/Skeleton.h"
+#include "ESP/SkeletonThrone.h"
+#include "ESP/Shark.h"
 #include "ESP/Ship.h"
+#include "ESP/Siren.h"
 #include "ESP/Storm.h"
 #include "ESP/TreasureMap.h"
 #include "Info/Anchor.h"
@@ -29,6 +35,7 @@
 #include "Info/Oxygen.h"
 #include "Info/PlayerList.h"
 #include "Info/WaterLevel.h"
+#include "Utilities/Math.h"
 
 using namespace SDK;
 
@@ -38,12 +45,10 @@ namespace Hacks
     {
         if (!world)
         {
-            spdlog::warn("World null");
             return false;
         }
         if (!world->GameState)
         {
-            spdlog::warn("GameState null");
             return false;
         }
         if (!world->GameState->IsA(AAthenaGameState::StaticClass()))
@@ -52,32 +57,30 @@ namespace Hacks
         }
         if (!world->OwningGameInstance)
         {
-            spdlog::warn("GameInstance null");
             return false;
         }
         if (!world->PersistentLevel)
         {
-            spdlog::warn("PersistentLevel null");
             return false;
         }
         if (world->OwningGameInstance->LocalPlayers.Num() < 1)
         {
-            spdlog::warn("LocalPlayers < 1");
             return false;
         }
         if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController)
         {
-            spdlog::warn("PlayerController null");
+            return false;
+        }
+        if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->IsA(AOnlineAthenaPlayerController::StaticClass()))
+        {
             return false;
         }
         if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn)
         {
-            spdlog::warn("Pawn null");
             return false;
         }
         if (!world->OwningGameInstance->LocalPlayers[0]->PlayerController->PlayerCameraManager)
         {
-            spdlog::warn("PlayerCameraManager null");
             return false;
         }
         return true;
@@ -86,6 +89,23 @@ namespace Hacks
     void Hack()
     {
         UWorld* world = UAthenaGameViewportClient::GAthenaGameViewportClient->World;
+
+        /*try
+        {
+            TArray<FVector> actorlist{};
+            actorlist.Push(FVector(-10, -50, 0)); // North
+            actorlist.Push(FVector(80, 90, 20)); // South West
+            actorlist.Push(FVector(-50, 10, 10)); // East
+            actorlist.Push(FVector(50, -50, 40)); // North West
+
+            FVector closest = Utilities::ClosestRelativeActorToBearing(FVector(0.f, 0.f, 0.f), actorlist, "South West");
+
+            spdlog::info("{} {} {}", closest.X, closest.Y, closest.Z);
+        }
+        catch (...)
+        {
+            throw std::runtime_error("Test");
+        }*/
 
         if (NullChecks(world))
         {
@@ -104,9 +124,9 @@ namespace Hacks
                         continue;
                     }
 
-                    if (actor->IsA(AModalInteractionProxy::StaticClass()))
+                    if (config.esp.lorebook.enable)
                     {
-                        if (config.esp.lorebook.enable)
+                        if (actor->IsA(AModalInteractionProxy::StaticClass()))
                         {
                             try
                             {
@@ -116,8 +136,24 @@ namespace Hacks
                             {
                                 throw std::runtime_error("ESP::DrawLoreBook");
                             }
+                            continue;
                         }
-                        continue;
+                    }
+
+                    if (config.esp.skeletonthrone.enable)
+                    {
+                        if (actor->IsA(ASkeletonThrone::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::DrawSkeletonThrone(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::DrawSkeletonThrone");
+                            }
+                            continue;
+                        }
                     }
                 }
             }
@@ -126,7 +162,7 @@ namespace Hacks
             {
                 try
                 {
-                    Aimbot::InitPlayer(world);
+                    Aimbot::InitAimPlayer(world);
                 }
                 catch (...)
                 {
@@ -219,10 +255,11 @@ namespace Hacks
                     continue;
                 }
 
-                if (actor->IsA(AShipNetProxy::StaticClass()))
+                if (config.esp.ship.enable)
                 {
-                    if (config.esp.ship.enable)
+                    if (actor->IsA(AShipNetProxy::StaticClass()))
                     {
+
                         try
                         {
                             ESP::DrawShipFar(world, actor);
@@ -231,13 +268,13 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawShipFar");
                         }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(AAggressiveGhostShip::StaticClass()))
+                if (config.esp.ghostship.enable)
                 {
-                    if (config.esp.ghostship.enable)
+                    if (actor->IsA(AAggressiveGhostShip::StaticClass()))
                     {
                         try
                         {
@@ -247,13 +284,13 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawGhostShip");
                         }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(ARowboat::StaticClass()))
+                if (config.esp.rowboat.enable)
                 {
-                    if (config.esp.rowboat.enable)
+                    if (actor->IsA(ARowboat::StaticClass()))
                     {
                         try
                         {
@@ -263,13 +300,13 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawRowboat");
                         }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(AFauna::StaticClass()))
+                if (config.esp.animal.enable)
                 {
-                    if (config.esp.animal.enable)
+                    if (actor->IsA(AFauna::StaticClass()))
                     {
                         try
                         {
@@ -279,13 +316,72 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawAnimal");
                         }
+                        continue;
+                    }
+                }
+
+                if (config.esp.shark.enable)
+                {
+                    if (actor->IsA(ATinyShark::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawMegalodon(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawMegalodon");
+                        }
+                        continue;
+                    }
+                }
+
+                if (config.esp.megalodon.enable)
+                {
+                    if (actor->IsA(ASharkPawn::StaticClass()) && !actor->IsA(ATinyShark::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawShark(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawShark");
+                        }
+                        continue;
+                    }
+                }
+
+                if (actor->IsA(ASirenPawn::StaticClass()))
+                {
+                    if (config.aim.player.enable)
+                    {
+                        try
+                        {
+                            Aimbot::CalculateAimPlayer(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::CalculateAimPlayer");
+                        }
+                    }
+                    if (config.esp.siren.enable)
+                    {
+                        try
+                        {
+                            ESP::DrawSiren(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawSiren");
+                        }
                     }
                     continue;
                 }
 
-                if (actor->IsA(AMermaid::StaticClass()))
+                if (config.esp.mermaid.enable)
                 {
-                    if (config.esp.mermaid.enable)
+                    if (actor->IsA(AMermaid::StaticClass()))
                     {
                         try
                         {
@@ -295,13 +391,13 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawMermaid");
                         }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(ABootyProxy::StaticClass()))
+                if (config.esp.item.enable)
                 {
-                    if (config.esp.item.enable)
+                    if (actor->IsA(AFloatingItemProxy::StaticClass()))
                     {
                         try
                         {
@@ -311,13 +407,13 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawItem");
                         }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(AMapTable::StaticClass()))
+                if (config.esp.mappin.enable)
                 {
-                    if (config.esp.mappin.enable)
+                    if (actor->IsA(AMapTable::StaticClass()))
                     {
                         try
                         {
@@ -327,38 +423,143 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::DrawMapPin");
                         }
+                        continue;
                     }
-                    continue;
                 }
 
-                /*if (actor->IsA(ASharkPawn::StaticClass()))
+                if (config.esp.kraken.enable)
                 {
-                    if (config.esp.shark.enable)
+                    if (actor->IsA(AKraken::StaticClass()))
                     {
-                        ESP::DrawShark(world, hud, actor);
+                        try
+                        {
+                            ESP::DrawKraken(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawKraken");
+                        }
+                        continue;
                     }
-                    continue;
+
+                    if (actor->IsA(AKrakenTentacle::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawKrakenTentacle(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawKrakenTentacle");
+                        }
+                        continue;
+                    }
                 }
 
-                if (actor->IsA(AKraken::StaticClass()))
+                if (config.esp.lorebook.enable)
                 {
-                    if (config->krakenESP)
+                    if (actor->IsA(AModalInteractionProxy::StaticClass()))
                     {
-                        ESP::DrawKraken(world, hud, actor);
+                        try
+                        {
+                            ESP::DrawLoreBook(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawLoreBook");
+                        }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(AKrakenTentacle::StaticClass()))
+                if (config.esp.skeletonthrone.enable)
                 {
-                    if (config->krakenTentacleESP)
+                    if (actor->IsA(ASkeletonThrone::StaticClass()))
                     {
-                        ESP::DrawKrakenTentacle(world, hud, actor);
+                        try
+                        {
+                            ESP::DrawSkeletonThrone(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawSkeletonThrone");
+                        }
+                        continue;
                     }
-                    continue;
                 }
 
-                if (actor->IsA(AStorageContainer::StaticClass()))
+                if (config.esp.treasuremap.enable)
+                {
+                    if (actor->IsA(ARiddleMap::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawRiddleMap(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawRiddleMap");
+                        }
+                        continue;
+                    }
+
+                    if (actor->IsA(AXMarksTheSpotMap::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawXMarksTheSpotMap(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawXMarksTheSpotMap");
+                        }
+                        continue;
+                    }
+
+                    /*if (actor->IsA(ATornMap::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawTornMap(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawTornMap");
+                        }
+                        continue;
+                    }*/
+                }
+
+                if (config.esp.enchantedcompass.enable)
+                {
+                    if (actor->IsA(AEnchantedCompass::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawEnchantedCompass(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawEnchantedCompass");
+                        }
+                        continue;
+                    }
+
+                    if (actor->IsA(AMultiTargetEnchantedCompass::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawMultiTargetEnchantedCompass(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawMultiTargetEnchantedCompass");
+                        }
+                        continue;
+                    }
+                }
+
+                /*if (actor->IsA(AStorageContainer::StaticClass()))
                 {
                     if (config.esp.barrel.enable)
                     {
@@ -384,69 +585,17 @@ namespace Hacks
                     }
                     continue;
                 }*/
+            }
 
-                if (actor->IsA(AModalInteractionProxy::StaticClass()))
+            if (config.esp.storm.enable)
+            {
+                try
                 {
-                    if (config.esp.lorebook.enable)
-                    {
-                        try
-                        {
-                            ESP::DrawLoreBook(world, actor);
-                        }
-                        catch (...)
-                        {
-                            throw std::runtime_error("ESP::DrawLoreBook");
-                        }
-                    }
-                    continue;
+                    ESP::DrawStorms(world);
                 }
-
-                if (actor->IsA(AXMarksTheSpotMap::StaticClass()))
+                catch (...)
                 {
-                    if (config.esp.treasuremap.enable)
-                    {
-                        try
-                        {
-                            ESP::DrawXMarksTheSpotMap(world, actor);
-                        }
-                        catch (...)
-                        {
-                            throw std::runtime_error("ESP::DrawXMarksTheSpotMap");
-                        }
-                    }
-                    continue;
-                }
-
-                if (actor->IsA(ARiddleMap::StaticClass()))
-                {
-                    if (config.esp.treasuremap.enable)
-                    {
-                        try
-                        {
-                            ESP::DrawRiddleMap(world, actor);
-                        }
-                        catch (...)
-                        {
-                            throw std::runtime_error("ESP::DrawRiddleMap");
-                        }
-                    }
-                    continue;
-                }
-
-                if (actor->IsA(AStorm::StaticClass()))
-                {
-                    if (config.esp.storm.enable)
-                    {
-                        try
-                        {
-                            ESP::DrawStorm(world, actor);
-                        }
-                        catch (...)
-                        {
-                            throw std::runtime_error("ESP::DrawStorm");
-                        }
-                    }
-                    continue;
+                    throw std::runtime_error("ESP::DrawStorms");
                 }
             }
 
@@ -476,10 +625,23 @@ namespace Hacks
 
             if (config.info.crosshair)
             {
-                const float centerX = std::trunc(Drawing::Window->Size.x * 0.5f);
-                const float centerY = std::trunc(Drawing::Window->Size.y * 0.5f);
-                Drawing::DrawLine(FVector2D(centerX, centerY - 5), FVector2D(centerX, centerY + 5 + 1), Drawing::Colour::White);
-                Drawing::DrawLine(FVector2D(centerX - 5, centerY), FVector2D(centerX + 5 + 1, centerY), Drawing::Colour::White);
+                try
+                {
+                    const float centreX = std::trunc(Drawing::Window->Size.x * 0.5f);
+                    const float centreY = std::trunc(Drawing::Window->Size.y * 0.5f);
+                    Drawing::DrawLine(FVector2D(centreX, centreY - 5), FVector2D(centreX, centreY + 5 + 1), Drawing::Colour::White);
+                    Drawing::DrawLine(FVector2D(centreX - 5, centreY), FVector2D(centreX + 5 + 1, centreY), Drawing::Colour::White);
+
+                    /*auto player = world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn;
+                    auto location = player->K2_GetActorLocation();
+                    Drawing::DrawString(std::to_string(location.X), FVector2D(200, 200), Drawing::Colour::White);
+                    Drawing::DrawString(std::to_string(location.Y), FVector2D(200, 215), Drawing::Colour::White);
+                    Drawing::DrawString(std::to_string(location.Z), FVector2D(200, 230), Drawing::Colour::White);*/
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Crosshair");
+                }
             }
 
             if (config.info.playerList)
@@ -552,6 +714,13 @@ namespace Hacks
                 {
                     throw std::runtime_error("Info::DrawDebug");
                 }
+            }
+
+            const auto onlinePlayerController = reinterpret_cast<AOnlineAthenaPlayerController*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController);
+
+            if (config.client.antiafk == onlinePlayerController->IdleDisconnectEnabled)
+            {
+                onlinePlayerController->IdleDisconnectEnabled = !config.client.antiafk;
             }
         }
     }

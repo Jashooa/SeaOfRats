@@ -8,7 +8,7 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        void InitPlayer(UWorld* world);
+        void InitAimPlayer(UWorld* world);
         void CalculateAimPlayer(UWorld* world, AActor* actor);
         void AimPlayer(UWorld* world);
     }

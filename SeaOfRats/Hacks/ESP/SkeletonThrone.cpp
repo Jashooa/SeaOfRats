@@ -1,4 +1,4 @@
-#include "LoreBook.h"
+#include "SkeletonThrone.h"
 
 #include "Drawing.h"
 
@@ -6,17 +6,10 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawLoreBook(UWorld* world, AActor* actor)
+        void DrawSkeletonThrone(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
-            const auto item = reinterpret_cast<AModalInteractionProxy*>(actor);
-
-            // Check if lorebook
-            if (item->GetName().find("LoreBook") == std::string::npos)
-            {
-                return;
-            }
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
@@ -27,17 +20,11 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::Yellow;
+            ImU32 colour = Drawing::Colour::White;
             Drawing::DrawCircleFilled(position, 3.f, colour);
 
             // Get name
-            std::string name = item->GetName();
-            if (const auto dialog = reinterpret_cast<UNPCDialogComponent*>(item->GetComponentByClass(UNPCDialogComponent::StaticClass())))
-            {
-                name = UKismetTextLibrary::Conv_TextToString(dialog->WelcomeMessage).ToString();
-            }
-
-            // Get distance
+            std::string name = "Skeleton Throne";
             const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
             name += " [" + std::to_string(distance) + "m]";
 

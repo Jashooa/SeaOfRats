@@ -110,6 +110,26 @@ namespace SDK
         char pad_0x006C[0x0014];
     };
 
+    // ScriptStruct Engine.MinimalViewInfo
+    // 0x05A0
+    struct FMinimalViewInfo
+    {
+        struct FVector Location; // 0x0000(0x000C)
+        struct FRotator Rotation; // 0x000C(0x000C)
+        char pad_0x0018[0x0010];
+        float FOV; // 0x0028(0x0004)
+        char pad_0x002C[0x0574];
+    };
+
+    // ScriptStruct Engine.CameraCacheEntry
+    // 0x05B0
+    struct FCameraCacheEntry
+    {
+        float TimeStamp; // 0x0000(0x0004)
+        char pad_0x0004[0x000C];
+        struct FMinimalViewInfo POV; // 0x0010(0x05A0)
+    };
+
     // Class Engine.ActorComponent
     // 0x00A0 (0x00C8 - 0x0028)
     class UActorComponent : public UObject
@@ -151,6 +171,14 @@ namespace SDK
         struct FVector GetVelocity();
         struct FVector K2_GetActorLocation();
         struct FRotator K2_GetActorRotation();
+    };
+
+    // Class Engine.Texture
+    // 0x0110 (0x0138 - 0x0028)
+    class UTexture : public UObject
+    {
+    public:
+        char pad_0x0028[0x0110];
     };
 
     // Class Engine.DataAsset
@@ -355,7 +383,9 @@ namespace SDK
     class APlayerCameraManager : public AActor
     {
     public:
-        char pad_0x03D0[0x1880];
+        char pad_0x03D0[0x0070];
+        struct FCameraCacheEntry CameraCache; // 0x0440(0x05B0)
+        char pad_0x09F0[0x1260];
 
         struct FVector GetCameraLocation();
         struct FRotator GetCameraRotation();

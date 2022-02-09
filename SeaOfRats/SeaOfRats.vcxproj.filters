@@ -207,6 +207,24 @@
     <ClCompile Include="Hacks\ESP\Storm.cpp">
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
+    <ClCompile Include="Hacks\ESP\Shark.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Siren.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Megalodon.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\SkeletonThrone.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Kraken.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\EnchantedCompass.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\spdlog\sinks\android_sink.h">
@@ -649,6 +667,33 @@
     </ClInclude>
     <ClInclude Include="Hacks\ESP\Storm.h">
       <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Megalodon.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Shark.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Siren.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\Kraken.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\SkeletonThrone.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\EnchantedCompass.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Kraken.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\EnchantedCompass.h">
+      <Filter>Header Files\include\SDK\SoT</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Math.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
