@@ -445,6 +445,7 @@ namespace SDK
     {
     public:
         static class FString Conv_TextToString(const struct FText& InText);
+        static bool TextIsEmpty(const struct FText& InText);
     };
 
     // Class Engine.Canvas
@@ -459,17 +460,6 @@ namespace SDK
         int SizeX; // 0x0040(0x0004) 
         int SizeY; // 0x0044(0x0004)
         char pad_0x0048[0x00A8];
-
-        void K2_DrawLine(const struct FVector2D& ScreenPositionA, const struct FVector2D& ScreenPositionB, float Thickness, const struct FLinearColor& RenderColor);
-        void K2_DrawText(class UFont* RenderFont, const class FString& RenderText, const struct FVector2D& ScreenPosition, const struct FLinearColor& RenderColor, float Kerning, const struct FLinearColor& ShadowColor, const struct FVector2D& ShadowOffset, bool bCentreX, bool bCentreY, bool bOutlined, const struct FLinearColor& OutlineColor);
-    };
-
-    // Class Engine.Font
-    // 0x01B0 (0x01D8 - 0x0028)
-    class UFont : public UObject
-    {
-    public:
-        char pad_0x0028[0x01B0];
     };
 
     // Class Engine.LocalPlayer

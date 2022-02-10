@@ -141,6 +141,15 @@ namespace SDK
         char pad_0x00120[0x00B8];
     };
 
+    // ScriptStruct Athena.StorageContainerNode
+    // 0x0010
+    struct FStorageContainerNode
+    {
+        class UClass* ItemDesc; // 0x0000(0x0008)
+        int NumItems; // 0x0008(0x0004)
+        char pad_0x000C[0x0004];
+    };
+
     // ScriptStruct Athena.RiddleMapContents
     // 0x0018
     struct FRiddleMapContents
@@ -168,6 +177,20 @@ namespace SDK
         float MaxWaterAmount; // 0x0008(0x0004)
         float MaxWaterHeight; // 0x000C(0x0004)
         char pad_0x0010[0x0028];
+    };
+
+    // ScriptStruct Athena.StorageContainerBackingStore
+    // 0x0040
+    struct FStorageContainerBackingStore
+    {
+        char pad_0x0000[0x0010];
+        int MaxCapacityPerNode; // 0x0010(0x0004)
+        int MaxNumNodes; // 0x0014(0x0004)
+        int MaxCapacityTotal; // 0x0018(0x0004)
+        char pad_0x001C[0x0004];
+        TArray<struct FStorageContainerNode> ContainerNodes; // 0x0020(0x0010)
+        bool AllowedItemsAreCached; // 0x0030(0x0001)
+        char pad_0x0031[0x000F];
     };
 
     // ScriptStruct Athena.LandmarkReaction
@@ -761,6 +784,35 @@ namespace SDK
         }
     };
 
+    // Class Athena.StorageContainer
+    // 0x0060 (0x04C0 - 0x0460)
+    class AStorageContainer : public AInteractableObject
+    {
+    public:
+        char pad_0x0460[0x0060];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.StorageContainer");
+            return ptr;
+        }
+    };
+
+
+    // Class Athena.BuoyantStorageContainer
+    // 0x0228 (0x06E8 - 0x04C0)
+    class ABuoyantStorageContainer : public AStorageContainer
+    {
+    public:
+        char pad_0x04C0[0x0228];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.BuoyantStorageContainer");
+            return ptr;
+        }
+    };
+
     // Class Athena.Storm
     // 0x0260 (0x0630 - 0x03D0)
     class AStorm : public AActor
@@ -938,6 +990,24 @@ namespace SDK
         float CurrentVisualWaterLevel; // 0x0418(0x0004)
         float WaterAmount; // 0x041C(0x0004)
         char pad_0x0420[0x0200];
+    };
+
+    // Class Athena.StorageContainerComponent
+    // 0x0248 (0x0310 - 0x00C8)
+    class UStorageContainerComponent : public UActorComponent
+    {
+    public:
+        char pad_0x00C8[0x0018];
+        struct FText ContainerDisplayName; // 0x00E0(0x0038)
+        char pad_0x0118[0x0038];
+        struct FStorageContainerBackingStore ContainerNodes; // 0x0150(0x0040)
+        char pad_0x0190[0x0180];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.StorageContainerComponent");
+            return ptr;
+        }
     };
 
     // Class Athena.Compass

@@ -225,6 +225,9 @@
     <ClCompile Include="Hacks\ESP\EnchantedCompass.cpp">
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
+    <ClCompile Include="Hacks\ESP\Barrel.cpp">
+      <Filter>Source Files\Hacks\ESP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\spdlog\sinks\android_sink.h">
@@ -694,6 +697,9 @@
     </ClInclude>
     <ClInclude Include="Utilities\Math.h">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Barrel.h">
+      <Filter>Header Files\Hacks\ESP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

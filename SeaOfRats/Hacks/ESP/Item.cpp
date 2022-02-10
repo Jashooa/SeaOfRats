@@ -21,10 +21,6 @@ namespace Hacks
                 return;
             }
 
-            // Get bounds
-            FVector origin, extent;
-            actor->GetActorBounds(true, &origin, &extent);
-
             // Colour
             ImU32 colour = Drawing::Colour::White;
 
@@ -60,7 +56,7 @@ namespace Hacks
 
                 Drawing::DrawCircleFilled(position, 3.f, colour);
 
-                if (!Utilities::PointInCircle(position, Drawing::GetScreenCentre(), 60.f))
+                if (!Utilities::PointInCircle(position, Drawing::GetScreenCentre(), 60.f) && !(GetAsyncKeyState('R') & 0x8000))
                 {
                     return;
                 }

@@ -12,6 +12,7 @@
 #include "Aimbot/Cannon.h"
 #include "Aimbot/Player.h"
 #include "ESP/Animal.h"
+#include "ESP/Barrel.h"
 #include "ESP/EnchantedCompass.h"
 #include "ESP/GhostShip.h"
 #include "ESP/Item.h"
@@ -90,23 +91,6 @@ namespace Hacks
     {
         UWorld* world = UAthenaGameViewportClient::GAthenaGameViewportClient->World;
 
-        /*try
-        {
-            TArray<FVector> actorlist{};
-            actorlist.Push(FVector(-10, -50, 0)); // North
-            actorlist.Push(FVector(80, 90, 20)); // South West
-            actorlist.Push(FVector(-50, 10, 10)); // East
-            actorlist.Push(FVector(50, -50, 40)); // North West
-
-            FVector closest = Utilities::ClosestRelativeActorToBearing(FVector(0.f, 0.f, 0.f), actorlist, "South West");
-
-            spdlog::info("{} {} {}", closest.X, closest.Y, closest.Z);
-        }
-        catch (...)
-        {
-            throw std::runtime_error("Test");
-        }*/
-
         if (NullChecks(world))
         {
             ULevel* level = world->PersistentLevel;
@@ -124,17 +108,17 @@ namespace Hacks
                         continue;
                     }
 
-                    if (config.esp.lorebook.enable)
+                    if (config.esp.barrel.enable)
                     {
-                        if (actor->IsA(AModalInteractionProxy::StaticClass()))
+                        if (actor->IsA(AStorageContainer::StaticClass()))
                         {
                             try
                             {
-                                ESP::DrawLoreBook(world, actor);
+                                ESP::DrawBarrel(world, actor);
                             }
                             catch (...)
                             {
-                                throw std::runtime_error("ESP::DrawLoreBook");
+                                throw std::runtime_error("ESP::DrawBarrel");
                             }
                             continue;
                         }
@@ -151,6 +135,22 @@ namespace Hacks
                             catch (...)
                             {
                                 throw std::runtime_error("ESP::DrawSkeletonThrone");
+                            }
+                            continue;
+                        }
+                    }
+
+                    if (config.esp.lorebook.enable)
+                    {
+                        if (actor->IsA(AModalInteractionProxy::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::DrawLoreBook(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::DrawLoreBook");
                             }
                             continue;
                         }
@@ -411,6 +411,22 @@ namespace Hacks
                     }
                 }
 
+                if (config.esp.barrel.enable)
+                {
+                    if (actor->IsA(AStorageContainer::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::DrawBarrel(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::DrawBarrel");
+                        }
+                        continue;
+                    }
+                }
+
                 if (config.esp.mappin.enable)
                 {
                     if (actor->IsA(AMapTable::StaticClass()))
@@ -559,16 +575,7 @@ namespace Hacks
                     }
                 }
 
-                /*if (actor->IsA(AStorageContainer::StaticClass()))
-                {
-                    if (config.esp.barrel.enable)
-                    {
-                        ESP::DrawBarrel(world, hud, actor);
-                    }
-                    continue;
-                }
-
-                if (actor->IsA(AShipwreck::StaticClass()))
+                /*if (actor->IsA(AShipwreck::StaticClass()))
                 {
                     if (config.esp.shipwreck.enable)
                     {

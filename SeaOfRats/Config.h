@@ -19,7 +19,7 @@ public:
         struct
         {
             bool enable = false;
-            bool skeleton = false;
+            bool bones = false;
             bool name = false;
             bool health = false;
             BoxType boxType = BoxType::None;
@@ -28,7 +28,6 @@ public:
         struct
         {
             bool enable = false;
-            bool skeleton = false;
             bool name = false;
             bool health = false;
             BoxType boxType = BoxType::None;
@@ -37,10 +36,8 @@ public:
         struct
         {
             bool enable = false;
-            bool skeleton = false;
             bool name = false;
             bool health = false;
-            BoxType boxType = BoxType::None;
         } ship;
 
         struct

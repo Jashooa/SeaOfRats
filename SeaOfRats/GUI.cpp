@@ -215,6 +215,7 @@ namespace GUI
 
                     ImGui::Text("Items");
                     ImGui::Checkbox("Item##ESP", &config.esp.item.enable);
+                    ImGui::Checkbox("Barrel##ESP", &config.esp.barrel.enable);
                     ImGui::Checkbox("Lore Book##ESP", &config.esp.lorebook.enable);
 
                     ImGui::Separator();

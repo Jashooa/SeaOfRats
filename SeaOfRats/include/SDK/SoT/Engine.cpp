@@ -524,57 +524,21 @@ namespace SDK
         return params.ReturnValue;
     }
 
-    // Function Engine.Canvas.K2_DrawLine
-    void UCanvas::K2_DrawLine(const struct FVector2D& ScreenPositionA, const struct FVector2D& ScreenPositionB, float Thickness, const struct FLinearColor& RenderColor)
+    // Function Engine.KismetTextLibrary.TextIsEmpty
+    bool UKismetTextLibrary::TextIsEmpty(const struct FText& InText)
     {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.Canvas.K2_DrawLine");
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetTextLibrary.TextIsEmpty");
 
         struct
         {
-            struct FVector2D ScreenPositionA;
-            struct FVector2D ScreenPositionB;
-            float Thickness;
-            struct FLinearColor RenderColor;
+            struct FText InText;
+            bool ReturnValue;
         } params{};
-        params.ScreenPositionA = ScreenPositionA;
-        params.ScreenPositionB = ScreenPositionB;
-        params.Thickness = Thickness;
-        params.RenderColor = RenderColor;
+        params.InText = InText;
 
-        UObject::ProcessEvent(this, fn, &params);
-    }
+        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetTextLibrary");
+        UObject::ProcessEvent(defaultObj, fn, &params);
 
-    // Function Engine.Canvas.K2_DrawText
-    void UCanvas::K2_DrawText(class UFont* RenderFont, const class FString& RenderText, const struct FVector2D& ScreenPosition, const struct FLinearColor& RenderColor, float Kerning, const struct FLinearColor& ShadowColor, const struct FVector2D& ShadowOffset, bool bCentreX, bool bCentreY, bool bOutlined, const struct FLinearColor& OutlineColor)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.Canvas.K2_DrawText");
-
-        struct
-        {
-            class UFont* RenderFont;
-            class FString RenderText;
-            struct FVector2D ScreenPosition;
-            struct FLinearColor RenderColor;
-            float Kerning;
-            struct FLinearColor ShadowColor;
-            struct FVector2D ShadowOffset;
-            bool bCentreX;
-            bool bCentreY;
-            bool bOutlined;
-            struct FLinearColor OutlineColor;
-        } params{};
-        params.RenderFont = RenderFont;
-        params.RenderText = RenderText;
-        params.ScreenPosition = ScreenPosition;
-        params.RenderColor = RenderColor;
-        params.Kerning = Kerning;
-        params.ShadowColor = ShadowColor;
-        params.ShadowOffset = ShadowOffset;
-        params.bCentreX = bCentreX;
-        params.bCentreY = bCentreY;
-        params.bOutlined = bOutlined;
-        params.OutlineColor = OutlineColor;
-
-        UObject::ProcessEvent(this, fn, &params);
+        return params.ReturnValue;
     }
 }
