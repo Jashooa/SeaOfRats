@@ -1,7 +1,7 @@
 #include "Barrel.h"
 
 #include "Drawing.h"
-#include "Utilities/Math.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -33,10 +33,10 @@ namespace Hacks
 
             // Colour
             ImU32 colour = Drawing::Colour::White;
+            //Drawing::DrawCircleFilled(position, 3.f, colour);
+            Drawing::DrawString(ICON_FA_BOX_OPEN, position, colour);
 
-            Drawing::DrawCircleFilled(position, 3.f, colour);
-
-            if (!Utilities::PointInCircle(position, Drawing::GetScreenCentre(), 60.f) && !(GetAsyncKeyState('R') & 0x8000))
+            if (!Utilities::NearCursor(position))
             {
                 return;
             }

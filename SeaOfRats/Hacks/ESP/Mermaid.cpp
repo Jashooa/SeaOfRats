@@ -1,6 +1,7 @@
 #include "Mermaid.h"
 
 #include "Drawing.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -22,7 +23,13 @@ namespace Hacks
 
             // Colour
             ImU32 colour = Drawing::Colour::White;
-            Drawing::DrawCircleFilled(position, 3.f, colour);
+            //Drawing::DrawCircleFilled(position, 3.f, colour);
+            Drawing::DrawString(ICON_FA_LIFE_RING, position, colour);
+
+            if (!Utilities::NearCursor(position))
+            {
+                return;
+            }
 
             // Get name
             std::string name = "Mermaid";

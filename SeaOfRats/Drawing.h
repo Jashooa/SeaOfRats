@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "include/FontAwesome/FontAwesome.h"
 #include "include/imgui/imgui.h"
 #include "include/imgui/imgui_internal.h"
 #include "include/SDK/SDK.h"

@@ -22,10 +22,9 @@ namespace Hacks
                 return;
             }
 
-            std::string hello;
             if (ship->ShipState.IsShipDead || !ship->ShipState.IsShipVisible)
             {
-                hello = "hello";
+                return;
             }
 
             // Colour
@@ -43,7 +42,7 @@ namespace Hacks
 
             // Draw hits remaining
             const std::string hitsRemaining = "Hits Remaining: " + std::to_string(ship->GetNumShotsLeftToKill());
-            Drawing::DrawString(hitsRemaining + hello, { position.X, position.Y - 10.f }, colour);
+            Drawing::DrawString(hitsRemaining, { position.X, position.Y - 10.f }, colour);
         }
     }
 }

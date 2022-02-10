@@ -6,6 +6,7 @@
 #include "include/spdlog/spdlog.h"
 
 #include "Drawing.h"
+#include "Utilities/General.h"
 #include "Utilities/Math.h"
 
 namespace Hacks
@@ -31,7 +32,7 @@ namespace Hacks
                 return;
             }
 
-            spdlog::info("Looking for: {}", actorName);
+            //spdlog::info("Looking for: {}", actorName);
 
             const auto actors = level->AActors;
             for (auto i = 0; i < actors.Num(); ++i)
@@ -42,10 +43,18 @@ namespace Hacks
                     continue;
                 }
 
-                spdlog::info(actor->GetName());
+                if (actorName == "thebarrelcartinthesmugglerscamp")
+                {
+                    if (actor->GetName() == "t")
+                    {
+                        outActors->push_back(actor);
+                    }
+                }
+
+                //spdlog::info(actor->GetName());
                 if (actor->GetName().find(actorName) != std::string::npos)
                 {
-                    spdlog::info("Found");
+                    //spdlog::info("Found");
                     outActors->push_back(actor);
                 }
             }
@@ -133,7 +142,7 @@ namespace Hacks
                                 auto subText = UKismetTextLibrary::Conv_TextToString(substitution.Substitution).ToString();
                                 if (name == "location")
                                 {
-                                    spdlog::info(subText);
+                                    //spdlog::info(subText);
                                     subText.erase(std::remove(subText.begin(), subText.end(), ' '), subText.end());
                                     subText.erase(std::remove(subText.begin(), subText.end(), '\''), subText.end());
                                     subText.erase(std::remove(subText.begin(), subText.end(), '\u2019'), subText.end());
@@ -142,11 +151,7 @@ namespace Hacks
                                     subText.erase(std::remove(subText.begin(), subText.end(), -0x67), subText.end());
                                     subText.erase(std::remove(subText.begin(), subText.end(), '{'), subText.end());
                                     subText.erase(std::remove(subText.begin(), subText.end(), '}'), subText.end());
-                                    location = subText;
-                                    if (location == "thebarrelcartinthesmugglerscamp")
-                                    {
-                                        location = "t";
-                                    }
+                                    //location = subText;
                                     spdlog::info(location);
                                 }
                                 else if (name == "paces_word")
@@ -190,15 +195,21 @@ namespace Hacks
                                     const auto landmark = reinterpret_cast<ALandmark*>(locationActor);
 
                                     FVector2D landmarkPosition;
-                                    const auto landmarkDistance = static_cast<int32_t>(localPlayer->GetDistanceTo(landmark) * 0.01f);
                                     if (playerController->ProjectWorldLocationToScreen(landmark->K2_GetActorLocation(), &landmarkPosition))
                                     {
-                                        Drawing::DrawCircleFilled(landmarkPosition, 3.f, Drawing::Colour::White);
-                                        std::string landmarkText = "Step " + std::to_string(stepIndex + 1);
-                                        if (landmarkDistance > 20)
+                                        ImU32 colour = Drawing::Colour::White;
+                                        //Drawing::DrawCircleFilled(position, 3.f, colour);
+                                        Drawing::DrawString(ICON_FA_MAP_MARKER, landmarkPosition, colour);
+
+                                        if (!Utilities::NearCursor(landmarkPosition))
                                         {
-                                            landmarkText += " [" + std::to_string(landmarkDistance) + "m]";
+                                            continue;
                                         }
+
+                                        std::string landmarkText = "Step " + std::to_string(stepIndex + 1);
+
+                                        const auto landmarkDistance = static_cast<int32_t>(localPlayer->GetDistanceTo(landmark) * 0.01f);
+                                        landmarkText += " [" + std::to_string(landmarkDistance) + "m]";
                                         /*if (!CD.empty())
                                         {
                                             landmarkText += " " + CD;
@@ -211,18 +222,18 @@ namespace Hacks
 
                                         Drawing::DrawString(landmarkText, { landmarkPosition.X, landmarkPosition.Y - 15.f }, Drawing::Colour::White);
 
-                                        std::string sentence{};
+                                        std::string instruction{};
                                         if (!paces_word.empty())
                                         {
-                                            sentence += paces_word;
+                                            instruction += paces_word;
                                         }
 
                                         if (!compass_direction.empty())
                                         {
-                                            sentence += " " + compass_direction;
+                                            instruction += " " + compass_direction;
                                         }
 
-                                        Drawing::DrawString(sentence, { landmarkPosition.X, landmarkPosition.Y + 15.f }, Drawing::Colour::White);
+                                        Drawing::DrawString(instruction, { landmarkPosition.X, landmarkPosition.Y + 15.f }, Drawing::Colour::White);
                                         if (!target.empty())
                                         {
                                             Drawing::DrawString("Target: " + target, { landmarkPosition.X, landmarkPosition.Y + 30.f }, Drawing::Colour::White);
@@ -291,6 +302,15 @@ namespace Hacks
                         FVector2D position;
                         if (playerController->ProjectWorldLocationToScreen(worldMapPosition, &position))
                         {
+                            ImU32 colour = Drawing::Colour::White;
+                            //Drawing::DrawCircleFilled(position, 3.f, colour);
+                            Drawing::DrawString(ICON_FA_MAP_MARKED, position, colour);
+
+                            if (!Utilities::NearCursor(position))
+                            {
+                                return;
+                            }
+
                             std::string name = "RiddleMap:";
                             name += " " + UKismetTextLibrary::Conv_TextToString(islandDataEntry->LocalisedName).ToString();
                             name += " [" + std::to_string(distance) + "m]";
@@ -375,23 +395,31 @@ namespace Hacks
                                 xMarkWorldLocation = hitResult.Location;
                             }
 
-                            FVector2D screen;
-                            if (playerController->ProjectWorldLocationToScreen(xMarkWorldLocation, &screen))
+                            FVector2D position;
+                            if (playerController->ProjectWorldLocationToScreen(xMarkWorldLocation, &position))
                             {
                                 ImU32 colour = Drawing::Colour::Red;
                                 if (mark.IsUnderground)
                                 {
                                     colour = Drawing::Colour::Orange;
                                 }
-                                Drawing::DrawCircleFilled(screen, 8.f, Drawing::Colour::White);
-                                Drawing::DrawCircleFilled(screen, 6.f, colour);
-                                Drawing::DrawCircleFilled(screen, 4.f, Drawing::Colour::White);
-                                Drawing::DrawCircleFilled(screen, 2.f, colour);
-                                const int32_t markDistance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - xMarkWorldLocation).Size() * 0.01f);
-                                if (markDistance > 20)
+                                /*Drawing::DrawCircleFilled(position, 8.f, Drawing::Colour::White);
+                                Drawing::DrawCircleFilled(position, 6.f, colour);
+                                Drawing::DrawCircleFilled(position, 4.f, Drawing::Colour::White);
+                                Drawing::DrawCircleFilled(position, 2.f, colour);*/
+
+                                Drawing::DrawString(ICON_FA_MAP_MARKER_ALT, position, colour);
+
+                                if (!Utilities::NearCursor(position))
                                 {
-                                    Drawing::DrawString(" [" + std::to_string(markDistance) + "m]", { screen.X + 8.f, screen.Y - 1.f }, Drawing::Colour::White, false);
+                                    return;
                                 }
+
+                                std::string markName = "Mark " + std::to_string(markIndex + 1);
+
+                                const int32_t markDistance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - xMarkWorldLocation).Size() * 0.01f);
+                                markName += " [" + std::to_string(markDistance) + "m]";
+                                Drawing::DrawString(markName, { position.X, position.Y - 15.f }, colour, false);
                             }
                         }
                     }
@@ -400,6 +428,15 @@ namespace Hacks
                         FVector2D position;
                         if (playerController->ProjectWorldLocationToScreen(worldMapLocation, &position))
                         {
+                            ImU32 colour = Drawing::Colour::White;
+                            //Drawing::DrawCircleFilled(position, 3.f, colour);
+                            Drawing::DrawString(ICON_FA_MAP_MARKED_ALT, position, colour);
+
+                            if (!Utilities::NearCursor(position))
+                            {
+                                return;
+                            }
+
                             std::string name = "XMarksTheSpotMap:";
                             name += " " + UKismetTextLibrary::Conv_TextToString(islandDataEntry->LocalisedName).ToString();
                             name += " [" + std::to_string(distance) + "m]";

@@ -270,6 +270,7 @@
     <ClInclude Include="Hacks\Info\PlayerList.h" />
     <ClInclude Include="Hacks\Info\WaterLevel.h" />
     <ClInclude Include="Hooks.h" />
+    <ClInclude Include="include\FontAwesome\FontAwesome.h" />
     <ClInclude Include="include\SDK\SDK.h" />
     <ClInclude Include="include\SDK\SoT\Athena.h" />
     <ClInclude Include="include\SDK\SoT\AthenaAI.h" />

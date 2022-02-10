@@ -1,6 +1,7 @@
 #include "Ship.h"
 
 #include "Drawing.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -63,8 +64,6 @@ namespace Hacks
                 name = "My " + name;
                 colour = Drawing::Colour::Green;
             }
-
-            Drawing::DrawCircleFilled(position, 3.f, colour);
 
             name += " [" + std::to_string(distance) + "m]";
 
@@ -132,7 +131,13 @@ namespace Hacks
                 colour = Drawing::Colour::Green;
             }
 
-            Drawing::DrawCircleFilled(position, 3.f, colour);
+            //Drawing::DrawCircleFilled(position, 3.f, colour);
+            Drawing::DrawString(ICON_FA_SHIP, position, colour);
+
+            if (!Utilities::NearCursor(position))
+            {
+                return;
+            }
 
             name += " [" + std::to_string(distance) + "m]";
 

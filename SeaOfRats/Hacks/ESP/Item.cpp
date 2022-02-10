@@ -1,7 +1,7 @@
 #include "Item.h"
 
 #include "Drawing.h"
-#include "Utilities/Math.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -54,9 +54,10 @@ namespace Hacks
                     }
                 }
 
-                Drawing::DrawCircleFilled(position, 3.f, colour);
+                //Drawing::DrawCircleFilled(position, 3.f, colour);
+                Drawing::DrawString(ICON_FA_GEM, position, colour);
 
-                if (!Utilities::PointInCircle(position, Drawing::GetScreenCentre(), 60.f) && !(GetAsyncKeyState('R') & 0x8000))
+                if (!Utilities::NearCursor(position))
                 {
                     return;
                 }

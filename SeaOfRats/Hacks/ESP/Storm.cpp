@@ -1,6 +1,7 @@
 #include "Storm.h"
 
 #include "Drawing.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -22,8 +23,14 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
-            Drawing::DrawCircleFilled(position, 3.f, colour);
+            ImU32 colour = Drawing::Colour::Grey;
+            //Drawing::DrawCircleFilled(position, 3.f, colour);
+            Drawing::DrawString(ICON_FA_CLOUD_SHOWERS_HEAVY, position, colour);
+
+            if (!Utilities::NearCursor(position))
+            {
+                return;
+            }
 
             // Get name
             std::string name = storm->SubjectName.ToString();

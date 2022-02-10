@@ -5,6 +5,7 @@
 
 #include <string>
 
+#include "include/FontAwesome/FontAwesome.h"
 #include "include/imgui/imgui.h"
 #include "include/imgui/imgui_impl_dx11.h"
 #include "include/imgui/imgui_impl_win32.h"
@@ -126,6 +127,14 @@ namespace GUI
         io.LogFilename = nullptr;
 
         io.Fonts->AddFontDefault();
+
+        const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+        ImFontConfig icons_config;
+        icons_config.MergeMode = true;
+        icons_config.PixelSnapH = true;
+        icons_config.GlyphOffset.y += 3.f;
+        io.Fonts->AddFontFromMemoryCompressedBase85TTF(FontAwesome_compressed_data_base85, 16.f, &icons_config, icons_ranges);
+
         io.Fonts->Build();
         ImGui::GetDefaultFont()->AddRemapChar(0x2019, 0x0027);
     }
@@ -186,13 +195,15 @@ namespace GUI
         ImGui::PopStyleColor();
         ImGui::PopStyleVar(2);
 
+        static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize;
+
         if (isOpen)
         {
-            ImGui::Begin("SeaOfRats", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Begin("SeaOfRats", nullptr, windowFlags);
 
             if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_NoTooltip))
             {
-                if (ImGui::BeginTabItem("ESP"))
+                if (ImGui::BeginTabItem(ICON_FA_EYE " ESP"))
                 {
                     ImGui::Text("Entities");
                     ImGui::Checkbox("Player##ESP", &config.esp.player.enable);
@@ -230,8 +241,9 @@ namespace GUI
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Info"))
+                if (ImGui::BeginTabItem(ICON_FA_INFO_CIRCLE " Info"))
                 {
+                    ImGui::Text("Info");
                     ImGui::Checkbox("Crosshair##Info", &config.info.crosshair);
                     ImGui::Checkbox("Playerlist##Info", &config.info.playerList);
                     ImGui::Checkbox("Compass##Info", &config.info.compass);
@@ -242,19 +254,15 @@ namespace GUI
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Client"))
+                if (ImGui::BeginTabItem(ICON_FA_USER_CIRCLE " Client"))
                 {
+                    ImGui::Text("Client");
                     ImGui::Checkbox("Anti AFK##Client", &config.client.antiafk);
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Aimbot"))
+                if (ImGui::BeginTabItem(ICON_FA_CROSSHAIRS " Aimbot"))
                 {
-                    ImGui::Text("Global");
-                    ImGui::Checkbox("Enabled##Aim", &config.aim.enable);
-
-                    ImGui::Separator();
-
                     ImGui::Text("Player");
                     ImGui::Checkbox("Enable##PlayerAim", &config.aim.player.enable);
                     ImGui::Checkbox("Players##PlayerAim", &config.aim.player.player);

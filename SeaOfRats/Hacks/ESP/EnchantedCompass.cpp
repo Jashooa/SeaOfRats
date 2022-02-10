@@ -1,6 +1,7 @@
 #include "EnchantedCompass.h"
 
 #include "Drawing.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -19,8 +20,18 @@ namespace Hacks
             }
 
             const auto location = enchantedCompass->Target.TargetLocation;
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            FVector2D position;
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
+            {
+                return;
+            }
+
+            // Colour
+            ImU32 colour = Drawing::Colour::White;
+            //Drawing::DrawCircleFilled(position, 3.f, colour);
+            Drawing::DrawString(ICON_FA_COMPASS, position, colour);
+
+            if (!Utilities::NearCursor(position))
             {
                 return;
             }
@@ -32,13 +43,8 @@ namespace Hacks
             const int32_t distance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
             name += " [" + std::to_string(distance) + "m]";
 
-            // Colour
-            ImU32 colour = Drawing::Colour::White;
-            Drawing::DrawCircleFilled(screen, 3.f, colour);
-
             // Draw name
-            const FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.f);
-            Drawing::DrawString(name, nameScreen, colour);
+            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
         }
 
         void DrawMultiTargetEnchantedCompass(UWorld* world, AActor* actor)
@@ -59,10 +65,20 @@ namespace Hacks
             {
                 const auto& location = locations[locationIndex];
 
-                FVector2D screen;
-                if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+                FVector2D position;
+                if (!playerController->ProjectWorldLocationToScreen(location, &position))
                 {
                     continue;
+                }
+
+                // Colour
+                ImU32 colour = Drawing::Colour::White;
+                //Drawing::DrawCircleFilled(position, 3.f, colour);
+                Drawing::DrawString(ICON_FA_COMPASS, position, colour);
+
+                if (!Utilities::NearCursor(position))
+                {
+                    return;
                 }
 
                 // Get name
@@ -72,13 +88,8 @@ namespace Hacks
                 const int32_t distance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
                 name += " [" + std::to_string(distance) + "m]";
 
-                // Colour
-                ImU32 colour = Drawing::Colour::White;
-                Drawing::DrawCircleFilled(screen, 3.f, colour);
-
                 // Draw name
-                const FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.f);
-                Drawing::DrawString(name, nameScreen, colour);
+                Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
             }
         }
     }

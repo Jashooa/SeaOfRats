@@ -76,6 +76,9 @@
     <Filter Include="Source Files\include\SDK\SoT">
       <UniqueIdentifier>{becc6dae-c565-40be-a662-ac13fc5939cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\include\FontAwesome">
+      <UniqueIdentifier>{5103fb7c-ec75-4e84-8ef5-37eb193b9c0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -700,6 +703,9 @@
     </ClInclude>
     <ClInclude Include="Hacks\ESP\Barrel.h">
       <Filter>Header Files\Hacks\ESP</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FontAwesome\FontAwesome.h">
+      <Filter>Header Files\include\FontAwesome</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #include "MapPin.h"
 
 #include "Drawing.h"
+#include "Utilities/General.h"
 
 namespace Hacks
 {
@@ -42,7 +43,13 @@ namespace Hacks
                     continue;
                 }
 
-                Drawing::DrawCircleFilled(position, 3.f, colour);
+                //Drawing::DrawCircleFilled(position, 3.f, colour);
+                Drawing::DrawString(ICON_FA_MAP_PIN, position, colour);
+
+                if (!Utilities::NearCursor(position))
+                {
+                    continue;
+                }
 
                 // Get distance
                 const int32_t distance = static_cast<int32_t>(UVectorMaths::Distance(localPlayer->RootComponent->K2_GetComponentLocation(), location) * 0.01f);

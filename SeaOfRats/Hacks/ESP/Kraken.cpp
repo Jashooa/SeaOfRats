@@ -67,8 +67,6 @@ namespace Hacks
 
             // Get name
             std::string name = "Kraken Tentacle";
-            const std::string actorName = actor->GetName();
-            name += " " + actorName;
 
             // Get distance
             const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
