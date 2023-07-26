@@ -3,19 +3,19 @@
 namespace SDK
 {
     // Class Watercrafts.Watercraft
-    // 0x0348 (0x0718 - 0x03D0)
+    // 0x0368 (0x0730 - 0x03C8)
     class AWatercraft : public AActor
     {
     public:
-        char pad_0x03D0[0x0348];
+        char pad_0x03C8[0x0368];
     };
 
     // Class Watercrafts.Rowboat
-    // 0x02F0 (0x0A08 - 0x0718)
+    // 0x0350 (0x0A80 - 0x0730)
     class ARowboat : public AWatercraft
     {
     public:
-        char pad_0x0718[0x02F0];
+        char pad_0x0730[0x0350];
 
         static UClass* StaticClass()
         {

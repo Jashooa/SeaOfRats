@@ -5,21 +5,21 @@
 namespace SDK
 {
     // Class AthenaAI.AICreatureCharacter
-    // 0x0220 (0x0800 - 0x05E0)
+    // 0x0230 (0x0810 - 0x05E0)
     class AAICreatureCharacter : public ACharacter
     {
     public:
-        char pad_0x05E0[0x0220];
+        char pad_0x05E0[0x0230];
     };
 
     // Class AthenaAI.Fauna
-    // 0x03B0 (0x0BB0 - 0x0800)
+    // 0x03D0 (0x0BE0 - 0x0810)
     class AFauna : public AAICreatureCharacter
     {
     public:
-        char pad_0x0800[0x0008];
-        struct FText DisplayName; // 0x0808(0x0038)
-        char pad_0x0840[0x0370];
+        char pad_0x0810[0x0008];
+        struct FText DisplayName; // 0x0818(0x0038)
+        char pad_0x0850[0x0390];
 
         static UClass* StaticClass()
         {

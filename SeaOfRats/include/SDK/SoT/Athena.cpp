@@ -49,6 +49,21 @@ namespace SDK
         return params.ReturnValue;
     }
 
+    // Function Athena.AthenaPlayerState.GetHumanReadableName
+    class FString AAthenaPlayerState::GetHumanReadableName()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.AthenaPlayerState.GetHumanReadableName");
+
+        struct
+        {
+            class FString ReturnValue;
+        } params;
+
+        UObject::ProcessEvent(this, fn, &params);
+
+        return params.ReturnValue;
+    }
+
     // Function Athena.AthenaPlayerState.GetPlayerActivity
     TEnumAsByte<EPlayerActivityType> AAthenaPlayerState::GetPlayerActivity()
     {

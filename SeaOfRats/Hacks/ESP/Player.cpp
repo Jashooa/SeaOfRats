@@ -86,6 +86,12 @@ namespace Hacks
             {
                 // Get name
                 std::string name = playerState->PlayerName.ToString();
+
+                if (name.empty())
+                {
+                    name = "Player";
+                }
+
                 const int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
                 name += " [" + std::to_string(distance) + "m]";
 

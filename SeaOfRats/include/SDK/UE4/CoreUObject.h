@@ -64,7 +64,7 @@ namespace SDK
         static inline void ProcessEvent(void* obj, class UFunction* function, void* parms)
         {
             auto vtable = *reinterpret_cast<void***>(obj);
-            reinterpret_cast<void(*)(void*, class UFunction*, void*)>(vtable[59])(obj, function, parms);
+            reinterpret_cast<void(*)(void*, class UFunction*, void*)>(vtable[55])(obj, function, parms);
         }
     };
 
@@ -117,7 +117,7 @@ namespace SDK
 
         inline class UObject* CreateDefaultObject()
         {
-            return GetVFunction<class UObject* (*)(class UClass*)>(this, 91)(this);
+            return GetVFunction<class UObject* (*)(class UClass*)>(this, 86)(this);
         }
     };
 

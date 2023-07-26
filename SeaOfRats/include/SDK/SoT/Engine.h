@@ -140,27 +140,34 @@ namespace SDK
         class AActor* GetOwner();
     };
 
+    // Class Engine.DataAsset
+    // 0x0000 (0x0028 - 0x0028)
+    class UDataAsset : public UObject
+    {
+    public:
+    };
+
     // Class Engine.Actor
-    // 0x03A8 (0x03D0 - 0x0028)
+    // 0x03A0 (0x03C8 - 0x0028)
     class AActor : public UObject
     {
     public:
         char pad_0x0028[0x0060];
         class AActor* Owner; // 0x0088(0x0008)
-        char pad_0x0090[0x00D0];
-        TArray<class AActor*> Children; // 0x0160(0x0010)
-        class USceneComponent* RootComponent; // 0x0170(0x0008)
-        char pad_0x0178[0x0030];
-        struct FActorPtr ParentComponentActor; // 0x01A8(0x0008)
-        class TArray<TWeakObjectPtr<class AActor>> ChildComponentActors; // 0x01B0(0x0010)
-        char pad_0x01C0[0x0010];
+        char pad_0x0090[0x00C8];
+        TArray<class AActor*> Children; // 0x0158(0x0010)
+        class USceneComponent* RootComponent; // 0x0168(0x0008)
+        char pad_0x0170[0x0030];
+        struct FActorPtr ParentComponentActor; // 0x01A0(0x0008)
+        class TArray<TWeakObjectPtr<class AActor>> ChildComponentActors; // 0x01A8(0x0010)
+        char pad_0x01B8[0x0018];
         class TArray<struct FName> Tags; // 0x01D0(0x0010)
-        char pad_0x1E0[0x0148];
-        TArray<class UActorComponent*> BlueprintCreatedComponents; // 0x0328(0x0010)
-        TArray<class UActorComponent*> InstanceComponents; // 0x0338(0x0010)
-        char pad_0x0348[0x0008];
-        TArray<class AActor*> ChildActorInterfaceProviders; // 0x0350(0x0010)
-        char pad_0x0360[0x0070];
+        char pad_0x1E0[0x0140];
+        TArray<class UActorComponent*> BlueprintCreatedComponents; // 0x0320(0x0010)
+        TArray<class UActorComponent*> InstanceComponents; // 0x0330(0x0010)
+        char pad_0x0340[0x0008];
+        TArray<class AActor*> ChildActorInterfaceProviders; // 0x0348(0x0010)
+        char pad_0x0358[0x0070];
 
 
         void GetActorBounds(bool bOnlyCollidingComponents, struct FVector* Origin, struct FVector* BoxExtent);
@@ -173,21 +180,6 @@ namespace SDK
         struct FRotator K2_GetActorRotation();
     };
 
-    // Class Engine.Texture
-    // 0x0110 (0x0138 - 0x0028)
-    class UTexture : public UObject
-    {
-    public:
-        char pad_0x0028[0x0110];
-    };
-
-    // Class Engine.DataAsset
-    // 0x0000 (0x0028 - 0x0028)
-    class UDataAsset : public UObject
-    {
-    public:
-    };
-
     // Class Engine.BlueprintFunctionLibrary
     // 0x0000 (0x0028 - 0x0028)
     class UBlueprintFunctionLibrary : public UObject
@@ -196,11 +188,11 @@ namespace SDK
     };
 
     // Class Engine.SceneComponent
-    // 0x01E8 (0x02B0 - 0x00C8)
+    // 0x0218 (0x02E0 - 0x00C8)
     class USceneComponent : public UActorComponent
     {
     public:
-        char pad_0x00C8[0x01E8];
+        char pad_0x00C8[0x0218];
 
         bool IsVisible();
         struct FVector K2_GetComponentLocation();
@@ -209,24 +201,24 @@ namespace SDK
     };
 
     // Class Engine.Pawn
-    // 0x0078 (0x0448 - 0x03D0)
+    // 0x0078 (0x0440 - 0x03C8)
     class APawn : public AActor
     {
     public:
-        char pad_0x03D0[0x0020];
-        class APlayerState* PlayerState; // 0x03F0(0x0008)
-        char pad_0x03F8[0x0010];
-        class AController* Controller; // 0x0408(0x0008)
-        char pad_0x0410[0x0038];
+        char pad_0x03C8[0x0020];
+        class APlayerState* PlayerState; // 0x03E8(0x0008)
+        char pad_0x03F0[0x0010];
+        class AController* Controller; // 0x0400(0x0008)
+        char pad_0x0408[0x0038];
     };
 
     // Class Engine.Character
-    // 0x0198 (0x05E0 - 0x0448)
+    // 0x01A0 (0x05E0 - 0x0440)
     class ACharacter : public APawn
     {
     public:
-        class USkeletalMeshComponent* Mesh; // 0x0448(0x0008)
-        char pad_0x450[0x0190];
+        class USkeletalMeshComponent* Mesh; // 0x0440(0x0008)
+        char pad_0x448[0x0198];
     };
 
     // Class Engine.GameInstance
@@ -240,26 +232,26 @@ namespace SDK
     };
 
     // Class Engine.Info
-    // 0x0000 (0x03D0 - 0x03D0)
+    // 0x0000 (0x03C8 - 0x03C8)
     class AInfo : public AActor
     {
     public:
     };
 
     // Class Engine.PrimitiveComponent
-    // 0x02E0 (0x0590 - 0x02B0)
+    // 0x02E0 (0x05C0 - 0x02E0)
     class UPrimitiveComponent : public USceneComponent
     {
     public:
-        char pad_0x02B0[0x02E0];
+        char pad_0x02E0[0x02E0];
     };
 
     // Class Engine.GameState
-    // 0x0058 (0x0428 - 0x03D0)
+    // 0x0058 (0x0420 - 0x03C8)
     class AGameState : public AInfo
     {
     public:
-        char pad_0x03D0[0x0058];
+        char pad_0x03C8[0x0058];
     };
 
     // Class Engine.ScriptViewportClient
@@ -282,36 +274,36 @@ namespace SDK
     };
 
     // Class Engine.PlayerState
-    // 0x0088 (0x0458 - 0x03D0)
+    // 0x0088 (0x0450 - 0x03C8)
     class APlayerState : public AInfo
     {
     public:
-        char pad_0x03D0[0x0008];
-        class FString PlayerName; // 0x03D8(0x0010)
-        char pad_0x03E8[0x0070];
+        char pad_0x03C8[0x0008];
+        class FString PlayerName; // 0x03D0(0x0010)
+        char pad_0x03E0[0x0070];
     };
 
     // Class Engine.Controller
-    // 0x0060 (0x0430 - 0x03D0)
+    // 0x0060 (0x0428 - 0x03C8)
     class AController : public AActor
     {
     public:
-        char pad_0x03D0[0x0008];
-        class APawn* Pawn; // 0x03D8(0x0008)
-        char pad_0x03E0[0x0050];
+        char pad_0x03C8[0x0008];
+        class APawn* Pawn; // 0x03D0(0x0008)
+        char pad_0x03D8[0x0050];
 
         bool LineOfSightTo(class AActor* Other, const struct FVector& ViewPoint, bool bAlternateChecks);
     };
 
     // Class Engine.PlayerController
-    // 0x02F8 (0x0728 - 0x0430)
+    // 0x0348 (0x0770 - 0x0428)
     class APlayerController : public AController
     {
     public:
-        char pad_0x0430[0x0028];
-        class AHUD* MyHUD;// 0x0458(0x0008)
-        class APlayerCameraManager* PlayerCameraManager; // 0x0460(0x0008)
-        char pad_0x0468[0x02C0];
+        char pad_0x0428[0x0028];
+        class AHUD* MyHUD;// 0x0450(0x0008)
+        class APlayerCameraManager* PlayerCameraManager; // 0x0458(0x0008)
+        char pad_0x0460[0x0310];
 
         void AddPitchInput(float Val);
         void AddYawInput(float Val);
@@ -319,24 +311,32 @@ namespace SDK
         bool ProjectWorldLocationToScreen(const struct FVector& WorldLocation, struct FVector2D* ScreenLocation);
     };
 
+    // Class Engine.Texture
+    // 0x0110 (0x0138 - 0x0028)
+    class UTexture : public UObject
+    {
+    public:
+        char pad_0x0028[0x0110];
+    };
+
     // Class Engine.HUD
-    // 0x00F8 (0x04C8 - 0x03D0)
+    // 0x00F8 (0x04C0 - 0x03C8)
     class AHUD : public AActor
     {
     public:
-        char pad_0x03D0[0x0058];
-        class UCanvas* Canvas; // 0x0428(0x0008)
-        char pad_0x0430[0x0098];
+        char pad_0x03C8[0x0058];
+        class UCanvas* Canvas; // 0x0420(0x0008)
+        char pad_0x0428[0x0098];
 
         void DrawRect(const struct FLinearColor& RectColor, float ScreenX, float ScreenY, float ScreenW, float ScreenH);
     };
 
     // Class Engine.MeshComponent
-    // 0x0010 (0x05A0 - 0x0590)
+    // 0x0010 (0x05D0 - 0x05C0)
     class UMeshComponent : public UPrimitiveComponent
     {
     public:
-        char pad_0x0590[0x0010];
+        char pad_0x05C0[0x0010];
     };
 
     // Class Engine.Player
@@ -350,7 +350,7 @@ namespace SDK
     };
 
     // Class Engine.World
-    // 0x0840 (0x0868 - 0x0028)
+    // 0x07A0 (0x07C8 - 0x0028)
     class UWorld : public UObject
     {
     public:
@@ -365,7 +365,7 @@ namespace SDK
         class ULevel* CurrentLevel; // 0x01B0(0x0008)
         char pad_0x01B8[0x0008];
         class UGameInstance* OwningGameInstance; // 0x01C0(0x0008)
-        char pad_0x01C8[0x06A0];
+        char pad_0x01C8[0x0600];
     };
 
     // Class Engine.Level
@@ -379,11 +379,11 @@ namespace SDK
     };
 
     // Class Engine.PlayerCameraManager
-    // 0x1880 (0x1C50 - 0x03D0)
+    // 0x1888 (0x1C50 - 0x03C8)
     class APlayerCameraManager : public AActor
     {
     public:
-        char pad_0x03D0[0x0070];
+        char pad_0x03C8[0x0078];
         struct FCameraCacheEntry CameraCache; // 0x0440(0x05B0)
         char pad_0x09F0[0x1260];
 
@@ -392,23 +392,23 @@ namespace SDK
     };
 
     // Class Engine.SkinnedMeshComponent
-    // 0x0120 (0x06C0 - 0x05A0)
+    // 0x0120 (0x06F0 - 0x05D0)
     class USkinnedMeshComponent : public UMeshComponent
     {
     public:
-        char pad_0x05A0[0x0008];
-        class TArray<struct FTransform> SpaceBasesArray[2]; // 0x05A8(0x0020)
-        int CurrentEditableSpaceBases; // 0x05C8(0x0004)
-        int CurrentReadSpaceBases; // 0x05CC(0x0004)
-        char pad_0x05D0[0x00F0];
+        char pad_0x05D0[0x0008];
+        class TArray<struct FTransform> SpaceBasesArray[2]; // 0x05D8(0x0020)
+        int CurrentEditableSpaceBases; // 0x05F8(0x0004)
+        int CurrentReadSpaceBases; // 0x05FC(0x0004)
+        char pad_0x0600[0x00F0];
     };
 
     // Class Engine.SkeletalMeshComponent
-    // 0x02D0 (0x0990 - 0x06C0)
+    // 0x02D0 (0x09C0 - 0x06F0)
     class USkeletalMeshComponent : public USkinnedMeshComponent
     {
     public:
-        char pad_0x06C0[0x02D0];
+        char pad_0x06F0[0x02D0];
     };
 
     // Class Engine.KismetGuidLibrary

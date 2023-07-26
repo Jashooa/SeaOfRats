@@ -3,12 +3,13 @@
 namespace SDK
 {
 	// Class EnchantedCompass.MultiTargetEnchantedCompass
-	// 0x0030 (0x08A0 - 0x0870)
+	// 0x0030 (0x0910 - 0x08E0)
 	class AMultiTargetEnchantedCompass : public ACompass
 	{
 	public:
-		TArray<struct FVector> Locations; // 0x0870(0x0010)
-		char pad_0x00880[0x0020];
+		char pad_0x08E0[0x0008];
+		TArray<struct FGuid> LocationIds; // 0x08E8(0x0010)
+		char pad_0x08F8[0x0018];
 
 		static UClass* StaticClass()
 		{

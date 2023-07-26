@@ -133,6 +133,12 @@ namespace Hacks
                     }
 
                     std::string name = player->PlayerName.ToString();
+
+                    if (name.empty())
+                    {
+                        name = "Player";
+                    }
+
                     if (!activity.empty())
                     {
                         name += " - " + activity;

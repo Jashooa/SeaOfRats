@@ -59,7 +59,7 @@ namespace Hacks
                 return;
             }
 
-            const auto locations = multiTargetEnchantedCompass->Locations;
+            /*const auto locations = multiTargetEnchantedCompass->Locations;
 
             for (auto locationIndex = 0; locationIndex < locations.Num(); ++locationIndex)
             {
@@ -90,7 +90,7 @@ namespace Hacks
 
                 // Draw name
                 Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
-            }
+            }*/
         }
     }
 }
