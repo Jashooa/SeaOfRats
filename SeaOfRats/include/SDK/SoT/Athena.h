@@ -315,7 +315,7 @@ namespace SDK
     };
 
     // Class Athena.AthenaGameState
-    // 0x05B0 (0x0AF8 - 0x0548)
+    // 0x05C0 (0x0B08 - 0x0548)
     class AAthenaGameState : public AServiceProviderGameState
     {
     public:
@@ -327,8 +327,9 @@ namespace SDK
         class ACrewService* CrewService; // 0x0608(0x0008)
         char pad_0x0610[0x0010];
         class AIslandService* IslandService; // 0x0620(0x0008)
-        char pad_0x0628[0x04D0];
+        char pad_0x0628[0x0078];
         class AKrakenService* KrakenService; // 0x06A0(0x0008)
+        char pad_0x06A8[0x0460];
 
         static UClass* StaticClass()
         {
@@ -519,7 +520,7 @@ namespace SDK
     };
 
     // Class Athena.Cannon
-    // 0x0700 (0x0C08 - 0x0508)
+    // 0x0718 (0x0C20 - 0x0508)
     class ACannon : public AControllableObject
     {
     public:
@@ -528,10 +529,12 @@ namespace SDK
         char pad_0x0550[0x0054];
         float ProjectileSpeed; // 0x05A4(0x0004)
         float ProjectileGravityScale; // 0x05A8(0x0004)
-        char pad_0x05Ac[0x01A8];
-        float ServerPitch; // 0x0754(0x0004)
-        float ServerYaw; // 0x0758(0x0004)
-        char pad_0x075C[0x04AC];
+        char pad_0x05AC[0x01AC];
+        class AItemInfo* LoadedItemInfo; // 0x0758(0x0008)
+        char pad_0x0760[0x000C];
+        float ServerPitch; // 0x076C(0x0004)
+        float ServerYaw; // 0x0770(0x0004)
+        char pad_0x0774[0x04AC];
 
         static UClass* StaticClass()
         {
@@ -541,11 +544,11 @@ namespace SDK
     };
 
     // Class Athena.Ship
-    // 0x1100 (0x14D0 - 0x03D0)
+    // 0x1180 (0x1550 - 0x03D0)
     class AShip : public AActor
     {
     public:
-        char pad_0x03D0[0x1100];
+        char pad_0x03D0[0x1180];
 
         static UClass* StaticClass()
         {
@@ -732,14 +735,14 @@ namespace SDK
     };
 
     // Class Athena.RiddleMap
-    // 0x0100 (0x08E0 - 0x07E0)
+    // 0x0110 (0x08F0 - 0x07E0)
     class ARiddleMap : public ATreasureMap
     {
     public:
-        char pad_0x07E0[0x0068];
-        struct FRiddleMapContents Contents; // 0x0848(0x0018)
-        struct FStringAssetReference MapInventoryTexturePath; // 0x0860(0x0010)
-        char pad_0x0870[0x0070];
+        char pad_0x07E0[0x0070];
+        struct FRiddleMapContents Contents; // 0x0850(0x0018)
+        struct FStringAssetReference MapInventoryTexturePath; // 0x0868(0x0010)
+        char pad_0x0878[0x0078];
 
         static UClass* StaticClass()
         {
@@ -800,11 +803,11 @@ namespace SDK
 
 
     // Class Athena.BuoyantStorageContainer
-    // 0x0228 (0x06E8 - 0x04C0)
+    // 0x0230 (0x06F0 - 0x04C0)
     class ABuoyantStorageContainer : public AStorageContainer
     {
     public:
-        char pad_0x04C0[0x0228];
+        char pad_0x04C0[0x0230];
 
         static UClass* StaticClass()
         {
@@ -902,18 +905,18 @@ namespace SDK
     };
 
     // Class Athena.XMarksTheSpotMap
-    // 0x0120 (0x0900 - 0x07E0)
+    // 0x0130 (0x0910 - 0x07E0)
     class AXMarksTheSpotMap : public ATreasureMap
     {
     public:
-        char pad_0x07E0[0x0038];
-        class FString MapTexturePath; // 0x0818(0x0010)
-        struct FStringAssetReference MapInventoryTexturePath; // 0x0828(0x0010)
-        char pad_0x0838[0x0070];
-        TArray<struct FXMarksTheSpotMapMark> Marks; // 0x08A8(0x0010)
-        char pad_0x08B8[0x0018];
-        float Rotation; // 0x08D0(0x0004)
-        char pad_0x08D4[0x002C];
+        char pad_0x07E0[0x0040];
+        class FString MapTexturePath; // 0x0820(0x0010)
+        struct FStringAssetReference MapInventoryTexturePath; // 0x0830(0x0010)
+        char pad_0x0840[0x0070];
+        TArray<struct FXMarksTheSpotMapMark> Marks; // 0x08B0(0x0010)
+        char pad_0x08C0[0x0018];
+        float Rotation; // 0x08D8(0x0004)
+        char pad_0x08DC[0x0034];
 
         static UClass* StaticClass()
         {
@@ -950,11 +953,11 @@ namespace SDK
     };
 
     // Class Athena.RenderToTextureMapBase
-    // 0x0060 (0x0840 - 0x07E0)
+    // 0x0070 (0x0850 - 0x07E0)
     class ARenderToTextureMapBase : public ATreasureMap
     {
     public:
-        char pad_0x07E0[0x0060];
+        char pad_0x07E0[0x0070];
     };
 
     // Class Athena.ActorFunctionLibrary
@@ -1045,15 +1048,15 @@ namespace SDK
     };
 
     // Class Athena.TornMap
-    // 0x00B0 (0x08F0 - 0x0840)
+    // 0x00A0 (0x08F0 - 0x0850)
     class ATornMap : public ARenderToTextureMapBase
     {
     public:
-        char pad_0x0840[0x0038];
-        TArray<struct FVector> TargetVisibility; // 0x0878(0x0010)
-        char pad_0x0888[0x0028];
-        int NumPieces; // 0x08B0(0x0004)
-        char pad_0x08B4[0x003C];
+        char pad_0x0850[0x0030];
+        TArray<struct FVector> TargetVisibility; // 0x0880(0x0010)
+        char pad_0x0890[0x0028];
+        int NumPieces; // 0x08B8(0x0004)
+        char pad_0x08BC[0x0034];
 
         static UClass* StaticClass()
         {

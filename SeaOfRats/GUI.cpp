@@ -108,8 +108,9 @@ LRESULT CALLBACK hookWndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lP
         }
         SetCursor(LoadCursor(nullptr, win32_cursor));
 
-        return DefWindowProc(handle, message, wParam, lParam);
-    }  
+        //return DefWindowProc(handle, message, wParam, lParam);
+        return true;
+    }
 
     return CallWindowProc(originalWndProcHandler, handle, message, wParam, lParam);
 }

@@ -28,7 +28,8 @@ namespace Hacks
 
         void CannonTrace(UWorld* world)
         {
-            const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
 
             const auto parent = localPlayer->GetAttachParentActor();
             if (parent && parent->IsA(ACannon::StaticClass()))
@@ -42,6 +43,8 @@ namespace Hacks
                 FRotator angle = FRotator(cannon->ServerPitch, cannon->ServerYaw, 0.f);
                 const FRotator compAngle = cannon->K2_GetActorRotation();
                 angle += compAngle;
+
+                //const FRotator angle = playerController->PlayerCameraManager->GetCameraRotation();
 
                 const FVector forwardVector = UKismetMathLibrary::Conv_RotatorToVector(angle);
                 FVector location = cannon->K2_GetActorLocation();

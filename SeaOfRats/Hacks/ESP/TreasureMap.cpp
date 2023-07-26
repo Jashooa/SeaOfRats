@@ -419,7 +419,7 @@ namespace Hacks
 
                                 const int32_t markDistance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - xMarkWorldLocation).Size() * 0.01f);
                                 markName += " [" + std::to_string(markDistance) + "m]";
-                                Drawing::DrawString(markName, { position.X, position.Y - 15.f }, colour, false);
+                                Drawing::DrawString(markName, { position.X, position.Y - 15.f }, colour);
                             }
                         }
                     }
