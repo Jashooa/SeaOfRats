@@ -199,7 +199,7 @@ namespace Hacks
                                     {
                                         ImU32 colour = Drawing::Colour::White;
                                         //Drawing::DrawCircleFilled(position, 3.f, colour);
-                                        Drawing::DrawString(ICON_FA_MAP_MARKER, landmarkPosition, colour);
+                                        Drawing::DrawString(ICON_FA_LOCATION_PIN, landmarkPosition, colour);
 
                                         if (!Utilities::NearCursor(landmarkPosition))
                                         {
@@ -304,7 +304,7 @@ namespace Hacks
                         {
                             ImU32 colour = Drawing::Colour::White;
                             //Drawing::DrawCircleFilled(position, 3.f, colour);
-                            Drawing::DrawString(ICON_FA_MAP_MARKED, position, colour);
+                            Drawing::DrawString(ICON_FA_MAP_LOCATION, position, colour);
 
                             if (!Utilities::NearCursor(position))
                             {
@@ -408,7 +408,7 @@ namespace Hacks
                                 Drawing::DrawCircleFilled(position, 4.f, Drawing::Colour::White);
                                 Drawing::DrawCircleFilled(position, 2.f, colour);*/
 
-                                Drawing::DrawString(ICON_FA_MAP_MARKER_ALT, position, colour);
+                                Drawing::DrawString(ICON_FA_LOCATION_DOT, position, colour);
 
                                 if (!Utilities::NearCursor(position))
                                 {
@@ -430,7 +430,7 @@ namespace Hacks
                         {
                             ImU32 colour = Drawing::Colour::White;
                             //Drawing::DrawCircleFilled(position, 3.f, colour);
-                            Drawing::DrawString(ICON_FA_MAP_MARKED_ALT, position, colour);
+                            Drawing::DrawString(ICON_FA_MAP_LOCATION_DOT, position, colour);
 
                             if (!Utilities::NearCursor(position))
                             {

@@ -16,6 +16,6 @@ namespace Utilities
 
     static inline bool NearCursor(FVector2D position)
     {
-        return PointInCircle(position, Drawing::GetScreenCentre(), 60.f) || (GetAsyncKeyState('R') & 0x8000);
+        return PointInCircle(position, Drawing::GetScreenCentre(), 10.f) || (GetAsyncKeyState('R') & 0x8000);
     }
 }

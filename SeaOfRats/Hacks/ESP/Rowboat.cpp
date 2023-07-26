@@ -23,7 +23,7 @@ namespace Hacks
             // Colour
             ImU32 colour = Drawing::Colour::White;
             //Drawing::DrawCircleFilled(position, 3.f, colour);
-            Drawing::DrawString(ICON_FA_HOT_TUB, position, colour);
+            Drawing::DrawString(ICON_FA_HOT_TUB_PERSON, position, colour);
 
             if (!Utilities::NearCursor(position))
             {

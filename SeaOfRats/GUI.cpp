@@ -133,6 +133,7 @@ namespace GUI
         ImFontConfig icons_config;
         icons_config.MergeMode = true;
         icons_config.PixelSnapH = true;
+        icons_config.OversampleH = 1;
         icons_config.GlyphOffset.y += 3.f;
         io.Fonts->AddFontFromMemoryCompressedBase85TTF(FontAwesome_compressed_data_base85, 16.f, &icons_config, icons_ranges);
 
@@ -242,7 +243,7 @@ namespace GUI
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem(ICON_FA_INFO_CIRCLE " Info"))
+                if (ImGui::BeginTabItem(ICON_FA_CIRCLE_INFO " Info"))
                 {
                     ImGui::Text("Info");
                     ImGui::Checkbox("Crosshair##Info", &config.info.crosshair);
@@ -255,7 +256,7 @@ namespace GUI
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem(ICON_FA_USER_CIRCLE " Client"))
+                if (ImGui::BeginTabItem(ICON_FA_USER " Client"))
                 {
                     ImGui::Text("Client");
                     ImGui::Checkbox("Anti AFK##Client", &config.client.antiafk);
