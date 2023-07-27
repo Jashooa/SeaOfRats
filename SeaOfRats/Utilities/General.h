@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "include/SDK/SDK.h"
+
 #include "Drawing.h"
 
 #include "Math.h"
@@ -14,8 +16,8 @@ namespace Utilities
         return static_cast<std::underlying_type_t<Enum>>(value);
     }
 
-    static inline bool NearCursor(FVector2D position)
+    static inline bool NearCursor(SDK::FVector2D position)
     {
-        return PointInCircle(position, Drawing::GetScreenCentre(), 10.f) || (GetAsyncKeyState('R') & 0x8000);
+        return PointInCircle(position, Drawing::GetScreenCentre(), 20.f) || (GetAsyncKeyState('R') & 0x8000);
     }
 }

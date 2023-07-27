@@ -1,5 +1,3 @@
-#include "ESP.h"
-
 #include <cmath>
 #include <string>
 #include <vector>

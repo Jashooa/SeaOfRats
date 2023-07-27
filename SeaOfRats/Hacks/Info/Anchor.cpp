@@ -2,6 +2,8 @@
 
 #include "Drawing.h"
 
+using namespace SDK;
+
 namespace Hacks
 {
     namespace Info

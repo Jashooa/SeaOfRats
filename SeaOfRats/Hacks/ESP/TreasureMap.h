@@ -2,14 +2,12 @@
 
 #include "include/SDK/SDK.h"
 
-using namespace SDK;
-
 namespace Hacks
 {
     namespace ESP
     {
-        void DrawRiddleMap(UWorld* world, AActor* actor);
-        void DrawXMarksTheSpotMap(UWorld* world, AActor* actor);
-        void DrawTornMap(UWorld* world, AActor* actor);
+        void DrawRiddleMap(SDK::UWorld* world, SDK::AActor* actor);
+        void DrawXMarksTheSpotMap(SDK::UWorld* world, SDK::AActor* actor);
+        void DrawTornMap(SDK::UWorld* world, SDK::AActor* actor);
     }
 }

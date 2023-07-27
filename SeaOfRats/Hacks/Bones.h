@@ -6,8 +6,6 @@
 
 #include "Utilities/General.h"
 
-using namespace SDK;
-
 namespace Hacks
 {
     enum class EBones : uint8_t
@@ -304,6 +302,6 @@ namespace Hacks
         ai_spine
     };
 
-    FVector GetBoneLocation(ACharacter* player, EBones bone);
-    void DrawBones(UWorld* world, AActor* actor);
+    SDK::FVector GetBoneLocation(SDK::ACharacter* player, EBones bone);
+    void DrawBones(SDK::UWorld* world, SDK::AActor* actor);
 }

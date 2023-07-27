@@ -150,6 +150,11 @@ namespace SDK
             return X * X + Y * Y + Z * Z;
         }
 
+        inline float Sum() const
+        {
+            return X + Y + Z;
+        }
+
         static const FVector ZeroVector;
     };
 }

@@ -61,10 +61,10 @@ namespace SDK
 
         bool IsA(class UClass* cmp) const;
 
-        static inline void ProcessEvent(void* obj, class UFunction* function, void* parms)
+        static inline void ProcessEvent(void* obj, class UFunction* function, void* params)
         {
             auto vtable = *reinterpret_cast<void***>(obj);
-            reinterpret_cast<void(*)(void*, class UFunction*, void*)>(vtable[55])(obj, function, parms);
+            reinterpret_cast<void(*)(void*, class UFunction*, void*)>(vtable[55])(obj, function, params);
         }
     };
 

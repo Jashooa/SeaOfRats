@@ -1,8 +1,8 @@
 #include "Bones.h"
 
-#include "include/SDK/SDK.h"
-
 #include "Drawing.h"
+
+using namespace SDK;
 
 namespace Hacks
 {

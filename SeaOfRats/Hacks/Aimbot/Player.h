@@ -2,14 +2,12 @@
 
 #include "include/SDK/SDK.h"
 
-using namespace SDK;
-
 namespace Hacks
 {
     namespace Aimbot
     {
-        void InitAimPlayer(UWorld* world);
-        void CalculateAimPlayer(UWorld* world, AActor* actor);
-        void AimPlayer(UWorld* world);
+        void InitAimPlayer(SDK::UWorld* world);
+        void CalculateAimPlayer(SDK::UWorld* world, SDK::AActor* actor);
+        void AimPlayer(SDK::UWorld* world);
     }
 }
