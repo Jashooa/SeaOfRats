@@ -2,12 +2,10 @@
 
 #include "include/SDK/SDK.h"
 
-using namespace SDK;
-
 namespace Hacks
 {
     namespace ESP
     {
-        void DrawSkeleton(UWorld* world, AActor* actor);
+        void DrawSkeleton(SDK::UWorld* world, SDK::AActor* actor);
     }
 }

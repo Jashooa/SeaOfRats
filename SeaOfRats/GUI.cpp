@@ -1,8 +1,5 @@
 #include "GUI.h"
 
-#include <Windows.h>
-#include <d3d11.h>
-
 #include <string>
 
 #include "include/FontAwesome/FontAwesome.h"

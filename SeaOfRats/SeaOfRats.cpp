@@ -1,7 +1,5 @@
 #include "SeaOfRats.h"
 
-#include <Windows.h>
-
 #include <filesystem>
 #include <string>
 

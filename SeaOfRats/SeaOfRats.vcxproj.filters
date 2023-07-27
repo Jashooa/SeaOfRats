@@ -231,6 +231,12 @@
     <ClCompile Include="Hacks\ESP\Barrel.cpp">
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
+    <ClCompile Include="Hacks\Aimbot\Aim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\spdlog\sinks\android_sink.h">
@@ -706,6 +712,9 @@
     </ClInclude>
     <ClInclude Include="include\FontAwesome\FontAwesome.h">
       <Filter>Header Files\include\FontAwesome</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Aimbot\Aim.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

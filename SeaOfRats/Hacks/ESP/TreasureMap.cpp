@@ -9,6 +9,8 @@
 #include "Utilities/General.h"
 #include "Utilities/Math.h"
 
+using namespace SDK;
+
 namespace Hacks
 {
     namespace ESP

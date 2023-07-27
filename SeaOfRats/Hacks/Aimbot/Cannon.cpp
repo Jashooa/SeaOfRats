@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "include/SDK/SDK.h"
-
 #include "Drawing.h"
 
 using namespace SDK;
@@ -73,25 +71,36 @@ namespace Hacks
                     velocity.Z = newZ;
                     FVector nextLocation = location + move;
                     FHitResult hitResult;
-                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, location, nextLocation, ETraceTypeQuery::TraceTypeQuery1, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
+
+                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, location, nextLocation, ETraceTypeQuery::TraceTypeQuery3, true, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
                     {
                         FVector2D position{};
                         if (world->OwningGameInstance->LocalPlayers[0]->PlayerController->ProjectWorldLocationToScreen(nextLocation, &position))
                         {
                             ImU32 colour = Drawing::Colour::Red;
-                            /*if (hitResult.Actor.Get() && hitResult.Actor.Get()->IsA(AShip::StaticClass()))
+
+                            AActor* hitActor = nullptr;
+                            if (hitResult.Actor.Get())
                             {
-                                colour = Drawing::Colour::Green;
+                                hitActor = hitResult.Actor.Get();
+
+                                if (hitActor->IsA(AShip::StaticClass()) || (hitActor->GetAttachParentActor() && hitActor->GetAttachParentActor()->IsA(AShip::StaticClass())))
+                                {
+                                    colour = Drawing::Colour::Green;
+                                }
+
+                                Drawing::DrawString(hitActor->GetName(), FVector2D(position.X, position.Y + 13.f), colour);
                             }
-                            Drawing::DrawString(hitResult.Actor.Get()->GetName(), screen, colour);*/
                             Drawing::DrawCircle(position, 3.f, colour);
                         }
                         break;
                     }
+
                     if (location == nextLocation)
                     {
                         break;
                     }
+
                     location = nextLocation;
                 }
 

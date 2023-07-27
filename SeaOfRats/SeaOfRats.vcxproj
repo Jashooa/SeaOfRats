@@ -189,6 +189,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Drawing.cpp" />
     <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="Hacks\Aimbot\Aim.cpp" />
     <ClCompile Include="Hacks\Aimbot\Cannon.cpp" />
     <ClCompile Include="Hacks\Aimbot\Player.cpp" />
     <ClCompile Include="Hacks\Bones.cpp" />
@@ -234,12 +235,14 @@
     <ClCompile Include="include\imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Utilities\Math.cpp" />
     <ClCompile Include="Utilities\Memory.cpp" />
     <ClCompile Include="Utilities\Hooking.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drawing.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="Hacks\Aimbot\Aim.h" />
     <ClInclude Include="Hacks\Aimbot\Cannon.h" />
     <ClInclude Include="Hacks\Aimbot\Player.h" />
     <ClInclude Include="Hacks\Bones.h" />

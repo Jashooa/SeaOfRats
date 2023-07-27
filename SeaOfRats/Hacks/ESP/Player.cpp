@@ -3,6 +3,8 @@
 #include "Drawing.h"
 #include "Hacks/Bones.h"
 
+using namespace SDK;
+
 namespace Hacks
 {
     namespace ESP

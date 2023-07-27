@@ -1,14 +1,10 @@
 #include "Player.h"
 
-#include "include/SDK/SDK.h"
-
 #include "Drawing.h"
 #include "Hacks/Bones.h"
 #include "Utilities/Math.h"
 
 using namespace SDK;
-
-
 
 namespace Hacks
 {
@@ -26,7 +22,7 @@ namespace Hacks
         FRotator cameraRotation;
         AProjectileWeapon* playerWeapon = nullptr;
         FVector2D centreScreen;
-        const float aimRadius = 200.f;
+        const float aimRadius = 100.f;
 
         void InitAimPlayer(UWorld* world)
         {
@@ -131,7 +127,7 @@ namespace Hacks
             FVector aimLocation;
             if (bestAim.target->IsA(AAthenaPlayerCharacter::StaticClass()) || bestAim.target->IsA(AAthenaAICharacter::StaticClass()))
             {
-                aimLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
+                aimLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::UPPER_BODY_LOCK__Skeleton);
             }
             else
             {
@@ -150,7 +146,8 @@ namespace Hacks
                 return;
             }
 
-            FVector localVelocity = localPlayer->GetVelocity();
+            // FVector localVelocity = localPlayer->GetVelocity();
+            FVector localVelocity(0.f, 0.f, 0.f);
             if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
             {
                 localVelocity += localShip->GetVelocity();
@@ -166,8 +163,7 @@ namespace Hacks
             const float bulletSpeed = playerWeapon->WeaponParameters.AmmoParams.Velocity;
             const FVector relativeLocation = localPlayer->K2_GetActorLocation() - bestAim.location;
             const float a = relativeVelocity.Size() - bulletSpeed * bulletSpeed;
-            const auto temp = relativeLocation * relativeVelocity * 2.f;
-            const float b = temp.X + temp.Y + temp.Z;
+            const float b = (relativeLocation * relativeVelocity * 2.f).Sum();
             const float c = relativeLocation.SizeSquared();
             const float d = b * b - 4 * a * c;
 
@@ -190,18 +186,68 @@ namespace Hacks
                     return;
                 }
                 Drawing::DrawString("x", position, Drawing::Colour::Red);
-                //Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.f, 200.f), Drawing::Colour::Red, false);
-                //Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.f, 215.f), Drawing::Colour::Red, false);
+                // Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.f, 200.f), Drawing::Colour::Red, false);
+                // Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.f, 215.f), Drawing::Colour::Red, false);
+                // Drawing::DrawString("Velocity: " + std::to_string(bulletSpeed), FVector2D(200.f, 200.f), Drawing::Colour::Red, false);
 
-                //if (playerController->IsInputKeyDown(FKey{ "LeftMouseButton" }))
-                //if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
+                // if (playerController->IsInputKeyDown(FKey{ "LeftMouseButton" }))
+                // if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
                 if ((GetAsyncKeyState(VK_LMENU) & 0x8000) != 0)
                 {
-                    bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
+                    // bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
 
-                    auto smoothness = 1.f / 5.f;
-                    playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
-                    playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
+                    auto aimSpeed = 5.f;
+                    auto smoothness = 1.f / aimSpeed;
+                    // playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
+                    // playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
+
+                    FVector2D centre = Drawing::GetScreenCentre();
+
+                    float targetX = 0;
+                    float targetY = 0;
+
+                    if (position.X > centre.X)
+                    {
+                        targetX = -(centre.X - position.X);
+                        // targetX /= aimSpeed;
+                        if (targetX + centre.X > centre.X * 2)
+                        {
+                            targetX = 0;
+                        }
+                    }
+                    else
+                    {
+                        targetX = position.X - centre.X;
+                        // targetX /= aimSpeed;
+                        if (targetX + centre.X < 0)
+                        {
+                            targetX = 0;
+                        }
+                    }
+
+                    if (position.Y > centre.Y)
+                    {
+                        targetY = -(centre.Y - position.Y);
+                        // targetY /= aimSpeed;
+                        if (targetY + centre.Y > centre.Y * 2)
+                        {
+                            targetY = 0;
+                        }
+                    }
+                    else
+                    {
+                        targetY = position.Y - centre.Y;
+                        // targetY /= aimSpeed;
+                        if (targetY + centre.Y < 0)
+                        {
+                            targetY = 0;
+                        }
+                    }
+
+                    if ((GetAsyncKeyState(VK_LMENU) & 0x8000) != 0)
+                    {
+                        mouse_event(MOUSEEVENTF_MOVE, (DWORD)(targetX), (DWORD)(targetY), NULL, NULL);
+                    }
                 }
             }
         }

@@ -49,6 +49,7 @@ void HookGame()
     const auto gObjectsOffset = *reinterpret_cast<uint32_t*>(gObjectsAddress + 2);
     UObject::GObjects = reinterpret_cast<decltype(UObject::GObjects)>(gObjectsAddress + gObjectsOffset + 6);
     spdlog::info("gObjectsAddress Address: {:p}", reinterpret_cast<void*>(gObjectsAddress));
+    spdlog::info("gObjectsOffset: {}", gObjectsOffset);
     spdlog::info("GObjects Address: {:p}", reinterpret_cast<void*>(UObject::GObjects));
     spdlog::info("GObjects.Num(): {}", UObject::GetObjects().Num());
 
@@ -56,6 +57,7 @@ void HookGame()
     const auto gNamesOffset = *reinterpret_cast<uint32_t*>(gNamesAddress + 3);
     FName::GNames = reinterpret_cast<decltype(FName::GNames)>(*reinterpret_cast<uintptr_t*>(gNamesAddress + gNamesOffset + 7));
     spdlog::info("gNamesAddress Address: {:p}", reinterpret_cast<void*>(gNamesAddress));
+    spdlog::info("gNamesOffset: {}", gNamesOffset);
     spdlog::info("GNames Address: {:p}", reinterpret_cast<void*>(FName::GNames));
     spdlog::info("GNames.Num(): {}", FName::GetNames().Num());
 
@@ -63,6 +65,7 @@ void HookGame()
     const auto gWorldOffset = *reinterpret_cast<uint32_t*>(gWorldAddress + 3);
     UWorld::GWorld = reinterpret_cast<decltype(UWorld::GWorld)>(gWorldAddress + gWorldOffset + 7);
     spdlog::info("gWorldAddress Address: {:p}", reinterpret_cast<void*>(gWorldAddress));
+    spdlog::info("gWorldOffset: {}", gWorldOffset);
     spdlog::info("GWorld Address: {:p}", reinterpret_cast<void*>(UWorld::GWorld));
 
     UAthenaGameViewportClient::GAthenaGameViewportClient = UObject::FindObject<UAthenaGameViewportClient>("AthenaGameViewportClient Transient.AthenaGameEngine_1.AthenaGameViewportClient_1");
@@ -76,6 +79,12 @@ void HookGame()
 
     const auto uworld = UObject::FindObject<UWorld>("Class Engine.World");
     spdlog::info("World Address: {:p}", reinterpret_cast<void*>(uworld));
+
+    const auto processEventAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x0F\x00\x00\x00\x00\x00\x00\xB9\xFF\xFF\x00\x00\x66\x3B\xC1\x74"), "x????xxxxxxxxxxx");;
+    spdlog::info("ProcessEvent Address: {:p}", reinterpret_cast<void*>(processEventAddress));
+
+    const auto createDefaultObjectAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\xC4\x56\x57\x41\x56\x48\x81\xEC\x00\x00\x00\x00\x48\xC7\x44\x24\x60"), "xxxxxxxxxx????xxxxx");;
+    spdlog::info("CreateDefaultObject Address: {:p}", reinterpret_cast<void*>(createDefaultObjectAddress));
 }
 
 void CreateRenderTarget(IDXGISwapChain* swapChain)

@@ -2,12 +2,10 @@
 
 #include "include/SDK/SDK.h"
 
-using namespace SDK;
-
 namespace Hacks
 {
     namespace Info
     {
-        void DrawAnchor(UWorld* world);
+        void DrawAnchor(SDK::UWorld* world);
     }
 }

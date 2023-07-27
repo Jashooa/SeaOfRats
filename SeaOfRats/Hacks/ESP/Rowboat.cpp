@@ -3,6 +3,8 @@
 #include "Drawing.h"
 #include "Utilities/General.h"
 
+using namespace SDK;
+
 namespace Hacks
 {
     namespace ESP

@@ -2,13 +2,11 @@
 
 #include "include/SDK/SDK.h"
 
-using namespace SDK;
-
 namespace Hacks
 {
     namespace ESP
     {
-        void DrawEnchantedCompass(UWorld* world, AActor* actor);
-        void DrawMultiTargetEnchantedCompass(UWorld* world, AActor* actor);
+        void DrawEnchantedCompass(SDK::UWorld* world, SDK::AActor* actor);
+        void DrawMultiTargetEnchantedCompass(SDK::UWorld* world, SDK::AActor* actor);
     }
 }
