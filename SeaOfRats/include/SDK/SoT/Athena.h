@@ -264,6 +264,22 @@ namespace SDK
         char pad_0x0400[0x0110];
     };
 
+    // Class Athena.Mast
+    // 0x0600 (0x09C8 - 0x03C8)
+    class AMast : public AActor
+    {
+    public:
+        char pad_0x03C8[0x0600];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.Mast");
+            return ptr;
+        }
+
+        bool IsMastFullyDamaged();
+    };
+
     // Class Athena.AthenaCharacter
     // 0x0640 (0x0C20 - 0x05E0)
     class AAthenaCharacter : public ACharacter
@@ -529,7 +545,9 @@ namespace SDK
         char pad_0x0568[0x0054];
         float ProjectileSpeed; // 0x05BC(0x0004)
         float ProjectileGravityScale; // 0x05C0(0x0004)
-        char pad_0x05C4[0x01AC];
+        struct FFloatRange PitchRange; // 0x05C4(0x0010)
+        struct FFloatRange YawRange; // 0x05D4(0x0010)
+        char pad_0x05E4[0x018C];
         class AItemInfo* LoadedItemInfo; // 0x0770(0x0008)
         char pad_0x0778[0x0040];
         float ServerPitch; // 0x07B8(0x0004)
@@ -541,6 +559,9 @@ namespace SDK
             static auto ptr = UObject::FindObject<UClass>("Class Athena.Cannon");
             return ptr;
         }
+
+        void Fire();
+        void ForceAimCannon(float Pitch, float Yaw);
     };
 
     // Class Athena.Ship
@@ -556,6 +577,7 @@ namespace SDK
             return ptr;
         }
 
+        class AHullDamage* GetHullDamage();
         class AShipInternalWater* GetInternalWater();
     };
 
@@ -626,6 +648,16 @@ namespace SDK
         static bool IsActorMemberOfCharactersCrew(class AActor* Actor, class AAthenaCharacter* Player);
     };
 
+    // Class Athena.DamageZone
+    // 0x0420 (0x0820 - 0x0400)
+    class ADamageZone : public AInteractableBase
+    {
+    public:
+        char pad_0x0400[0x0254];
+        int DamageLevel; // 0x0654(0x0004)
+        char pad_0x0658[0x01C8];
+    };
+
     // Class Athena.HealthComponent
     // 0x0180 (0x0248 - 0x00C8)
     class UHealthComponent : public UActorComponent
@@ -635,6 +667,27 @@ namespace SDK
 
         float GetCurrentHealth();
         float GetMaxHealth();
+    };
+
+    // Class Athena.HullDamage
+    // 0x0208 (0x05D0 - 0x03C8)
+    class AHullDamage : public AActor
+    {
+    public:
+        char pad_0x03C8[0x0048];
+        TArray<class ADamageZone*> DamageZones; // 0x0410(0x0010)
+        TArray<class ADamageZone*> ActiveHullDamageZones; // 0x0420(0x0010)
+        TArray<class ADamageZone*> BottomDeckDamageZones; // 0x0430(0x0010)
+        TArray<class ADamageZone*> MiddleDeckDamageZones; // 0x0440(0x0010)
+        char pad_0x0450[0x0180];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.HullDamage");
+            return ptr;
+        }
+
+        bool IsShipSinking();
     };
 
     // Class Athena.IslandService
@@ -847,7 +900,9 @@ namespace SDK
     class ASwimmingCreaturePawn : public APawn
     {
     public:
-        char pad_0x0440[0x00A0];
+        char pad_0x0440[0x0080];
+        class USkeletalMeshMemoryConstraintComponent* Mesh; // 0x04C0(0x0008)
+        char pad_0x04C8[0x0018];
         class UHealthComponent* HealthComponent; // 0x04E0(0x0008)
         char pad_0x04E8[0x003C];
         TEnumAsByte<ESwimmingCreatureType> SwimmingCreatureType; // 0x0524(0x0001)
@@ -968,6 +1023,16 @@ namespace SDK
         static class AActor* FindActorByName(class UObject* WorldContext, const class FString& ActorName);
     };
 
+    // Class Athena.SkeletalMeshMemoryConstraintComponent
+    // 0x0090 (0x0A50 - 0x09C0)
+    class USkeletalMeshMemoryConstraintComponent : public USkeletalMeshComponent
+    {
+    public:
+        char pad_0x09C0[0x0040];
+        struct FStringAssetReference MeshReference; // 0x0A00(0x0010)
+        char pad_0x0A10[0x0040];
+    };
+
     // Class Athena.WieldableInterface
     // 0x0000 (0x0028 - 0x0028)
     class UWieldableInterface : public UInterface
@@ -993,6 +1058,8 @@ namespace SDK
         float CurrentVisualWaterLevel; // 0x0418(0x0004)
         float WaterAmount; // 0x041C(0x0004)
         char pad_0x0420[0x0200];
+
+        float GetNormalizedWaterAmount();
     };
 
     // Class Athena.Landmark

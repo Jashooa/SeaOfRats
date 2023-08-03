@@ -1,6 +1,6 @@
 #include "PlayerList.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -8,7 +8,7 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawPlayerList(UWorld* world)
+        void PlayerList::Draw(UWorld* world)
         {
             const auto gameState = world->GameState;
             if (!gameState)
@@ -53,7 +53,7 @@ namespace Hacks
                         break;
                 }
 
-                Drawing::DrawString(shipType, { positionX, positionY += 15.f }, Drawing::Colour::White, false, false);
+                Utilities::Drawing::DrawString(shipType, { positionX, positionY += 15.f }, Utilities::Drawing::Colour::White, false, false);
                 for (auto playerIndex = 0; playerIndex < players.Num(); ++playerIndex)
                 {
                     const auto player = reinterpret_cast<AAthenaPlayerState*>(players[playerIndex]);
@@ -145,7 +145,7 @@ namespace Hacks
                     {
                         name += " - " + activity;
                     }
-                    Drawing::DrawString(name, { positionX + 10.f, positionY += 15.f }, Drawing::Colour::White, false, false);
+                    Utilities::Drawing::DrawString(name, { positionX + 10.f, positionY += 15.f }, Utilities::Drawing::Colour::White, false, false);
                 }
                 positionY += 10.f;
             }

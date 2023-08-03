@@ -6,7 +6,11 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawShip(SDK::UWorld* world, SDK::AActor* actor);
-        void DrawShipFar(SDK::UWorld* world, SDK::AActor* actor);
+        class Ship
+        {
+        public:
+            static void Draw(SDK::UWorld* world, SDK::AActor* actor);
+            static void DrawFar(SDK::UWorld* world, SDK::AActor* actor);
+        };
     }
 }

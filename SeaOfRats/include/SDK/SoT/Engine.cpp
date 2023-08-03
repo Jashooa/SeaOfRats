@@ -12,11 +12,11 @@ namespace SDK
         struct
         {
             class AActor* ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.GetActorBounds
@@ -29,19 +29,49 @@ namespace SDK
             bool bOnlyCollidingComponents;
             struct FVector Origin;
             struct FVector BoxExtent;
-        } params{};
-        params.bOnlyCollidingComponents = bOnlyCollidingComponents;
+        } parms{};
+        parms.bOnlyCollidingComponents = bOnlyCollidingComponents;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
         if (Origin != nullptr)
         {
-            *Origin = params.Origin;
+            *Origin = parms.Origin;
         }
         if (BoxExtent != nullptr)
         {
-            *BoxExtent = params.BoxExtent;
+            *BoxExtent = parms.BoxExtent;
         }
+    }
+
+    // Function Engine.Actor.GetActorForwardVector
+    struct FVector AActor::GetActorForwardVector()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.Actor.GetActorForwardVector");
+
+        struct
+        {
+            struct FVector ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
+    }
+
+    // Function Engine.Actor.GetActorUpVector
+    struct FVector AActor::GetActorUpVector()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.Actor.GetActorUpVector");
+
+        struct
+        {
+            struct FVector ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.GetAttachParentActor
@@ -52,11 +82,11 @@ namespace SDK
         struct
         {
             class AActor* ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.GetComponentByClass
@@ -68,12 +98,29 @@ namespace SDK
         {
             class UClass* ComponentClass;
             class UActorComponent* ReturnValue;
-        } params{};
-        params.ComponentClass = ComponentClass;
+        } parms{};
+        parms.ComponentClass = ComponentClass;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
+    }
+
+    // Function Engine.Actor.GetComponentsByClass
+    TArray<class UActorComponent*> AActor::GetComponentsByClass(class UClass* ComponentClass)
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.Actor.GetComponentsByClass");
+
+        struct
+        {
+            class UClass* ComponentClass;
+            TArray<class UActorComponent*> ReturnValue;
+        } parms{};
+        parms.ComponentClass = ComponentClass;
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.GetDistanceTo
@@ -85,12 +132,12 @@ namespace SDK
         {
             class AActor* OtherActor;
             float ReturnValue;
-        } params{};
-        params.OtherActor = OtherActor;
+        } parms{};
+        parms.OtherActor = OtherActor;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.GetParentActor
@@ -101,11 +148,11 @@ namespace SDK
         struct
         {
             class AActor* ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.GetVelocity
@@ -116,11 +163,11 @@ namespace SDK
         struct
         {
             struct FVector ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.K2_GetActorLocation
@@ -131,11 +178,11 @@ namespace SDK
         struct
         {
             struct FVector ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Actor.K2_GetActorRotation
@@ -146,11 +193,11 @@ namespace SDK
         struct
         {
             struct FRotator ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.SceneComponent.IsVisible
@@ -161,11 +208,11 @@ namespace SDK
         struct
         {
             bool ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.SceneComponent.K2_GetComponentLocation
@@ -176,11 +223,11 @@ namespace SDK
         struct
         {
             struct FVector ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.SceneComponent.K2_GetComponentRotation
@@ -191,11 +238,11 @@ namespace SDK
         struct
         {
             struct FRotator ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.SceneComponent.K2_GetComponentToWorld
@@ -206,11 +253,11 @@ namespace SDK
         struct
         {
             struct FTransform ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.Controller.LineOfSightTo
@@ -224,14 +271,14 @@ namespace SDK
             struct FVector ViewPoint;
             bool bAlternateChecks;
             bool ReturnValue;
-        } params{};
-        params.Other = Other;
-        params.ViewPoint = ViewPoint;
-        params.bAlternateChecks = bAlternateChecks;
+        } parms{};
+        parms.Other = Other;
+        parms.ViewPoint = ViewPoint;
+        parms.bAlternateChecks = bAlternateChecks;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.PlayerController.AddPitchInput
@@ -242,10 +289,10 @@ namespace SDK
         struct
         {
             float Val;
-        } params{};
-        params.Val = Val;
+        } parms{};
+        parms.Val = Val;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
     }
 
     // Function Engine.PlayerController.AddYawInput
@@ -256,27 +303,10 @@ namespace SDK
         struct
         {
             float Val;
-        } params{};
-        params.Val = Val;
+        } parms{};
+        parms.Val = Val;
 
-        UObject::ProcessEvent(this, fn, &params);
-    }
-
-    // Function Engine.PlayerController.IsInputKeyDown
-    bool APlayerController::IsInputKeyDown(const struct FKey& Key)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.PlayerController.IsInputKeyDown");
-
-        struct
-        {
-            struct FKey Key;
-            bool ReturnValue;
-        } params{};
-        params.Key = Key;
-
-        UObject::ProcessEvent(this, fn, &params);
-
-        return params.ReturnValue;
+        UObject::ProcessEvent(this, fn, &parms);
     }
 
     // Function Engine.PlayerController.ProjectWorldLocationToScreen
@@ -289,17 +319,17 @@ namespace SDK
             struct FVector WorldLocation;
             struct FVector2D ScreenLocation;
             bool ReturnValue;
-        } params{};
-        params.WorldLocation = WorldLocation;
+        } parms{};
+        parms.WorldLocation = WorldLocation;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
         if (ScreenLocation != nullptr)
         {
-            *ScreenLocation = params.ScreenLocation;
+            *ScreenLocation = parms.ScreenLocation;
         }
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.HUD.DrawRect
@@ -314,14 +344,14 @@ namespace SDK
             float ScreenY;
             float ScreenW;
             float ScreenH;
-        } params{};
-        params.RectColor = RectColor;
-        params.ScreenX = ScreenX;
-        params.ScreenY = ScreenY;
-        params.ScreenW = ScreenW;
-        params.ScreenH = ScreenH;
+        } parms{};
+        parms.RectColor = RectColor;
+        parms.ScreenX = ScreenX;
+        parms.ScreenY = ScreenY;
+        parms.ScreenW = ScreenW;
+        parms.ScreenH = ScreenH;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
     }
 
     // Function Engine.PlayerCameraManager.GetCameraLocation
@@ -332,11 +362,11 @@ namespace SDK
         struct
         {
             struct FVector ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.PlayerCameraManager.GetCameraRotation
@@ -347,67 +377,11 @@ namespace SDK
         struct
         {
             struct FRotator ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
-    }
-
-    // Function Engine.KismetGuidLibrary.Conv_GuidToString
-    class FString UKismetGuidLibrary::Conv_GuidToString(const struct FGuid& InGuid)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetGuidLibrary.Conv_GuidToString");
-
-        struct
-        {
-            struct FGuid                   InGuid;
-            class FString                  ReturnValue;
-        } params{};
-        params.InGuid = InGuid;
-
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetGuidLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
-
-        return params.ReturnValue;
-    }
-
-    // Function Engine.KismetGuidLibrary.EqualEqual_GuidGuid
-    bool UKismetGuidLibrary::EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetGuidLibrary.EqualEqual_GuidGuid");
-
-        struct
-        {
-            struct FGuid A;
-            struct FGuid B;
-            bool ReturnValue;
-        } params{};
-        params.A = A;
-        params.B = B;
-
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetGuidLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
-
-        return params.ReturnValue;
-    }
-
-    // Function Engine.KismetMathLibrary.Conv_RotatorToVector
-    struct FVector UKismetMathLibrary::Conv_RotatorToVector(const struct FRotator& InRot)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.Conv_RotatorToVector");
-
-        struct
-        {
-            struct FRotator InRot;
-            struct FVector ReturnValue;
-        } params{};
-        params.InRot = InRot;
-
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
-
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.KismetMathLibrary.FindLookAtRotation
@@ -420,32 +394,14 @@ namespace SDK
             struct FVector Start;
             struct FVector Target;
             struct FRotator ReturnValue;
-        } params{};
-        params.Start = Start;
-        params.Target = Target;
+        } parms{};
+        parms.Start = Start;
+        parms.Target = Target;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
-        return params.ReturnValue;
-    }
-
-    // Function Engine.KismetMathLibrary.GetForwardVector
-    struct FVector UKismetMathLibrary::GetForwardVector(const struct FRotator& InRot)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.GetForwardVector");
-
-        struct
-        {
-            struct FRotator InRot;
-            struct FVector ReturnValue;
-        } params{};
-        params.InRot = InRot;
-
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
-
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.KismetMathLibrary.NormalizedDeltaRotator
@@ -458,14 +414,14 @@ namespace SDK
             struct FRotator A;
             struct FRotator B;
             struct FRotator ReturnValue;
-        } params{};
-        params.A = A;
-        params.B = B;
+        } parms{};
+        parms.A = A;
+        parms.B = B;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Engine.KismetSystemLibrary.LineTraceSingle_NEW
@@ -485,60 +441,24 @@ namespace SDK
             struct FHitResult OutHit;
             bool bIgnoreSelf;
             bool ReturnValue;
-        } params{};
-        params.WorldContextObject = WorldContextObject;
-        params.Start = Start;
-        params.End = End;
-        params.TraceChannel = TraceChannel;
-        params.bTraceComplex = bTraceComplex;
-        params.ActorsToIgnore = ActorsToIgnore;
-        params.DrawDebugType = DrawDebugType;
-        params.bIgnoreSelf = bIgnoreSelf;
+        } parms{};
+        parms.WorldContextObject = WorldContextObject;
+        parms.Start = Start;
+        parms.End = End;
+        parms.TraceChannel = TraceChannel;
+        parms.bTraceComplex = bTraceComplex;
+        parms.ActorsToIgnore = ActorsToIgnore;
+        parms.DrawDebugType = DrawDebugType;
+        parms.bIgnoreSelf = bIgnoreSelf;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetSystemLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
         if (OutHit != nullptr)
         {
-            *OutHit = params.OutHit;
+            *OutHit = parms.OutHit;
         }
 
-        return params.ReturnValue;
-    }
-
-    // Function Engine.KismetTextLibrary.Conv_TextToString
-    class FString UKismetTextLibrary::Conv_TextToString(const struct FText& InText)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetTextLibrary.Conv_TextToString");
-
-        struct
-        {
-            struct FText InText;
-            class FString ReturnValue;
-        } params{};
-        params.InText = InText;
-
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetTextLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
-
-        return params.ReturnValue;
-    }
-
-    // Function Engine.KismetTextLibrary.TextIsEmpty
-    bool UKismetTextLibrary::TextIsEmpty(const struct FText& InText)
-    {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetTextLibrary.TextIsEmpty");
-
-        struct
-        {
-            struct FText InText;
-            bool ReturnValue;
-        } params{};
-        params.InText = InText;
-
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetTextLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
-
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 }

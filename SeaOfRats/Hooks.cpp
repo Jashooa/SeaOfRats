@@ -10,8 +10,8 @@
 
 #include "GUI.h"
 #include "Hacks/Hacks.h"
-#include "Utilities/Memory.h"
 #include "Utilities/Hooking.h"
+#include "Utilities/Memory.h"
 
 using namespace SDK;
 
@@ -46,26 +46,32 @@ void HookGame()
     spdlog::info("Module Length: 0x{:x}", length);
 
     const auto gObjectsAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x89\x0D\x00\x00\x00\x00\x48\x8B\xDF\x48\x89\x5C\x24"), "xx????xxxxxxx");
-    const auto gObjectsOffset = *reinterpret_cast<uint32_t*>(gObjectsAddress + 2);
-    UObject::GObjects = reinterpret_cast<decltype(UObject::GObjects)>(gObjectsAddress + gObjectsOffset + 6);
+    const auto gObjects = Utilities::GetAbsoluteAddress(gObjectsAddress, 2, 6);
+    UObject::GObjects = reinterpret_cast<decltype(UObject::GObjects)>(gObjects);
+    // const auto gObjectsOffset = *reinterpret_cast<uint32_t*>(gObjectsAddress + 2);
+    // UObject::GObjects = reinterpret_cast<decltype(UObject::GObjects)>(gObjectsAddress + gObjectsOffset + 6);
     spdlog::info("gObjectsAddress Address: {:p}", reinterpret_cast<void*>(gObjectsAddress));
-    spdlog::info("gObjectsOffset: {}", gObjectsOffset);
+    // spdlog::info("gObjectsOffset: {}", gObjectsOffset);
     spdlog::info("GObjects Address: {:p}", reinterpret_cast<void*>(UObject::GObjects));
     spdlog::info("GObjects.Num(): {}", UObject::GetObjects().Num());
 
     const auto gNamesAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\x1D\x00\x00\x00\x00\x48\x85\x00\x75\x3D"), "xxx????xx?xx");
-    const auto gNamesOffset = *reinterpret_cast<uint32_t*>(gNamesAddress + 3);
-    FName::GNames = reinterpret_cast<decltype(FName::GNames)>(*reinterpret_cast<uintptr_t*>(gNamesAddress + gNamesOffset + 7));
+    const auto gNames = Utilities::GetAbsoluteAddress(gNamesAddress, 3, 7);
+    FName::GNames = reinterpret_cast<decltype(FName::GNames)>(*reinterpret_cast<uintptr_t*>(gNames));
+    // const auto gNamesOffset = *reinterpret_cast<uint32_t*>(gNamesAddress + 3);
+    // FName::GNames = reinterpret_cast<decltype(FName::GNames)>(*reinterpret_cast<uintptr_t*>(gNamesAddress + gNamesOffset + 7));
     spdlog::info("gNamesAddress Address: {:p}", reinterpret_cast<void*>(gNamesAddress));
-    spdlog::info("gNamesOffset: {}", gNamesOffset);
+    // spdlog::info("gNamesOffset: {}", gNamesOffset);
     spdlog::info("GNames Address: {:p}", reinterpret_cast<void*>(FName::GNames));
     spdlog::info("GNames.Num(): {}", FName::GetNames().Num());
 
     const auto gWorldAddress = Utilities::FindPattern(start, length, reinterpret_cast<const unsigned char*>("\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x88\x00\x00\x00\x00\x48\x85\xC9\x74\x06\x48\x8B\x49\x70"), "xxx????xxx????xxxxxxxxx");
-    const auto gWorldOffset = *reinterpret_cast<uint32_t*>(gWorldAddress + 3);
-    UWorld::GWorld = reinterpret_cast<decltype(UWorld::GWorld)>(gWorldAddress + gWorldOffset + 7);
+    const auto gWorld = Utilities::GetAbsoluteAddress(gWorldAddress, 3, 7);
+    UWorld::GWorld = reinterpret_cast<decltype(UWorld::GWorld)>(gWorld);
+    // const auto gWorldOffset = *reinterpret_cast<uint32_t*>(gWorldAddress + 3);
+    // UWorld::GWorld = reinterpret_cast<decltype(UWorld::GWorld)>(gWorldAddress + gWorldOffset + 7);
     spdlog::info("gWorldAddress Address: {:p}", reinterpret_cast<void*>(gWorldAddress));
-    spdlog::info("gWorldOffset: {}", gWorldOffset);
+    // spdlog::info("gWorldOffset: {}", gWorldOffset);
     spdlog::info("GWorld Address: {:p}", reinterpret_cast<void*>(UWorld::GWorld));
 
     UAthenaGameViewportClient::GAthenaGameViewportClient = UObject::FindObject<UAthenaGameViewportClient>("AthenaGameViewportClient Transient.AthenaGameEngine_1.AthenaGameViewportClient_1");
@@ -164,8 +170,8 @@ void HookD3D11()
     }
 
     swapChainVTable = *reinterpret_cast<void***>(swapChain);
-    OriginalPresent = reinterpret_cast<Present>(Utilities::VMTHook(swapChainVTable, presentIndex, HookedPresent));
-    OriginalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::VMTHook(swapChainVTable, resizeBuffersIndex, HookedResizeBuffers));
+    OriginalPresent = reinterpret_cast<Present>(Utilities::Hooking::VMTHook(swapChainVTable, presentIndex, HookedPresent));
+    OriginalResizeBuffers = reinterpret_cast<ResizeBuffers>(Utilities::Hooking::VMTHook(swapChainVTable, resizeBuffersIndex, HookedResizeBuffers));
 
     tempContext->Release();
     tempDevice->Release();
@@ -175,8 +181,8 @@ void HookD3D11()
 void UnhookD3D11()
 {
     renderTargetView->Release();
-    Utilities::VMTHook(swapChainVTable, presentIndex, OriginalPresent);
-    Utilities::VMTHook(swapChainVTable, resizeBuffersIndex, OriginalResizeBuffers);
+    Utilities::Hooking::VMTHook(swapChainVTable, presentIndex, OriginalPresent);
+    Utilities::Hooking::VMTHook(swapChainVTable, resizeBuffersIndex, OriginalResizeBuffers);
 }
 
 HCURSOR __stdcall HookedSetCursor(HCURSOR hCursor)
@@ -201,14 +207,14 @@ BOOL __stdcall HookedSetCursorPos(int X, int Y)
 
 void HookMouse()
 {
-    OriginalSetCursor = reinterpret_cast<SetCursorProto>(Utilities::IATHook("USER32.dll", "SetCursor", HookedSetCursor));
-    OriginalSetCursorPos = reinterpret_cast<SetCursorPosProto>(Utilities::IATHook("USER32.dll", "SetCursorPos", HookedSetCursorPos));
+    OriginalSetCursor = reinterpret_cast<SetCursorProto>(Utilities::Hooking::IATHook("USER32.dll", "SetCursor", HookedSetCursor));
+    OriginalSetCursorPos = reinterpret_cast<SetCursorPosProto>(Utilities::Hooking::IATHook("USER32.dll", "SetCursorPos", HookedSetCursorPos));
 }
 
 void UnhookMouse()
 {
-    Utilities::IATHook("USER32.dll", "SetCursor", OriginalSetCursor);
-    Utilities::IATHook("USER32.dll", "SetCursorPos", OriginalSetCursorPos);
+    Utilities::Hooking::IATHook("USER32.dll", "SetCursor", OriginalSetCursor);
+    Utilities::Hooking::IATHook("USER32.dll", "SetCursorPos", OriginalSetCursorPos);
 }
 
 namespace Hooks

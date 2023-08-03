@@ -6,7 +6,13 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawStorm(SDK::UWorld* world, SDK::AActor* actor);
-        void DrawStorms(SDK::UWorld* world);
+        class Storm
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+
+        private:
+            static void drawStorm(SDK::UWorld* world, SDK::AActor* actor);
+        };
     }
 }

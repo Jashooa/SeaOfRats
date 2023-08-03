@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawAnchor(SDK::UWorld* world);
+        class Anchor
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+        };
     }
 }

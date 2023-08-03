@@ -14,6 +14,8 @@ namespace SDK
         float Z; // 0x0008(0x0004)
         float W; // 0x000C(0x0004)
 
+        static const FQuat Identity;
+
         inline FQuat() : X(0.f), Y(0.f), Z(0.f), W(0.f)
         {
         }
@@ -34,7 +36,5 @@ namespace SDK
             const FVector Result = V + (T * W) + (Q ^ T);
             return Result;
         }
-
-        static const FQuat Identity;
     };
 }

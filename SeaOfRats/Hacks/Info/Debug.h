@@ -8,6 +8,10 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawDebug(SDK::UWorld* world);
+        class Debug
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+        };
     }
 }

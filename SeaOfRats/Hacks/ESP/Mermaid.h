@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawMermaid(SDK::UWorld* world, SDK::AActor* actor);
+        class Mermaid
+        {
+        public:
+            static void Draw(SDK::UWorld* world, SDK::AActor* actor);
+        };
     }
 }

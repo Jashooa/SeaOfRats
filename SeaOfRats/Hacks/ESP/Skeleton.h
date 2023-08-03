@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawSkeleton(SDK::UWorld* world, SDK::AActor* actor);
+        class Skeleton
+        {
+        public:
+            static void Draw(SDK::UWorld* world, SDK::AActor* actor);
+        };
     }
 }

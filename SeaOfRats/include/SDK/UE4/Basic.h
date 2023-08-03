@@ -9,16 +9,10 @@
 
 namespace SDK
 {
-    class UObject;
-
+    // 0x0010
     class FUObjectItem
     {
     public:
-        UObject* Object;
-        int32_t Flags;
-        int32_t ClusterIndex;
-        int32_t SerialNumber;
-
         enum class EInternalObjectFlags : int32_t
         {
             None = 0,
@@ -31,6 +25,11 @@ namespace SDK
             NoStrongReference = 1 << 31
         };
 
+        class UObject* Object; // 0x0000(0x0008)
+        int32_t Flags; // 0x0008(0x0004)
+        int32_t ClusterIndex; // 0x000C(0x0004)
+        int32_t SerialNumber; // 0x0010(0x0004)
+
         inline bool IsUnreachable() const
         {
             return !!(Flags & static_cast<std::underlying_type_t<EInternalObjectFlags>>(EInternalObjectFlags::Unreachable));
@@ -42,6 +41,7 @@ namespace SDK
         }
     };
 
+    // 0x0010
     class TUObjectArray
     {
     public:
@@ -65,21 +65,23 @@ namespace SDK
         }
 
     private:
-        FUObjectItem* Objects;
-        int32_t MaxElements;
-        int32_t NumElements;
+        class FUObjectItem* Objects; // 0x0000(0x0008)
+        int32_t MaxElements; // 0x0008(0x0004)
+        int32_t NumElements; // 0x000C(0x0004)
     };
 
+    // 0x0020
     class FUObjectArray
     {
     public:
-        int32_t ObjFirstGCIndex;
-        int32_t ObjLastNonGCIndex;
-        int32_t MaxObjectsNotConsideredByGC;
-        int32_t OpenForDisregardForGC;
-        TUObjectArray ObjObjects;
+        int32_t ObjFirstGCIndex; // 0x0000(0x0004)
+        int32_t ObjLastNonGCIndex; // 0x0004(0x0004)
+        int32_t MaxObjectsNotConsideredByGC; // 0x0008(0x0004)
+        int32_t OpenForDisregardForGC; // 0x000C(0x0004)
+        class TUObjectArray ObjObjects; // 0x0010(0x0010)
     };
 
+    // 0x0010
     template<class T>
     class TArray
     {
@@ -92,22 +94,22 @@ namespace SDK
             ArrayNum = ArrayMax = 0;
         }
 
-        inline int Num() const
+        inline int32_t Num() const
         {
             return ArrayNum;
         }
 
-        inline T& operator[](int i)
+        inline T& operator[](int32_t i)
         {
             return Data[i];
         }
 
-        inline const T& operator[](int i) const
+        inline const T& operator[](int32_t i) const
         {
             return Data[i];
         }
 
-        inline bool IsValidIndex(int i) const
+        inline bool IsValidIndex(int32_t i) const
         {
             return i >= 0 && i < ArrayNum;
         }
@@ -142,21 +144,22 @@ namespace SDK
         }
 
     private:
-        T* Data;
-        int32_t ArrayNum;
-        int32_t ArrayMax;
+        T* Data; // 0x0000(0x0008)
+        int32_t ArrayNum; // 0x0008(0x0004)
+        int32_t ArrayMax; // 0x000C(0x0004)
     };
 
+    // 0x0410
     class FNameEntry
     {
     public:
-        static const auto NAME_WIDE_MASK = 0x1;
-        static const auto NAME_INDEX_SHIFT = 1;
+        #define NAME_WIDE_MASK 0x1
+        #define NAME_INDEX_SHIFT 1
 
-        int32_t Index;
-        char UnknownData00[0x04];
-        FNameEntry* HashNext;
-        union
+        int32_t Index; // 0x0000(0x0004)
+        char pad_0x0004[0x0004];
+        class FNameEntry* HashNext; // 0x0008(0x0008)
+        union // 0x0010(0x0400)
         {
             char AnsiName[1024];
             wchar_t WideName[1024];
@@ -183,11 +186,12 @@ namespace SDK
         }
     };
 
+    // 0x0010
     template<typename ElementType, int32_t MaxTotalElements, int32_t ElementsPerChunk>
     class TStaticIndirectArrayThreadSafeRead
     {
     public:
-        inline size_t Num() const
+        inline int32_t Num() const
         {
             return NumElements;
         }
@@ -203,6 +207,15 @@ namespace SDK
         }
 
     private:
+        enum
+        {
+            ChunkTableSize = (MaxTotalElements + ElementsPerChunk - 1) / ElementsPerChunk
+        };
+
+        ElementType** Chunks[ChunkTableSize]; // 0x0000(0x0008)
+        int32_t NumElements; // 0x0008(0x0004)
+        int32_t NumChunks; // 0x000C(0x0004)
+
         inline ElementType const* const* GetItemPtr(int32_t Index) const
         {
             const auto ChunkIndex = Index / ElementsPerChunk;
@@ -210,23 +223,15 @@ namespace SDK
             const auto Chunk = Chunks[ChunkIndex];
             return Chunk + WithinChunkIndex;
         }
-
-        enum
-        {
-            ChunkTableSize = (MaxTotalElements + ElementsPerChunk - 1) / ElementsPerChunk
-        };
-
-        ElementType** Chunks[ChunkTableSize];
-        int32_t NumElements;
-        int32_t NumChunks;
     };
 
     using TNameEntryArray = TStaticIndirectArrayThreadSafeRead<FNameEntry, 2 * 1024 * 1024, 16384>;
 
+    // 0x0008
     struct FName
     {
-        int32_t ComparisonIndex;
-        int32_t Number;
+        int32_t ComparisonIndex; // 0x0000(0x0004)
+        int32_t Number; // 0x0004(0x0004)
 
         inline FName() : ComparisonIndex(0), Number(0)
         {
@@ -250,7 +255,7 @@ namespace SDK
                 }
             }
 
-            for (auto i = 0; i < GetNames().Num(); ++i)
+            for (int32_t i = 0; i < GetNames().Num(); ++i)
             {
                 if (GetNames()[i] != nullptr)
                 {
@@ -293,6 +298,7 @@ namespace SDK
         }
     };
 
+    // 0x0010
     class FString : public TArray<wchar_t>
     {
     public:
@@ -302,7 +308,7 @@ namespace SDK
 
         FString(const wchar_t* other)
         {
-            ArrayMax = ArrayNum = *other ? static_cast<int>(std::wcslen(other)) + 1 : 0;
+            ArrayMax = ArrayNum = *other ? static_cast<int32_t>(std::wcslen(other)) + 1 : 0;
 
             if (ArrayNum)
             {
@@ -346,6 +352,7 @@ namespace SDK
         }
     };
 
+    // 0x0001
     template<class TEnum>
     class TEnumAsByte
     {
@@ -377,22 +384,19 @@ namespace SDK
         }
 
     private:
-        uint8_t value;
+        uint8_t value; // 0x0000(0x0001)
     };
 
+    // 0x0010
     class FScriptInterface
     {
-    private:
-        UObject* ObjectPointer;
-        void* InterfacePointer;
-
     public:
-        inline UObject* GetObject() const
+        inline class UObject* GetObject() const
         {
             return ObjectPointer;
         }
 
-        inline UObject*& GetObjectRef()
+        inline class UObject*& GetObjectRef()
         {
             return ObjectPointer;
         }
@@ -401,8 +405,13 @@ namespace SDK
         {
             return ObjectPointer != nullptr ? InterfacePointer : nullptr;
         }
+
+    private:
+        class UObject* ObjectPointer; // 0x0000(0x0008)
+        void* InterfacePointer; // 0x0008(0x0008)
     };
 
+    // 0x0000 (0x0010 - 0x0010)
     template<class InterfaceType>
     class TScriptInterface : public FScriptInterface
     {
@@ -423,27 +432,31 @@ namespace SDK
         }
     };
 
+    // 0x0038
     struct FText
     {
-        char UnknownData00[0x38];
+    public:
+        class FString* DisplayString; // 0x0000(0x008)
+        char pad_0x0008[0x0030];
     };
 
+    // 0x0008
     struct FWeakObjectPtr
     {
     public:
+        int32_t ObjectIndex; // 0x0000(0x0004)
+        int32_t ObjectSerialNumber; // 0x0004(0x0004)
+
         inline bool SerialNumbersMatch(FUObjectItem* ObjectItem) const
         {
             return ObjectItem->SerialNumber == ObjectSerialNumber;
         }
 
         bool IsValid() const;
-
-        UObject* Get() const;
-
-        int32_t ObjectIndex;
-        int32_t ObjectSerialNumber;
+        class UObject* Get() const;
     };
 
+    // 0x0000 (0x0008 - 0x0008)
     template<class T, class TWeakObjectPtrBase = FWeakObjectPtr>
     struct TWeakObjectPtr : private TWeakObjectPtrBase
     {

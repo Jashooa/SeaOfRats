@@ -1,6 +1,6 @@
 #include "Anchor.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -8,7 +8,7 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawAnchor(UWorld* world)
+        void Anchor::Draw(UWorld* world)
         {
             const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
@@ -19,11 +19,11 @@ namespace Hacks
                 if (parentParent && parentParent->IsA(ACapstan::StaticClass()))
                 {
                     const auto capstan = reinterpret_cast<ACapstan*>(parentParent);
-                    const int32_t anchorLevel = static_cast<int32_t>(capstan->NetState.TargetRatio * 100.f);
+                    const auto anchorLevel = static_cast<int>(capstan->NetState.TargetRatio * 100.f);
 
                     const std::string capstanText = "Anchor Level: " + std::to_string(anchorLevel) + "%";
-                    const FVector2D centre = Drawing::GetScreenCentre();
-                    Drawing::DrawString(capstanText, { centre.X, centre.Y - 100.f }, Drawing::Colour::Green);
+                    const FVector2D centre = Utilities::Drawing::GetScreenCentre();
+                    Utilities::Drawing::DrawString(capstanText, { centre.X, centre.Y - 100.f }, Utilities::Drawing::Colour::Green);
                 }
             }
         }

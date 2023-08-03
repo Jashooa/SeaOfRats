@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawOxygen(SDK::UWorld* world);
+        class Oxygen
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+        };
     }
 }

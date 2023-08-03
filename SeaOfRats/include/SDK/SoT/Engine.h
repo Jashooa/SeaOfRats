@@ -90,6 +90,31 @@ namespace SDK
         ECC_MAX = 33
     };
 
+    // ScriptStruct Engine.RepMovement
+    // 0x0038
+    struct FRepMovement
+    {
+        struct FVector LinearVelocity; // 0x0000(0x000C)
+        struct FVector AngularVelocity; // 0x000C(0x000C)
+        struct FVector Location; // 0x0018(0x000C)
+        struct FRotator Rotation; // 0x0024(0x000C)
+        char pad_0x0030[0x0008];
+    };
+
+    // ScriptStruct Engine.RepAttachment
+    // 0x0048
+    struct FRepAttachment
+    {
+        class AActor* AttachParent; // 0x0000(0x0008)
+        struct FVector LocationOffset; // 0x0008(0x000C)
+        struct FVector RelativeScale3D; // 0x0014(0x000C)
+        struct FRotator RotationOffset; // 0x0020(0x000C)
+        struct FName AttachSocket; // 0x002C(0x0008)
+        char pad_0x0034[0x0004];
+        class USceneComponent* AttachComponent; // 0x0038(0x0008)
+        char pad_0x0040[0x0008];
+    };
+
     // ScriptStruct Engine.ActorPtr
     // 0x0008
     struct FActorPtr
@@ -154,7 +179,9 @@ namespace SDK
     public:
         char pad_0x0028[0x0060];
         class AActor* Owner; // 0x0088(0x0008)
-        char pad_0x0090[0x00C8];
+        struct FRepMovement ReplicatedMovement; // 0x0090(0x0038)
+        struct FRepAttachment AttachmentReplication; // 0x00C8(0x0048)
+        char pad_0x0110[0x0048];
         TArray<class AActor*> Children; // 0x0158(0x0010)
         class USceneComponent* RootComponent; // 0x0168(0x0008)
         char pad_0x0170[0x0030];
@@ -171,8 +198,11 @@ namespace SDK
 
 
         void GetActorBounds(bool bOnlyCollidingComponents, struct FVector* Origin, struct FVector* BoxExtent);
+        struct FVector GetActorForwardVector();
+        struct FVector GetActorUpVector();
         class AActor* GetAttachParentActor();
         class UActorComponent* GetComponentByClass(class UClass* ComponentClass);
+        TArray<class UActorComponent*> GetComponentsByClass(class UClass* ComponentClass);
         float GetDistanceTo(AActor* OtherActor);
         class AActor* GetParentActor();
         struct FVector GetVelocity();
@@ -307,7 +337,6 @@ namespace SDK
 
         void AddPitchInput(float Val);
         void AddYawInput(float Val);
-        bool IsInputKeyDown(const struct FKey& Key);
         bool ProjectWorldLocationToScreen(const struct FVector& WorldLocation, struct FVector2D* ScreenLocation);
     };
 
@@ -347,6 +376,22 @@ namespace SDK
         char pad_0x0028[0x0008];
         class APlayerController* PlayerController; // 0x0030(0x0008)
         char pad_0x0038[0x0010];
+    };
+
+    // Class Engine.ChildActorComponent
+    // 0x0020 (0x0300 - 0x02E0)
+    class UChildActorComponent : public USceneComponent
+    {
+    public:
+        class UClass* ChildActorClass; // 0x02E0(0x0008)
+        class AActor* ChildActor; // 0x02E8(0x0008)
+        char pad_0x02F0[0x0010];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Engine.ChildActorComponent");
+            return ptr;
+        }
     };
 
     // Class Engine.World
@@ -391,6 +436,14 @@ namespace SDK
         struct FRotator GetCameraRotation();
     };
 
+    // Class Engine.SkeletalMesh
+    // 0x0210 (0x0238 - 0x0028)
+    class USkeletalMesh : public UObject
+    {
+    public:
+        char pad_0x0028[0x0210];
+    };
+
     // Class Engine.SkinnedMeshComponent
     // 0x0120 (0x06F0 - 0x05D0)
     class USkinnedMeshComponent : public UMeshComponent
@@ -411,23 +464,12 @@ namespace SDK
         char pad_0x06F0[0x02D0];
     };
 
-    // Class Engine.KismetGuidLibrary
-    // 0x0000 (0x0028 - 0x0028)
-    class UKismetGuidLibrary : public UBlueprintFunctionLibrary
-    {
-    public:
-        static class FString Conv_GuidToString(const struct FGuid& InGuid);
-        static bool EqualEqual_GuidGuid(const struct FGuid& A, const struct FGuid& B);
-    };
-
     // Class Engine.KismetMathLibrary
     // 0x0000 (0x0028 - 0x0028)
     class UKismetMathLibrary : public UBlueprintFunctionLibrary
     {
     public:
-        static struct FVector Conv_RotatorToVector(const struct FRotator& InRot);
         static struct FRotator FindLookAtRotation(const struct FVector& Start, const struct FVector& Target);
-        static struct FVector GetForwardVector(const struct FRotator& InRot);
         static struct FRotator NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B);
     };
 
@@ -437,15 +479,6 @@ namespace SDK
     {
     public:
         static bool LineTraceSingle_NEW(class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, TEnumAsByte<ETraceTypeQuery> TraceChannel, bool bTraceComplex, TArray<class AActor*> ActorsToIgnore, TEnumAsByte<EDrawDebugTrace> DrawDebugType, bool bIgnoreSelf, struct FHitResult* OutHit);
-    };
-
-    // Class Engine.KismetTextLibrary
-    // 0x0000 (0x0028 - 0x0028)
-    class UKismetTextLibrary : public UBlueprintFunctionLibrary
-    {
-    public:
-        static class FString Conv_TextToString(const struct FText& InText);
-        static bool TextIsEmpty(const struct FText& InText);
     };
 
     // Class Engine.Canvas

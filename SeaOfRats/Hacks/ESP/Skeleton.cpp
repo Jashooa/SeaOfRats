@@ -1,7 +1,7 @@
 #include "Skeleton.h"
 
-#include "Drawing.h"
 #include "Hacks/Bones.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -9,11 +9,19 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawSkeleton(UWorld* world, AActor* actor)
+        void Skeleton::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
             const auto skeleton = reinterpret_cast<AAthenaAICharacter*>(actor);
+
+            // Get distance
+            const auto worldDistance = localPlayer->GetDistanceTo(actor);
+            const auto distance = worldDistance * 0.01f;
+            if (distance >= 500.f)
+            {
+                return;
+            }
 
             // Check if dead
             if (skeleton->IsDead())
@@ -48,14 +56,22 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::Orange;
+            const ImU32 colour = Utilities::Drawing::Colour::Orange;
 
             // Draw box
-            Drawing::DrawBoundingRect(world, actor, colour);
+            Utilities::Drawing::DrawBoundingRect(world, actor, colour);
+
+            // Draw health bar
+            /*if (const auto healthComponent = skeleton->HealthComponent)
+            {
+                const float healthCurrent = healthComponent->GetCurrentHealth();
+                const float healthMax = healthComponent->GetMaxHealth();
+                Utilities::Drawing::DrawHealthBar({ topPosition.X, topPosition.Y -= 15.f }, healthCurrent, healthMax);
+            }*/
 
             // Get name
             std::string name = "Skeleton";
-            /*if (skeleton->AssignedMesh)
+            if (skeleton->AssignedMesh)
             {
                 std::string meshName = skeleton->AssignedMesh->GetName();
                 if (meshName.find("skellyshadow") != std::string::npos)
@@ -64,7 +80,7 @@ namespace Hacks
                 }
                 else if (meshName.find("skellymetal") != std::string::npos)
                 {
-                    name = "Metal " + name;
+                    name = "Gold " + name;
                 }
                 else if (meshName.find("skellyplant") != std::string::npos)
                 {
@@ -74,18 +90,27 @@ namespace Hacks
                 {
                     name = "Ashen " + name;
                 }
+                else if (meshName.find("_goldhoarder_") != std::string::npos)
+                {
+                    name = "Gold Hoarder " + name;
+                }
 
                 if (meshName.find("_cap_") != std::string::npos)
                 {
                     name += " Captain";
                 }
 
+                if (meshName.find("_lord_") != std::string::npos)
+                {
+                    name += " Lord";
+                }
+
                 name += " Mesh: " + meshName;
 
-                if (skeleton->TeamColorTexture)
+                /*if (skeleton->TeamColorTexture)
                 {
                     std::string skeletonColour = skeleton->TeamColorTexture->GetName();
-                    /*if (skeletonColour.find("venom") != std::string::npos)
+                    if (skeletonColour.find("venom") != std::string::npos)
                     {
                         name = "Purple " + name;
                     }
@@ -104,8 +129,8 @@ namespace Hacks
                     else if (skeletonColour.find("skeleton") != std::string::npos)
                     {
                         name = "Green " + name;
-                    }*/
-                    /*if (skeletonColour.find("_red_") != std::string::npos)
+                    }
+                    if (skeletonColour.find("_red_") != std::string::npos)
                     {
                         name = "Red " + name;
                     }
@@ -119,13 +144,10 @@ namespace Hacks
                     }
                     else
                     {
-                        name += " Texture: " + skeletonColour;
+                       //  name += " Texture: " + skeletonColour;
                     }
-                }
-            }*/
-
-            // Get distance
-            const float worldDistance = localPlayer->GetDistanceTo(actor);
+                }*/
+            }
 
             /*auto namePlate = reinterpret_cast<UAINameplateComponent*>(skeleton->GetComponentByClass(UAINameplateComponent::StaticClass()));
             bool isNameplateShown = false;
@@ -138,28 +160,18 @@ namespace Hacks
 
             if (!isNameplateShown)
             {
-                int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                const auto distance = static_cast<int>(worldDistance * 0.01f);
                 name += L" [" + std::to_wstring(distance) + L"m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topPosition.X, topPosition.Y - 10.f);
-                Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
+                Utilities::Drawing::DrawString(hud, name, nameScreen, Utilities::Drawing::Colour::White);
             }*/
 
-            // Get distance
-            const int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-            name += " [" + std::to_string(distance) + "m]";
+            name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Drawing::DrawString(name, { topPosition.X, topPosition.Y - 30.f }, Drawing::Colour::White);
-
-            // Draw health bar
-            if (const auto healthComponent = skeleton->HealthComponent)
-            {
-                const float healthCurrent = healthComponent->GetCurrentHealth();
-                const float healthMax = healthComponent->GetMaxHealth();
-                Drawing::DrawHealthBar({ topPosition.X, topPosition.Y - 15.f }, healthCurrent, healthMax);
-            }
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, Utilities::Drawing::Colour::White);
 
             // Draw item info
             if (const auto wieldedItemComponent = skeleton->WieldedItemComponent)
@@ -170,8 +182,8 @@ namespace Hacks
                     {
                         if (const auto itemDesc = itemInfo->Desc)
                         {
-                            const std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-                            Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y + 15.f }, Drawing::Colour::White);
+                            const std::string itemName = itemDesc->Title.DisplayString->ToString();
+                            Utilities::Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y += 15.f }, Utilities::Drawing::Colour::White);
                         }
                     }
                 }

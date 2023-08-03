@@ -1,6 +1,6 @@
 #include "Compass.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -8,7 +8,7 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawCompass(UWorld* world)
+        void Compass::Draw(UWorld* world)
         {
             static const std::vector<std::string> compassDirections = {
                 "North",
@@ -37,12 +37,12 @@ namespace Hacks
             }
 
             const auto rotation = cameraManager->GetCameraRotation();
-            const int32_t bearing = static_cast<int32_t>(std::round(rotation.Yaw) + 450) % 360;
-            const int32_t index = static_cast<int32_t>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.f)) * 0.04444444444f);
+            const auto bearing = static_cast<int>(std::round(rotation.Yaw) + 450) % 360;
+            const auto index = static_cast<int>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.f)) * 0.04444444444f);
 
-            const FVector2D centre = Drawing::GetScreenCentre();
-            Drawing::DrawString(std::to_string(bearing), { centre.X, 10.f }, Drawing::Colour::White);
-            Drawing::DrawString(compassDirections[index], { centre.X, 25.f }, Drawing::Colour::White);
+            const FVector2D centre = Utilities::Drawing::GetScreenCentre();
+            Utilities::Drawing::DrawString(std::to_string(bearing), { centre.X, 10.f }, Utilities::Drawing::Colour::White);
+            Utilities::Drawing::DrawString(compassDirections[index], { centre.X, 25.f }, Utilities::Drawing::Colour::White);
         }
     }
 }

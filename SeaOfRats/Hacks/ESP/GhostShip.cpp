@@ -1,6 +1,6 @@
 #include "GhostShip.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -8,11 +8,18 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawGhostShip(UWorld* world, AActor* actor)
+        void GhostShip::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
             const auto ship = reinterpret_cast<AAggressiveGhostShip*>(actor);
+
+            // Get distance
+            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            if (distance >= 1500.f)
+            {
+                return;
+            }
 
             auto location = actor->K2_GetActorLocation();
             location.Z += 25.f * 100.f;
@@ -30,21 +37,18 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
-
-            // Get name
-            std::string name = "Ghost Ship";
-
-            // Get distance
-            const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += " [" + std::to_string(distance) + "m]";
-
-            // Draw name
-            Drawing::DrawString(name, { position.X, position.Y - 25.f }, colour);
+            const ImU32 colour = Utilities::Drawing::Colour::White;
 
             // Draw hits remaining
             const std::string hitsRemaining = "Hits Remaining: " + std::to_string(ship->GetNumShotsLeftToKill());
-            Drawing::DrawString(hitsRemaining, { position.X, position.Y - 10.f }, colour);
+            Utilities::Drawing::DrawString(hitsRemaining, { position.X, position.Y - 15.f }, colour);
+
+            // Get name
+            std::string name = "Ghost Ship";
+            name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
+
+            // Draw name
+            Utilities::Drawing::DrawString(name, { position.X, position.Y - 30.f }, colour);
         }
     }
 }

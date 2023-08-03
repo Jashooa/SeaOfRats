@@ -1,6 +1,6 @@
 #include "Barrel.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/General.h"
 
 using namespace SDK;
@@ -9,11 +9,18 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawBarrel(UWorld* world, AActor* actor)
+        void Barrel::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
             const auto barrel = reinterpret_cast<AStorageContainer*>(actor);
+
+            // Get distance
+            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            if (distance >= 500.f)
+            {
+                return;
+            }
 
             // Check if on-screen
             auto location = actor->K2_GetActorLocation();
@@ -34,45 +41,42 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
-            //Drawing::DrawCircleFilled(position, 3.f, colour);
-            Drawing::DrawString(ICON_FA_BOX_OPEN, position, colour);
+            const ImU32 colour = Utilities::Drawing::Colour::White;
+            Utilities::Drawing::DrawString(ICON_FA_BOX_OPEN, position, colour);
 
-            if (!Utilities::NearCursor(position))
+            if (!Utilities::General::NearCursor(position))
             {
                 return;
             }
 
             // Get name
             std::string name = "Barrel";
+            name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
+
             if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
             {
                 name = "Water " + name;
             }
 
-            // Get distance
-            const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += " [" + std::to_string(distance) + "m]";
-
             // Draw name
-            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
 
             if (const auto storageComponent = reinterpret_cast<UStorageContainerComponent*>(barrel->GetComponentByClass(UStorageContainerComponent::StaticClass())))
             {
-                auto nodes = storageComponent->ContainerNodes.ContainerNodes;
-                for (auto nodeIndex = 0; nodeIndex < nodes.Num(); ++nodeIndex)
+                const auto nodes = storageComponent->ContainerNodes.ContainerNodes;
+                for (int nodeIndex = 0; nodeIndex < nodes.Num(); ++nodeIndex)
                 {
                     const auto& node = nodes[nodeIndex];
                     if (const UItemDesc* itemDesc = node.ItemDesc->CreateDefaultObject<UItemDesc>())
                     {
-                        if (UKismetTextLibrary::TextIsEmpty(itemDesc->Title))
+                        std::string itemName = itemDesc->Title.DisplayString->ToString();
+                        if (itemName.empty())
                         {
                             continue;
                         }
-                        std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
                         itemName = std::to_string(node.NumItems) + "x " + itemName;
 
-                        Drawing::DrawString(itemName, { position.X, position.Y + 15.f * (nodeIndex + 1) }, colour);
+                        Utilities::Drawing::DrawString(itemName, { position.X, position.Y + 15.f * (nodeIndex + 1) }, colour);
                     }
                 }
             }

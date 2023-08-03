@@ -1,7 +1,8 @@
 #include "Player.h"
 
-#include "Drawing.h"
 #include "Hacks/Bones.h"
+#include "Utilities/Drawing.h"
+#include "Utilities/Input.h"
 #include "Utilities/Math.h"
 
 using namespace SDK;
@@ -10,30 +11,22 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        struct
-        {
-            AActor* target = nullptr;
-            FVector location;
-            FRotator delta;
-            float best = FLT_MAX;
-        } bestAim;
+        Player::BestAim Player::bestAim{};
+        SDK::FVector Player::cameraLocation;
+        SDK::FRotator Player::cameraRotation;
+        SDK::AProjectileWeapon* Player::weapon;
+        SDK::FVector2D Player::centreScreen;
 
-        FVector cameraLocation;
-        FRotator cameraRotation;
-        AProjectileWeapon* playerWeapon = nullptr;
-        FVector2D centreScreen;
-        const float aimRadius = 100.f;
-
-        void InitAimPlayer(UWorld* world)
+        void Player::InitAim(UWorld * world)
         {
             bestAim.target = nullptr;
             bestAim.best = FLT_MAX;
-            playerWeapon = nullptr;
+            weapon = nullptr;
 
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = reinterpret_cast<AAthenaCharacter*>(playerController->Pawn);
 
-            centreScreen = Drawing::GetScreenCentre();
+            centreScreen = Utilities::Drawing::GetScreenCentre();
 
             if (const auto wieldedItemComponent = localPlayer->WieldedItemComponent)
             {
@@ -41,8 +34,8 @@ namespace Hacks
                 {
                     if (wieldedItem->IsA(AProjectileWeapon::StaticClass()))
                     {
-                        playerWeapon = reinterpret_cast<AProjectileWeapon*>(wieldedItem);
-                        Drawing::DrawCircle(centreScreen, aimRadius, Drawing::Colour::Red);
+                        weapon = reinterpret_cast<AProjectileWeapon*>(wieldedItem);
+                        Utilities::Drawing::DrawCircle(centreScreen, aimRadius, Utilities::Drawing::Colour::Red);
                     }
                 }
             }
@@ -51,15 +44,15 @@ namespace Hacks
             cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
         }
 
-        void CalculateAimPlayer(UWorld* world, AActor* actor)
+        void Player::CalculateAim(UWorld* world, AActor* actor)
         {
-            if (!playerWeapon)
+            if (!weapon)
             {
                 return;
             }
 
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = playerController->Pawn;
 
             // Check if me
             if (actor == localPlayer)
@@ -80,7 +73,7 @@ namespace Hacks
             }
 
             // Check if on screen
-            auto location = actor->K2_GetActorLocation();
+            const auto location = actor->K2_GetActorLocation();
             FVector2D screen;
             if (!playerController->ProjectWorldLocationToScreen(location, &screen))
             {
@@ -88,8 +81,8 @@ namespace Hacks
             }
 
             // Check if out of range
-            auto distance = localPlayer->GetDistanceTo(actor);
-            if (distance > playerWeapon->WeaponParameters.ProjectileMaximumRange)
+            const auto distance = localPlayer->GetDistanceTo(actor);
+            if (distance > weapon->WeaponParameters.ProjectileMaximumRange)
             {
                 return;
             }
@@ -100,10 +93,11 @@ namespace Hacks
                 return;
             }
 
-            FRotator rotationDelta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, location), cameraRotation);
-            float absYaw = abs(rotationDelta.Yaw);
-            float absPitch = abs(rotationDelta.Pitch);
-            float sum = absYaw + absPitch;
+            FRotator rotationDelta = FRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, location) - cameraRotation);
+            rotationDelta.Normalize();
+            const float absYaw = FMath::Abs(rotationDelta.Yaw);
+            const float absPitch = FMath::Abs(rotationDelta.Pitch);
+            const float sum = absYaw + absPitch;
 
             if (sum < bestAim.best)
             {
@@ -114,20 +108,20 @@ namespace Hacks
             }
         }
 
-        void AimPlayer(UWorld* world)
+        void Player::Aim(UWorld* world)
         {
             if (!bestAim.target)
             {
                 return;
             }
 
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
-            auto localPlayer = playerController->Pawn;
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto localPlayer = playerController->Pawn;
 
             FVector aimLocation;
             if (bestAim.target->IsA(AAthenaPlayerCharacter::StaticClass()) || bestAim.target->IsA(AAthenaAICharacter::StaticClass()))
             {
-                aimLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::UPPER_BODY_LOCK__Skeleton);
+                aimLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
             }
             else
             {
@@ -141,13 +135,13 @@ namespace Hacks
             }
             bestAim.location = aimLocation;
 
-            if (!Utilities::PointInCircle(position, centreScreen, aimRadius))
+            if (!Utilities::Math::PointInCircle(position, centreScreen, aimRadius))
             {
                 return;
             }
 
             // FVector localVelocity = localPlayer->GetVelocity();
-            FVector localVelocity(0.f, 0.f, 0.f);
+            FVector localVelocity{ 0.f };
             if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
             {
                 localVelocity += localShip->GetVelocity();
@@ -160,7 +154,7 @@ namespace Hacks
             }
 
             const FVector relativeVelocity = targetVelocity - localVelocity;
-            const float bulletSpeed = playerWeapon->WeaponParameters.AmmoParams.Velocity;
+            const float bulletSpeed = weapon->WeaponParameters.AmmoParams.Velocity;
             const FVector relativeLocation = localPlayer->K2_GetActorLocation() - bestAim.location;
             const float a = relativeVelocity.Size() - bulletSpeed * bulletSpeed;
             const float b = (relativeLocation * relativeVelocity * 2.f).Sum();
@@ -185,69 +179,61 @@ namespace Hacks
                 {
                     return;
                 }
-                Drawing::DrawString("x", position, Drawing::Colour::Red);
-                // Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.f, 200.f), Drawing::Colour::Red, false);
-                // Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.f, 215.f), Drawing::Colour::Red, false);
-                // Drawing::DrawString("Velocity: " + std::to_string(bulletSpeed), FVector2D(200.f, 200.f), Drawing::Colour::Red, false);
+                Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::Red);
+                // Utilities::Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(200.f, 200.f), Utilities::Drawing::Colour::Red, false);
+                // Utilities::Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(200.f, 215.f), Utilities::Drawing::Colour::Red, false);
+                // Utilities::Drawing::DrawString("Velocity: " + std::to_string(bulletSpeed), FVector2D(200.f, 200.f), Utilities::Drawing::Colour::Red, false);
 
-                // if (playerController->IsInputKeyDown(FKey{ "LeftMouseButton" }))
-                // if (playerController->IsInputKeyDown(FKey{ "LeftAlt" }))
-                if ((GetAsyncKeyState(VK_LMENU) & 0x8000) != 0)
+                if (Utilities::Input::IsKeyPressed(VK_MENU))
                 {
                     // bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
 
-                    auto aimSpeed = 5.f;
-                    auto smoothness = 1.f / aimSpeed;
+                    // auto aimSpeed = 5.f;
+                    // auto smoothness = 1.f / aimSpeed;
                     // playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
                     // playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
-
-                    FVector2D centre = Drawing::GetScreenCentre();
 
                     float targetX = 0;
                     float targetY = 0;
 
-                    if (position.X > centre.X)
+                    const float centreX = centreScreen.X;
+                    const float centreY = centreScreen.Y;
+
+                    if (position.X > centreX)
                     {
-                        targetX = -(centre.X - position.X);
-                        // targetX /= aimSpeed;
-                        if (targetX + centre.X > centre.X * 2)
+                        targetX = -(centreX - position.X);
+                        if (targetX + centreX > centreX * 2)
                         {
                             targetX = 0;
                         }
                     }
                     else
                     {
-                        targetX = position.X - centre.X;
-                        // targetX /= aimSpeed;
-                        if (targetX + centre.X < 0)
+                        targetX = position.X - centreX;
+                        if (targetX + centreX < 0)
                         {
                             targetX = 0;
                         }
                     }
 
-                    if (position.Y > centre.Y)
+                    if (position.Y > centreY)
                     {
-                        targetY = -(centre.Y - position.Y);
-                        // targetY /= aimSpeed;
-                        if (targetY + centre.Y > centre.Y * 2)
+                        targetY = -(centreY - position.Y);
+                        if (targetY + centreY > centreY * 2)
                         {
                             targetY = 0;
                         }
                     }
                     else
                     {
-                        targetY = position.Y - centre.Y;
-                        // targetY /= aimSpeed;
-                        if (targetY + centre.Y < 0)
+                        targetY = position.Y - centreY;
+                        if (targetY + centreY < 0)
                         {
                             targetY = 0;
                         }
                     }
 
-                    if ((GetAsyncKeyState(VK_LMENU) & 0x8000) != 0)
-                    {
-                        mouse_event(MOUSEEVENTF_MOVE, (DWORD)(targetX), (DWORD)(targetY), NULL, NULL);
-                    }
+                    Utilities::Input::MouseMove(static_cast<int>(targetX), static_cast<int>(targetY));
                 }
             }
         }

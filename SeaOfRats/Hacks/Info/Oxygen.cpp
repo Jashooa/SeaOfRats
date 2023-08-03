@@ -1,6 +1,6 @@
 #include "Oxygen.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -8,7 +8,7 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawOxygen(UWorld* world)
+        void Oxygen::Draw(UWorld* world)
         {
             const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn);
 
@@ -22,9 +22,9 @@ namespace Hacks
                 const int oxygenLevel = static_cast<int>(drowningComponent->GetOxygenLevel() * 100.f);
                 if (oxygenLevel < 100)
                 {
-                    const FVector2D centre = Drawing::GetScreenCentre();
+                    const FVector2D centre = Utilities::Drawing::GetScreenCentre();
                     const std::string oxygenText = "Oxygen: " + std::to_string(oxygenLevel) + "%";
-                    Drawing::DrawString(oxygenText, { centre.X, 50.f }, Drawing::Colour::Red);
+                    Utilities::Drawing::DrawString(oxygenText, { centre.X, 50.f }, Utilities::Drawing::Colour::Red);
                 }
             }
         }

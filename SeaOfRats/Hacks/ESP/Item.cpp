@@ -1,6 +1,6 @@
 #include "Item.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/General.h"
 
 using namespace SDK;
@@ -9,11 +9,18 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawItem(UWorld* world, AActor* actor)
+        void Item::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
             const auto item = reinterpret_cast<AFloatingItemProxy*>(actor);
+
+            // Get distance
+            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            if (distance >= 500.f)
+            {
+                return;
+            }
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
@@ -24,7 +31,7 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
+            ImU32 colour = Utilities::Drawing::Colour::White;
 
             // Get item info
             if (const auto itemInfo = item->ItemInfo)
@@ -36,30 +43,30 @@ namespace Hacks
                     const std::string rarity = bootyItemInfo->Rarity.GetName();
                     if (rarity == "Common")
                     {
-                        colour = Drawing::Colour::Grey;
+                        colour = Utilities::Drawing::Colour::Grey;
                     }
                     else if (rarity == "Rare")
                     {
-                        colour = Drawing::Colour::Green;
+                        colour = Utilities::Drawing::Colour::Green;
                     }
                     else if (rarity == "Legendary")
                     {
-                        colour = Drawing::Colour::Purple;
+                        colour = Utilities::Drawing::Colour::Purple;
                     }
                     else if (rarity == "Mythical")
                     {
-                        colour = Drawing::Colour::Orange;
+                        colour = Utilities::Drawing::Colour::Orange;
                     }
                     else
                     {
-                        colour = Drawing::Colour::Blue;
+                        colour = Utilities::Drawing::Colour::Blue;
                     }
                 }
 
-                //Drawing::DrawCircleFilled(position, 3.f, colour);
-                Drawing::DrawString(ICON_FA_GEM, position, colour);
+                //Utilities::Drawing::DrawCircleFilled(position, 3.f, colour);
+                Utilities::Drawing::DrawString(ICON_FA_GEM, position, colour);
 
-                if (!Utilities::NearCursor(position))
+                if (!Utilities::General::NearCursor(position))
                 {
                     return;
                 }
@@ -67,14 +74,11 @@ namespace Hacks
                 if (const auto itemDesc = itemInfo->Desc)
                 {
                     // Get name
-                    std::string name = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-
-                    // Get distance
-                    const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-                    name += " [" + std::to_string(distance) + "m]";
+                    std::string name = itemDesc->Title.DisplayString->ToString();
+                    name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
                     // Draw name
-                    Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+                    Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
                 }
             }
         }

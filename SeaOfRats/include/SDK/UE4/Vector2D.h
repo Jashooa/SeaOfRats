@@ -11,6 +11,9 @@ namespace SDK
         float X; // 0x0000(0x0004)
         float Y; // 0x0004(0x0004)
 
+        static const FVector2D ZeroVector;
+        static const FVector2D UnitVector;
+
         inline FVector2D() : X(0.f), Y(0.f)
         {
         }
@@ -70,7 +73,21 @@ namespace SDK
             return sqrtf(FVector2D::DistSquared(V1, V2));
         }
 
-        inline FVector2D GetSafeNormal(float Tolerance = SMALL_NUMBER)
+        inline void Normalize(float Tolerance = SMALL_NUMBER)
+        {
+            const float SquareSum = X * X + Y * Y;
+            if (SquareSum > Tolerance)
+            {
+                const float Scale = FMath::InvSqrt(SquareSum);
+                X *= Scale;
+                Y *= Scale;
+                return;
+            }
+            X = 0.f;
+            Y = 0.f;
+        }
+
+        inline FVector2D GetSafeNormal(float Tolerance = SMALL_NUMBER) const
         {
             const float SquareSum = X * X + Y * Y;
             if (SquareSum > Tolerance)

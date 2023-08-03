@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawPlayerList(SDK::UWorld* world);
+        class PlayerList
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+        };
     }
 }

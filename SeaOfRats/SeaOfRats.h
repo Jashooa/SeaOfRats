@@ -8,6 +8,7 @@ class SeaOfRats
 {
 public:
     SeaOfRats(HMODULE module);
+
     void Install();
     void Uninstall();
 

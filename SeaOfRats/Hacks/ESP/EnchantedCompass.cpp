@@ -1,6 +1,6 @@
 #include "EnchantedCompass.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/General.h"
 
 using namespace SDK;
@@ -9,7 +9,7 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawEnchantedCompass(UWorld* world, AActor* actor)
+        void EnchantedCompass::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
@@ -29,11 +29,11 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
-            //Drawing::DrawCircleFilled(position, 3.f, colour);
-            Drawing::DrawString(ICON_FA_COMPASS, position, colour);
+            const ImU32 colour = Utilities::Drawing::Colour::White;
+            //Utilities::Drawing::DrawCircleFilled(position, 3.f, colour);
+            Utilities::Drawing::DrawString(ICON_FA_COMPASS, position, colour);
 
-            if (!Utilities::NearCursor(position))
+            if (!Utilities::General::NearCursor(position))
             {
                 return;
             }
@@ -42,18 +42,18 @@ namespace Hacks
             std::string name = "Enchanted Compass Location";
 
             // Get distance
-            const int32_t distance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
+            const auto distance = static_cast<int>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
             name += " [" + std::to_string(distance) + "m]";
 
             // Draw name
-            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
         }
 
-        void DrawMultiTargetEnchantedCompass(UWorld* world, AActor* actor)
+        void EnchantedCompass::DrawMultiTarget(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
-            const auto multiTargetEnchantedCompass = reinterpret_cast<AMultiTargetEnchantedCompass*>(actor);
+            // const auto multiTargetEnchantedCompass = reinterpret_cast<AMultiTargetEnchantedCompass*>(actor);
 
             // Not mine
             if (actor->GetAttachParentActor() != localPlayer)
@@ -63,7 +63,7 @@ namespace Hacks
 
             /*const auto locations = multiTargetEnchantedCompass->Locations;
 
-            for (auto locationIndex = 0; locationIndex < locations.Num(); ++locationIndex)
+            for (int locationIndex = 0; locationIndex < locations.Num(); ++locationIndex)
             {
                 const auto& location = locations[locationIndex];
 
@@ -74,11 +74,11 @@ namespace Hacks
                 }
 
                 // Colour
-                ImU32 colour = Drawing::Colour::White;
-                //Drawing::DrawCircleFilled(position, 3.f, colour);
-                Drawing::DrawString(ICON_FA_COMPASS, position, colour);
+                const ImU32 colour = Utilities::Drawing::Colour::White;
+                //Utilities::Drawing::DrawCircleFilled(position, 3.f, colour);
+                Utilities::Drawing::DrawString(ICON_FA_COMPASS, position, colour);
 
-                if (!Utilities::NearCursor(position))
+                if (!Utilities::General::NearCursor(position))
                 {
                     return;
                 }
@@ -87,11 +87,11 @@ namespace Hacks
                 std::string name = "Enchanted Compass Location " + std::to_string(locationIndex + 1);
 
                 // Get distance
-                const int32_t distance = static_cast<int32_t>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
+                const auto distance = static_cast<int>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
                 name += " [" + std::to_string(distance) + "m]";
 
                 // Draw name
-                Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+                Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
             }*/
         }
     }

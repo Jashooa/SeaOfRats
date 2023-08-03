@@ -4,6 +4,21 @@ namespace SDK
 {
     UAthenaGameViewportClient* UAthenaGameViewportClient::GAthenaGameViewportClient = nullptr;
 
+    // Function Athena.Mast.IsMastFullyDamaged
+    bool AMast::IsMastFullyDamaged()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.Mast.IsMastFullyDamaged");
+
+        struct
+        {
+            bool ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
+    }
+
     // Function Athena.AthenaCharacter.GetCurrentShip
     class AActor* AAthenaCharacter::GetCurrentShip()
     {
@@ -12,11 +27,11 @@ namespace SDK
         struct
         {
             class AActor* ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.AthenaCharacter.IsDead
@@ -27,11 +42,11 @@ namespace SDK
         struct
         {
             bool ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.AthenaCharacter.IsInWater
@@ -42,11 +57,11 @@ namespace SDK
         struct
         {
             bool ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.AthenaPlayerState.GetHumanReadableName
@@ -57,11 +72,11 @@ namespace SDK
         struct
         {
             class FString ReturnValue;
-        } params;
+        } parms;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.AthenaPlayerState.GetPlayerActivity
@@ -72,11 +87,11 @@ namespace SDK
         struct
         {
             TEnumAsByte<EPlayerActivityType> ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.OnlineAthenaPlayerController.IsClientAndInActiveGameplay
@@ -87,11 +102,11 @@ namespace SDK
         struct
         {
             bool ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.OnlineAthenaPlayerController.ModifyActiveState
@@ -102,10 +117,53 @@ namespace SDK
         struct
         {
             bool IsActive;
-        } params{};
-        params.IsActive = IsActive;
+        } parms{};
+        parms.IsActive = IsActive;
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
+    }
+
+    // Function Athena.Cannon.Fire
+    void ACannon::Fire()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.Cannon.Fire");
+
+        struct
+        {
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+    }
+
+    // Function Athena.Cannon.ForceAimCannon
+    void ACannon::ForceAimCannon(float Pitch, float Yaw)
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.Cannon.ForceAimCannon");
+
+        struct
+        {
+            float Pitch;
+            float Yaw;
+        } parms{};
+        parms.Pitch = Pitch;
+        parms.Yaw = Yaw;
+
+        UObject::ProcessEvent(this, fn, &parms);
+    }
+
+    // Function Athena.Ship.GetHullDamage
+    class AHullDamage* AShip::GetHullDamage()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.Ship.GetHullDamage");
+
+        struct
+        {
+            class AHullDamage* ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
     }
 
     // Function Athena.Ship.GetInternalWater
@@ -116,11 +174,11 @@ namespace SDK
         struct
         {
             class AShipInternalWater* ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.ShipService.GetNumShips
@@ -131,11 +189,11 @@ namespace SDK
         struct
         {
             int ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.CrewFunctions.AreCharactersInSameCrew
@@ -148,14 +206,14 @@ namespace SDK
             class AAthenaCharacter* Player1;
             class AAthenaCharacter* Player2;
             bool ReturnValue;
-        } params{};
-        params.Player1 = Player1;
-        params.Player2 = Player2;
+        } parms{};
+        parms.Player1 = Player1;
+        parms.Player2 = Player2;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Athena.CrewFunctions");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.CrewFunctions.GetCrewIdFromActor
@@ -168,14 +226,14 @@ namespace SDK
             class UObject* WorldContext;
             class AActor* Actor;
             struct FGuid ReturnValue;
-        } params{};
-        params.WorldContext = WorldContext;
-        params.Actor = Actor;
+        } parms{};
+        parms.WorldContext = WorldContext;
+        parms.Actor = Actor;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Athena.CrewFunctions");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.CrewFunctions.IsActorMemberOfCharactersCrew
@@ -188,14 +246,14 @@ namespace SDK
             class AActor* Actor;
             class AAthenaCharacter* Player;
             bool ReturnValue;
-        } params{};
-        params.Actor = Actor;
-        params.Player = Player;
+        } parms{};
+        parms.Actor = Actor;
+        parms.Player = Player;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Athena.CrewFunctions");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.HealthComponent.GetCurrentHealth
@@ -206,11 +264,11 @@ namespace SDK
         struct
         {
             float ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.HealthComponent.GetMaxHealth
@@ -221,11 +279,26 @@ namespace SDK
         struct
         {
             float ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
+    }
+
+    // Function Athena.HullDamage.IsShipSinking
+    bool AHullDamage::IsShipSinking()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.HullDamage.IsShipSinking");
+
+        struct
+        {
+            bool ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
     }
 
     // Function Athena.Mermaid.GetCrewIdsResponsibleForSavingAsCopy
@@ -236,11 +309,11 @@ namespace SDK
         struct
         {
             TArray<struct FGuid> ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.WieldableInterface.GetActor
@@ -251,11 +324,11 @@ namespace SDK
         struct
         {
             class AActor* ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.ActorFunctionLibrary.FindActorByName
@@ -268,14 +341,14 @@ namespace SDK
             class UObject* WorldContext;
             class FString ActorName;
             class AActor* ReturnValue;
-        } params{};
-        params.WorldContext = WorldContext;
-        params.ActorName = ActorName;
+        } parms{};
+        parms.WorldContext = WorldContext;
+        parms.ActorName = ActorName;
 
         static auto defaultObj = UObject::FindObject<UClass>("Class Athena.ActorFunctionLibrary");
-        UObject::ProcessEvent(defaultObj, fn, &params);
+        UObject::ProcessEvent(defaultObj, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.DrowningComponent.GetOxygenLevel
@@ -286,11 +359,26 @@ namespace SDK
         struct
         {
             float ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
+    }
+
+    // Function Athena.ShipInternalWater.GetNormalizedWaterAmount
+    float AShipInternalWater::GetNormalizedWaterAmount()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Athena.ShipInternalWater.GetNormalizedWaterAmount");
+
+        struct
+        {
+            float ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
     }
 
     // Function Athena.AggressiveGhostShip.GetNumShotsLeftToKill
@@ -301,11 +389,11 @@ namespace SDK
         struct
         {
             int ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 
     // Function Athena.AggressiveGhostShip.GetShipType
@@ -316,10 +404,10 @@ namespace SDK
         struct
         {
             TEnumAsByte<EAggressiveGhostShipType> ReturnValue;
-        } params{};
+        } parms{};
 
-        UObject::ProcessEvent(this, fn, &params);
+        UObject::ProcessEvent(this, fn, &parms);
 
-        return params.ReturnValue;
+        return parms.ReturnValue;
     }
 }

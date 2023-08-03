@@ -1,6 +1,6 @@
 #include "Mermaid.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/General.h"
 
 using namespace SDK;
@@ -9,11 +9,18 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawMermaid(UWorld* world, AActor* actor)
+        void Mermaid::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
             const auto mermaid = reinterpret_cast<AMermaid*>(actor);
+
+            // Get distance
+            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            if (distance >= 1500.f)
+            {
+                return;
+            }
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
@@ -24,35 +31,31 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
-            //Drawing::DrawCircleFilled(position, 3.f, colour);
-            Drawing::DrawString(ICON_FA_LIFE_RING, position, colour);
+            ImU32 colour = Utilities::Drawing::Colour::White;
+            Utilities::Drawing::DrawString(ICON_FA_LIFE_RING, position, colour);
 
-            if (!Utilities::NearCursor(position))
+            if (!Utilities::General::NearCursor(position))
             {
                 return;
             }
 
             // Get name
             std::string name = "Mermaid";
+            name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Check if my mermaid
             const auto localCrewId = UCrewFunctions::GetCrewIdFromActor(world, localPlayer);
             const auto crewIds = mermaid->GetCrewIdsResponsibleForSavingAsCopy();
-            for (auto idIndex = 0; idIndex < crewIds.Num(); ++idIndex)
+            for (int idIndex = 0; idIndex < crewIds.Num(); ++idIndex)
             {
-                if (UKismetGuidLibrary::EqualEqual_GuidGuid(crewIds[idIndex], localCrewId))
+                if (crewIds[idIndex] == localCrewId)
                 {
                     name = "My " + name;
                 }
             }
 
-            // Get distance
-            const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += " [" + std::to_string(distance) + "m]";
-
             // Draw name
-            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
         }
     }
 }

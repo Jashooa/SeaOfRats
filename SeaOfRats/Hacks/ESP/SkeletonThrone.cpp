@@ -1,6 +1,6 @@
 #include "SkeletonThrone.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/General.h"
 
 using namespace SDK;
@@ -9,10 +9,17 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawSkeletonThrone(UWorld* world, AActor* actor)
+        void SkeletonThrone::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
+
+            // Get distance
+            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            if (distance >= 1500.f)
+            {
+                return;
+            }
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
@@ -23,21 +30,20 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::White;
-            Drawing::DrawString(ICON_FA_COUCH, position, colour);
+            const ImU32 colour = Utilities::Drawing::Colour::White;
+            Utilities::Drawing::DrawString(ICON_FA_COUCH, position, colour);
 
-            if (!Utilities::NearCursor(position))
+            if (!Utilities::General::NearCursor(position))
             {
                 return;
             }
 
             // Get name
             std::string name = "Skeleton Throne";
-            const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += " [" + std::to_string(distance) + "m]";
+            name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
         }
     }
 }

@@ -1,16 +1,3 @@
-#include <cmath>
-#include <string>
-#include <vector>
-
-#include "include/SDK/SDK.h"
-#include "include/spdlog/spdlog.h"
-
-#include "Config.h"
-#include "Drawing.h"
-#include "Hacks/Bones.h"
-
-using namespace SDK;
-
 namespace Hacks
 {
     namespace ESP
@@ -34,12 +21,12 @@ namespace Hacks
             //std::wstring name = UKismetTextLibrary::Conv_TextToString(shipwreck->LocalisedName).c_str();
             std::wstring name = L"Shipwreck";
 
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            const auto distance = static_cast<int>(localPlayer->GetDistanceTo(actor) * 0.01f);
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.f);
-            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
+            Utilities::Drawing::DrawString(hud, name, nameScreen, Utilities::Drawing::Colour::White);
         }*/
 
         /*void DrawEvent(UWorld* world, AActor* actor)
@@ -56,7 +43,7 @@ namespace Hacks
             {
                 return;
             }
-            Drawing::DrawBoundingBox(client, hud, actor, Drawing::Colour::White);
+            Utilities::Drawing::DrawBoundingBox(client, hud, actor, Utilities::Drawing::Colour::White);
 
             // Get name
             std::wstring name = L"Event";
@@ -76,12 +63,12 @@ namespace Hacks
                     break;
             }
 
-            int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
+            const auto distance = static_cast<int>(localPlayer->GetDistanceTo(actor) * 0.01f);
             name += L" [" + std::to_wstring(distance) + L"m]";
 
             // Draw name
             FVector2D nameScreen = FVector2D(screen.X, screen.Y - 10.f);
-            Drawing::DrawString(hud, name, nameScreen, Drawing::Colour::White);
+            Utilities::Drawing::DrawString(hud, name, nameScreen, Utilities::Drawing::Colour::White);
         }*/
 
         /*void DrawDebug(UWorld* world, AActor* actor)
@@ -151,7 +138,7 @@ namespace Hacks
             if (name.find("StaticMeshActor") != std::string::npos)
                 return;
             //name = actor->GetFullName();
-            Drawing::DrawString(name, screen, Drawing::Colour::Red);
+            Utilities::Drawing::DrawString(name, screen, Utilities::Drawing::Colour::Red);
         }*/
     }
 }

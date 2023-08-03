@@ -1,7 +1,7 @@
 #include "Player.h"
 
-#include "Drawing.h"
 #include "Hacks/Bones.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -9,7 +9,7 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawPlayer(UWorld* world, AActor* actor)
+        void Player::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
@@ -17,6 +17,14 @@ namespace Hacks
 
             // Check if me
             if (player == localPlayer)
+            {
+                return;
+            }
+
+            // Get distance
+            const auto worldDistance = localPlayer->GetDistanceTo(actor);
+            const auto distance = worldDistance * 0.01f;
+            if (distance >= 500.f)
             {
                 return;
             }
@@ -54,20 +62,17 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::Red;
+            ImU32 colour = Utilities::Drawing::Colour::Red;
 
             // Check friendly
             if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player))
             {
-                colour = Drawing::Colour::Green;
+                colour = Utilities::Drawing::Colour::Green;
             }
 
             // Draw box
-            Drawing::DrawBoundingRect(world, actor, colour);
+            Utilities::Drawing::DrawBoundingRect(world, actor, colour);
             DrawBones(world, actor);
-
-            // Get distance
-            const float worldDistance = localPlayer->GetDistanceTo(actor);
 
             /*auto namePlate = reinterpret_cast<UPlayerNameplateComponent*>(player->GetComponentByClass(UPlayerNameplateComponent::StaticClass()));
             bool isNameplateShown = (worldDistance < namePlate->VisibleUntilWorldDistanceNonCrew) && playerController->LineOfSightTo(actor, FVector(0.f, 0.f, 0.f), false);
@@ -76,13 +81,21 @@ namespace Hacks
             {
                 // Get name
                 std::wstring name = player->PlayerState->PlayerName.c_str();
-                int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
+                const auto distance = static_cast<int>(worldDistance * 0.01f);
                 name += L" [" + std::to_wstring(distance) + L"m]";
 
                 // Draw name
                 FVector2D nameScreen = FVector2D(topPosition.X, topPosition.Y - 10.f);
-                Drawing::DrawString(hud, name, nameScreen, colour);
+                Utilities::Drawing::DrawString(hud, name, nameScreen, colour);
             }*/
+
+            // Draw health bar
+            if (const auto healthComponent = player->HealthComponent)
+            {
+                const float healthCurrent = healthComponent->GetCurrentHealth();
+                const float healthMax = healthComponent->GetMaxHealth();
+                Utilities::Drawing::DrawHealthBar({ topPosition.X, topPosition.Y -= 15.f }, healthCurrent, healthMax);
+            }
 
             if (const auto playerState = player->PlayerState)
             {
@@ -94,19 +107,10 @@ namespace Hacks
                     name = "Player";
                 }
 
-                const int32_t distance = static_cast<int32_t>(worldDistance * 0.01f);
-                name += " [" + std::to_string(distance) + "m]";
+                name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
                 // Draw name
-                Drawing::DrawString(name, { topPosition.X, topPosition.Y - 30.f }, colour);
-            }
-
-            // Draw health bar
-            if (const auto healthComponent = player->HealthComponent)
-            {
-                const float healthCurrent = healthComponent->GetCurrentHealth();
-                const float healthMax = healthComponent->GetMaxHealth();
-                Drawing::DrawHealthBar({ topPosition.X, topPosition.Y - 15.f }, healthCurrent, healthMax);
+                Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
             }
 
             // Draw item info
@@ -118,8 +122,8 @@ namespace Hacks
                     {
                         if (const auto itemDesc = itemInfo->Desc)
                         {
-                            const std::string itemName = UKismetTextLibrary::Conv_TextToString(itemDesc->Title).ToString();
-                            Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y + 15.f }, Drawing::Colour::White);
+                            const std::string itemName = itemDesc->Title.DisplayString->ToString();
+                            Utilities::Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y += 15.f }, Utilities::Drawing::Colour::White);
                         }
                     }
                 }

@@ -138,13 +138,7 @@
     <ClCompile Include="include\SDK\SoT\Engine.cpp">
       <Filter>Source Files\include\SDK\SoT</Filter>
     </ClCompile>
-    <ClCompile Include="include\SDK\SoT\Maths.cpp">
-      <Filter>Source Files\include\SDK\SoT</Filter>
-    </ClCompile>
     <ClCompile Include="Hooks.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI.cpp">
@@ -232,9 +226,21 @@
       <Filter>Source Files\Hacks\ESP</Filter>
     </ClCompile>
     <ClCompile Include="Hacks\Aimbot\Aim.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Hacks\Aimbot</Filter>
     </ClCompile>
     <ClCompile Include="Utilities\Math.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Input.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Drawing.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\General.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Unreal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -596,12 +602,6 @@
     <ClInclude Include="include\SDK\UE4\Guid.h">
       <Filter>Header Files\include\SDK\UE4</Filter>
     </ClInclude>
-    <ClInclude Include="include\SDK\SoT\Maths.h">
-      <Filter>Header Files\include\SDK\SoT</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SDK\SoT\InputCore.h">
-      <Filter>Header Files\include\SDK\SoT</Filter>
-    </ClInclude>
     <ClInclude Include="include\SDK\SoT\AthenaAI.h">
       <Filter>Header Files\include\SDK\SoT</Filter>
     </ClInclude>
@@ -609,9 +609,6 @@
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Hooks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
@@ -713,7 +710,28 @@
     <ClInclude Include="include\FontAwesome\FontAwesome.h">
       <Filter>Header Files\include\FontAwesome</Filter>
     </ClInclude>
+    <ClInclude Include="Utilities\Drawing.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="Hacks\Aimbot\Aim.h">
+      <Filter>Header Files\Hacks\Aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Axis.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Input.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\Plane.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\UE4\SSE.h">
+      <Filter>Header Files\include\SDK\UE4</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Unreal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SDK\SoT\PirateGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

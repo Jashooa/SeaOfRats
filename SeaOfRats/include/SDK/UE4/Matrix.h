@@ -1,17 +1,8 @@
 #pragma once
 
-#include <emmintrin.h>
-
+#include "Axis.h"
+#include "SSE.h"
 #include "Vector.h"
-
-typedef __m128	VectorRegister;
-typedef __m128i VectorRegisterInt;
-
-#define SHUFFLEMASK(A0,A1,B2,B3) ( (A0) | ((A1)<<2) | ((B2)<<4) | ((B3)<<6) )
-
-#define VectorReplicate( Vec, ElementIndex ) _mm_shuffle_ps( Vec, Vec, SHUFFLEMASK(ElementIndex,ElementIndex,ElementIndex,ElementIndex) )
-#define VectorMultiply( Vec1, Vec2 ) _mm_mul_ps( Vec1, Vec2 )
-#define VectorMultiplyAdd( Vec1, Vec2, Vec3 ) _mm_add_ps( _mm_mul_ps(Vec1, Vec2), Vec3 )
 
 namespace SDK
 {
@@ -23,45 +14,34 @@ namespace SDK
             __declspec(align(16)) float M[4][4];
         };
 
-        inline void VectorMatrixMultiply(void* Result, const void* Matrix1, const void* Matrix2)
+        alignas(16) static const FMatrix Identity;
+
+        inline FMatrix()
         {
-            const VectorRegister* A = (const VectorRegister*) Matrix1;
-            const VectorRegister* B = (const VectorRegister*) Matrix2;
-            VectorRegister* R = (VectorRegister*) Result;
-            VectorRegister Temp, R0, R1, R2, R3;
-
-            // First row of result (Matrix1[0] * Matrix2).
-            Temp = VectorMultiply(VectorReplicate(A[0], 0), B[0]);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[0], 1), B[1], Temp);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[0], 2), B[2], Temp);
-            R0 = VectorMultiplyAdd(VectorReplicate(A[0], 3), B[3], Temp);
-
-            // Second row of result (Matrix1[1] * Matrix2).
-            Temp = VectorMultiply(VectorReplicate(A[1], 0), B[0]);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[1], 1), B[1], Temp);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[1], 2), B[2], Temp);
-            R1 = VectorMultiplyAdd(VectorReplicate(A[1], 3), B[3], Temp);
-
-            // Third row of result (Matrix1[2] * Matrix2).
-            Temp = VectorMultiply(VectorReplicate(A[2], 0), B[0]);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[2], 1), B[1], Temp);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[2], 2), B[2], Temp);
-            R2 = VectorMultiplyAdd(VectorReplicate(A[2], 3), B[3], Temp);
-
-            // Fourth row of result (Matrix1[3] * Matrix2).
-            Temp = VectorMultiply(VectorReplicate(A[3], 0), B[0]);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[3], 1), B[1], Temp);
-            Temp = VectorMultiplyAdd(VectorReplicate(A[3], 2), B[2], Temp);
-            R3 = VectorMultiplyAdd(VectorReplicate(A[3], 3), B[3], Temp);
-
-            // Store result
-            R[0] = R0;
-            R[1] = R1;
-            R[2] = R2;
-            R[3] = R3;
         }
 
-        inline FMatrix operator*(const FMatrix& Other)
+        inline FMatrix(const FVector& InX, const FVector& InY, const FVector& InZ, const FVector& InW)
+        {
+            M[0][0] = InX.X; M[0][1] = InX.Y;  M[0][2] = InX.Z;  M[0][3] = 0.0f;
+            M[1][0] = InY.X; M[1][1] = InY.Y;  M[1][2] = InY.Z;  M[1][3] = 0.0f;
+            M[2][0] = InZ.X; M[2][1] = InZ.Y;  M[2][2] = InZ.Z;  M[2][3] = 0.0f;
+            M[3][0] = InW.X; M[3][1] = InW.Y;  M[3][2] = InW.Z;  M[3][3] = 1.0f;
+        }
+
+        inline void SetIdentity()
+        {
+            M[0][0] = 1.f; M[0][1] = 0.f;  M[0][2] = 0.f;  M[0][3] = 0.f;
+            M[1][0] = 0.f; M[1][1] = 1.f;  M[1][2] = 0.f;  M[1][3] = 0.f;
+            M[2][0] = 0.f; M[2][1] = 0.f;  M[2][2] = 1.f;  M[2][3] = 0.f;
+            M[3][0] = 0.f; M[3][1] = 0.f;  M[3][2] = 0.f;  M[3][3] = 1.f;
+        }
+
+        inline void operator*=(const FMatrix& Other)
+        {
+            VectorMatrixMultiply(this, this, &Other);
+        }
+
+        inline FMatrix operator*(const FMatrix& Other) const
         {
             FMatrix Result;
             VectorMatrixMultiply(&Result, this, &Other);
@@ -72,5 +52,37 @@ namespace SDK
         {
             return FVector(M[3][0], M[3][1], M[3][2]);
         }
+
+        inline FVector GetScaledAxis(EAxis::Type InAxis) const
+        {
+            switch (InAxis)
+            {
+            case EAxis::X:
+                return FVector(M[0][0], M[0][1], M[0][2]);
+
+            case EAxis::Y:
+                return FVector(M[1][0], M[1][1], M[1][2]);
+
+            case EAxis::Z:
+                return FVector(M[2][0], M[2][1], M[2][2]);
+
+            default:
+                return FVector::ZeroVector;
+            }
+        }
+
+        static FMatrix MakeFromX(FVector const& XAxis)
+        {
+            FVector const NewX = XAxis.GetSafeNormal();
+
+            FVector const UpVector = (FMath::Abs(NewX.Z) < (1.f - KINDA_SMALL_NUMBER)) ? FVector(0.f, 0.f, 1.f) : FVector(1.f, 0.f, 0.f);
+
+            const FVector NewY = (UpVector ^ NewX).GetSafeNormal();
+            const FVector NewZ = NewX ^ NewY;
+
+            return FMatrix(NewX, NewY, NewZ, FVector::ZeroVector);
+        }
+
+        struct FRotator Rotator() const;
     };
 }

@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawCompass(SDK::UWorld* world);
+        class Compass
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+        };
     }
 }

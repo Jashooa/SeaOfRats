@@ -6,6 +6,10 @@ namespace Hacks
 {
     namespace Info
     {
-        void DrawWaterLevel(SDK::UWorld* world);
+        class WaterLevel
+        {
+        public:
+            static void Draw(SDK::UWorld* world);
+        };
     }
 }

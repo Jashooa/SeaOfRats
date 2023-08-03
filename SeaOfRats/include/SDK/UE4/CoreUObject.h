@@ -6,18 +6,74 @@
 
 namespace SDK
 {
+    // ScriptStruct CoreUObject.StringAssetReference
+    // 0x0010
+    struct FStringAssetReference
+    {
+        class FString AssetLongPathname; // 0x0000(0x0010)
+    };
+
+    // ScriptStruct CoreUObject.FloatRangeBound
+    // 0x0008
+    struct FFloatRangeBound
+    {
+        char pad_0x0000[0x0004];
+        float Value; // 0x0004(0x0004)
+    };
+
+    // ScriptStruct CoreUObject.FloatRange
+    // 0x0010
+    struct FFloatRange
+    {
+        struct FFloatRangeBound LowerBound; // 0x0000(0x0008)
+        struct FFloatRangeBound UpperBound; // 0x0008(0x0008)
+    };
+
+    // ScriptStruct CoreUObject.Int32RangeBound
+    // 0x0008
+    struct FInt32RangeBound
+    {
+        char pad_0x0000[0x0004];
+        int Value; // 0x0004(0x0004)
+    };
+
+    // ScriptStruct CoreUObject.Int32Range
+    // 0x0010
+    struct FInt32Range
+    {
+        struct FInt32RangeBound LowerBound; // 0x0000(0x0008)
+        struct FInt32RangeBound UpperBound; // 0x0008(0x0008)
+    };
+
+    // ScriptStruct CoreUObject.FloatInterval
+    // 0x0008
+    struct FFloatInterval
+    {
+        float Min; // 0x0000(0x0004)
+        float Max; // 0x0004(0x0004)
+    };
+
+    // ScriptStruct CoreUObject.Int32Interval
+    // 0x0008
+    struct FInt32Interval
+    {
+        int Min; // 0x0000(0x0004)
+        int Max; // 0x0004(0x0004)
+    };
+
     // Class CoreUObject.Object
     // 0x0028
     class UObject
     {
     public:
         static class FUObjectArray* GObjects;
-        void* Vtable;
-        int32_t ObjectFlags;
-        int32_t InternalIndex;
-        class UClass* Class;
-        struct FName Name;
-        class UObject* Outer;
+
+        void* Vtable; // 0x0000(0x0008)
+        int32_t ObjectFlags; // 0x0008(0x0004)
+        int32_t InternalIndex; // 0x000C(0x0004)
+        class UClass* Class; // 0x0010(0x0008)
+        struct FName Name; // 0x0018(0x0008)
+        class UObject* Outer; // 0x0020(0x0008)
 
         static inline class TUObjectArray& GetObjects()
         {
@@ -25,13 +81,12 @@ namespace SDK
         }
 
         std::string GetName() const;
-
         std::string GetFullName() const;
 
         template<typename T>
         static T* FindObject(const std::string& name)
         {
-            for (int i = 0; i < GetObjects().Num(); ++i)
+            for (int32_t i = 0; i < GetObjects().Num(); ++i)
             {
                 auto object = GetObjects().GetByIndex(i);
 
@@ -54,17 +109,17 @@ namespace SDK
         }
 
         template<typename T>
-        static T* GetObjectCasted(std::size_t index)
+        static T* GetObjectCasted(int32_t index)
         {
             return static_cast<T*>(GetObjects().GetByIndex(index));
         }
 
         bool IsA(class UClass* cmp) const;
 
-        static inline void ProcessEvent(void* obj, class UFunction* function, void* params)
+        static inline void ProcessEvent(void* obj, class UFunction* function, void* parms)
         {
             auto vtable = *reinterpret_cast<void***>(obj);
-            reinterpret_cast<void(*)(void*, class UFunction*, void*)>(vtable[55])(obj, function, params);
+            reinterpret_cast<void(*)(void*, class UFunction*, void*)>(vtable[55])(obj, function, parms);
         }
     };
 
@@ -80,7 +135,7 @@ namespace SDK
     class UField : public UObject
     {
     public:
-        class UField* Next;
+        class UField* Next; // 0x0028(0x0008)
     };
 
     // Class CoreUObject.Struct
@@ -88,11 +143,11 @@ namespace SDK
     class UStruct : public UField
     {
     public:
-        class UStruct* SuperField;
-        class UField* Children;
-        int32_t PropertySize;
-        int32_t MinAlignment;
-        unsigned char UnknownData00[0x40];
+        class UStruct* SuperField; // 0x0030(0x0008)
+        class UField* Children; // 0x0038(0x0008)
+        int32_t PropertySize; // 0x0040(0x0004)
+        int32_t MinAlignment; // 0x0044(0x004)
+        char pad_0x0048[0x40];
     };
 
     // Class CoreUObject.Class
@@ -100,7 +155,7 @@ namespace SDK
     class UClass : public UStruct
     {
     public:
-        unsigned char UnknownData00[0x138]; // 0x0088(0x0138)
+        char pad_0x0088[0x0138];
 
         template<typename T>
         inline T* CreateDefaultObject()
@@ -121,36 +176,28 @@ namespace SDK
         }
     };
 
-    // Class CoreUObject.Property
-    // 0x0040 (0x0070 - 0x0030)
-    class UProperty : public UField
-    {
-    public:
-        unsigned char UnknownData00[0x40]; // 0x0030(0x0040)
-    };
-
     // Class CoreUObject.Function
     // 0x0030 (0x00B8 - 0x0088)
     class UFunction : public UStruct
     {
     public:
-        int32_t FunctionFlags;
-        int16_t RepOffset;
-        int8_t NumParms;
-        int16_t ParmsSize;
-        int16_t ReturnValueOffset;
-        int16_t RPCId;
-        int16_t RPCResponseId;
-        UProperty* FirstPropertyToInit;
-        UFunction* EventGraphFunction;
-        int32_t EventGraphCallOffset;
-        void* Func;
+        uint32_t FunctionFlags; // 0x0088(0x0004)
+        uint8_t NumParms; // 0x008C(0x0004)
+        uint16_t ParmsSize; // 0x0090(0x0004)
+        uint16_t ReturnValueOffset; // 0x0094(0x0004)
+        uint16_t RPCId; // 0x0098(0x0004)
+        uint16_t RPCResponseId; // 0x009C(0x0004)
+        class UProperty* FirstPropertyToInit; // 0x00A0(0x0008)
+        class UFunction* EventGraphFunction; // 0x00A8(0x0008)
+        int32_t EventGraphCallOffset; // 0x00AC(0x0004)
+        void* Func; // 0x00B0(0x0008)
     };
 
-    // ScriptStruct CoreUObject.StringAssetReference
-    // 0x0010
-    struct FStringAssetReference
+    // Class CoreUObject.Property
+    // 0x0040 (0x0070 - 0x0030)
+    class UProperty : public UField
     {
-        class FString AssetLongPathname; // 0x0000(0x0010)
+    public:
+        char pad_0x0030[0x0040];
     };
 }

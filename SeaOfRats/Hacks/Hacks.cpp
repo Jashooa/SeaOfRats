@@ -7,7 +7,6 @@
 #include "include/spdlog/spdlog.h"
 
 #include "Config.h"
-#include "Drawing.h"
 #include "SeaOfRats.h"
 #include "Aimbot/Cannon.h"
 #include "Aimbot/Player.h"
@@ -36,6 +35,7 @@
 #include "Info/Oxygen.h"
 #include "Info/PlayerList.h"
 #include "Info/WaterLevel.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/Math.h"
 
 using namespace SDK;
@@ -93,13 +93,12 @@ namespace Hacks
 
         if (NullChecks(world))
         {
-            ULevel* level = world->PersistentLevel;
-
+            // Island level actors
             const auto levels = world->Levels;
-            for (auto levelIndex = 6; levelIndex < levels.Num(); ++levelIndex)
+            for (int levelIndex = 6; levelIndex < levels.Num(); ++levelIndex)
             {
                 const auto actors = levels[levelIndex]->AActors;
-                for (auto actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
+                for (int actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
                 {
                     AActor* actor = actors[actorIndex];
 
@@ -108,49 +107,52 @@ namespace Hacks
                         continue;
                     }
 
+                    // Barrel
                     if (config.esp.barrel.enable)
                     {
                         if (actor->IsA(AStorageContainer::StaticClass()))
                         {
                             try
                             {
-                                ESP::DrawBarrel(world, actor);
+                                ESP::Barrel::Draw(world, actor);
                             }
                             catch (...)
                             {
-                                throw std::runtime_error("ESP::DrawBarrel");
+                                throw std::runtime_error("ESP::Barrel::Draw");
                             }
                             continue;
                         }
                     }
 
+                    // Skeleton Throne
                     if (config.esp.skeletonthrone.enable)
                     {
                         if (actor->IsA(ASkeletonThrone::StaticClass()))
                         {
                             try
                             {
-                                ESP::DrawSkeletonThrone(world, actor);
+                                ESP::SkeletonThrone::Draw(world, actor);
                             }
                             catch (...)
                             {
-                                throw std::runtime_error("ESP::DrawSkeletonThrone");
+                                throw std::runtime_error("ESP::SkeletonThrone::Draw");
                             }
                             continue;
                         }
                     }
 
+                    // Lore Book
                     if (config.esp.lorebook.enable)
                     {
                         if (actor->IsA(AModalInteractionProxy::StaticClass()))
                         {
                             try
                             {
-                                ESP::DrawLoreBook(world, actor);
+                                ESP::LoreBook::Draw(world, actor);
                             }
                             catch (...)
                             {
-                                throw std::runtime_error("ESP::DrawLoreBook");
+                                throw std::runtime_error("ESP::LoreBook::Draw");
                             }
                             continue;
                         }
@@ -162,16 +164,30 @@ namespace Hacks
             {
                 try
                 {
-                    Aimbot::InitAimPlayer(world);
+                    Aimbot::Player::InitAim(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Aimbot::InitPlayer");
+                    throw std::runtime_error("Aimbot::Player::InitAim");
                 }
             }
 
+            if (config.aim.cannon.enable)
+            {
+                try
+                {
+                    Aimbot::Cannon::InitAim(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::Cannon::InitAim");
+                }
+            }
+
+            // Main level actors
+            const ULevel* level = world->PersistentLevel;
             const auto actors = level->AActors;
-            for (auto actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
+            for (int actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
             {
                 AActor* actor = actors[actorIndex];
 
@@ -185,337 +201,427 @@ namespace Hacks
                     continue;
                 }
 
+                // Player
                 if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
                 {
                     if (config.aim.player.enable && config.aim.player.player)
                     {
                         try
                         {
-                            Aimbot::CalculateAimPlayer(world, actor);
+                            Aimbot::Player::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("Aimbot::CalculateAimPlayer");
+                            throw std::runtime_error("Aimbot::Player::CalculateAim");
                         }
                     }
+
                     if (config.esp.player.enable)
                     {
                         try
                         {
-                            ESP::DrawPlayer(world, actor);
+                            ESP::Player::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawPlayer");
+                            throw std::runtime_error("ESP::Player::Draw");
                         }
                     }
+
                     continue;
                 }
 
+                // Skeleton
                 if (actor->IsA(AAthenaAICharacter::StaticClass()))
                 {
                     if (config.aim.player.enable && config.aim.player.skeleton)
                     {
                         try
                         {
-                            Aimbot::CalculateAimPlayer(world, actor);
+                            Aimbot::Player::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("Aimbot::CalculateAimPlayer");
+                            throw std::runtime_error("Aimbot::Player::CalculateAim");
                         }
                     }
+
                     if (config.esp.skeleton.enable)
                     {
                         try
                         {
-                            ESP::DrawSkeleton(world, actor);
+                            ESP::Skeleton::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawSkeleton");
+                            throw std::runtime_error("ESP::Skeleton::Draw");
                         }
                     }
+
                     continue;
                 }
 
+                // Ship
                 if (actor->IsA(AShip::StaticClass()))
                 {
+                    if (config.aim.cannon.enable)
+                    {
+                        try
+                        {
+                            Aimbot::Cannon::CalculateAim(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::Cannon::CalculateAim");
+                        }
+                    }
+
                     if (config.esp.ship.enable)
                     {
                         try
                         {
-                            ESP::DrawShip(world, actor);
+                            ESP::Ship::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawShip");
+                            throw std::runtime_error("ESP::Ship::Draw");
                         }
                     }
+
                     continue;
                 }
 
+                // ShipNetProxy
                 if (config.esp.ship.enable)
                 {
                     if (actor->IsA(AShipNetProxy::StaticClass()))
                     {
-
                         try
                         {
-                            ESP::DrawShipFar(world, actor);
+                            ESP::Ship::DrawFar(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawShipFar");
+                            throw std::runtime_error("ESP::Ship::DrawFar");
                         }
+
                         continue;
                     }
                 }
 
-                if (config.esp.ghostship.enable)
+                // GhostShip
+                if (actor->IsA(AAggressiveGhostShip::StaticClass()))
                 {
-                    if (actor->IsA(AAggressiveGhostShip::StaticClass()))
+                    if (config.aim.cannon.enable)
                     {
                         try
                         {
-                            ESP::DrawGhostShip(world, actor);
+                            Aimbot::Cannon::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawGhostShip");
+                            throw std::runtime_error("Aimbot::Cannon::CalculateAim");
                         }
-                        continue;
                     }
+
+                    if (config.esp.ghostship.enable)
+                    {
+                        try
+                        {
+                            ESP::GhostShip::Draw(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::GhostShip::Draw");
+                        }
+                    }
+
+                    continue;
                 }
 
+                // Rowboat
                 if (config.esp.rowboat.enable)
                 {
                     if (actor->IsA(ARowboat::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawRowboat(world, actor);
+                            ESP::Rowboat::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawRowboat");
+                            throw std::runtime_error("ESP::Rowboat::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Animal
                 if (config.esp.animal.enable)
                 {
                     if (actor->IsA(AFauna::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawAnimal(world, actor);
+                            ESP::Animal::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawAnimal");
+                            throw std::runtime_error("ESP::Animal::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Megalodon
+                if (actor->IsA(ATinyShark::StaticClass()))
+                {
+                    if (config.aim.cannon.enable)
+                    {
+                        try
+                        {
+                            Aimbot::Cannon::CalculateAim(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::Cannon::CalculateAim");
+                        }
+                    }
+
+                    if (config.esp.megalodon.enable)
+                    {
+                        try
+                        {
+                            ESP::Megalodon::Draw(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Megalodon::Draw");
+                        }
+                    }
+
+                    continue;
+                }
+
+                // Shark
                 if (config.esp.shark.enable)
                 {
-                    if (actor->IsA(ATinyShark::StaticClass()))
+                    if (actor->IsA(ASharkPawn::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawMegalodon(world, actor);
+                            ESP::Shark::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawMegalodon");
+                            throw std::runtime_error("ESP::Shark::Draw");
                         }
+
                         continue;
                     }
                 }
 
-                if (config.esp.megalodon.enable)
-                {
-                    if (actor->IsA(ASharkPawn::StaticClass()) && !actor->IsA(ATinyShark::StaticClass()))
-                    {
-                        try
-                        {
-                            ESP::DrawShark(world, actor);
-                        }
-                        catch (...)
-                        {
-                            throw std::runtime_error("ESP::DrawShark");
-                        }
-                        continue;
-                    }
-                }
-
+                // Siren
                 if (actor->IsA(ASirenPawn::StaticClass()))
                 {
                     if (config.aim.player.enable)
                     {
                         try
                         {
-                            Aimbot::CalculateAimPlayer(world, actor);
+                            Aimbot::Player::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("Aimbot::CalculateAimPlayer");
+                            throw std::runtime_error("Aimbot::Player::CalculateAim");
                         }
                     }
+
                     if (config.esp.siren.enable)
                     {
                         try
                         {
-                            ESP::DrawSiren(world, actor);
+                            ESP::Siren::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawSiren");
+                            throw std::runtime_error("ESP::Siren::Draw");
                         }
                     }
+
                     continue;
                 }
 
+                // Mermaid
                 if (config.esp.mermaid.enable)
                 {
                     if (actor->IsA(AMermaid::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawMermaid(world, actor);
+                            ESP::Mermaid::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawMermaid");
+                            throw std::runtime_error("ESP::Mermaid::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Item
                 if (config.esp.item.enable)
                 {
                     if (actor->IsA(AFloatingItemProxy::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawItem(world, actor);
+                            ESP::Item::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawItem");
+                            throw std::runtime_error("ESP::Item::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Barrel
                 if (config.esp.barrel.enable)
                 {
                     if (actor->IsA(AStorageContainer::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawBarrel(world, actor);
+                            ESP::Barrel::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawBarrel");
+                            throw std::runtime_error("ESP::Barrel::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Map Pin
                 if (config.esp.mappin.enable)
                 {
                     if (actor->IsA(AMapTable::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawMapPin(world, actor);
+                            ESP::MapPin::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawMapPin");
+                            throw std::runtime_error("ESP::MapPin::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Kraken
                 if (config.esp.kraken.enable)
                 {
                     if (actor->IsA(AKraken::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawKraken(world, actor);
+                            ESP::Kraken::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawKraken");
+                            throw std::runtime_error("ESP::Kraken::Draw");
                         }
-                        continue;
-                    }
 
-                    if (actor->IsA(AKrakenTentacle::StaticClass()))
-                    {
-                        try
-                        {
-                            ESP::DrawKrakenTentacle(world, actor);
-                        }
-                        catch (...)
-                        {
-                            throw std::runtime_error("ESP::DrawKrakenTentacle");
-                        }
                         continue;
                     }
                 }
 
+                if (actor->IsA(AKrakenTentacle::StaticClass()))
+                {
+                    if (config.aim.cannon.enable)
+                    {
+                        try
+                        {
+                            Aimbot::Cannon::CalculateAim(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::Cannon::CalculateAim");
+                        }
+                    }
+
+                    if (config.esp.kraken.enable)
+                    {
+                        try
+                        {
+                            ESP::Kraken::DrawTentacle(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Kraken::DrawTentacle");
+                        }
+                    }
+
+                    continue;
+                }
+
+                // Lore Book
                 if (config.esp.lorebook.enable)
                 {
                     if (actor->IsA(AModalInteractionProxy::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawLoreBook(world, actor);
+                            ESP::LoreBook::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawLoreBook");
+                            throw std::runtime_error("ESP::LoreBook::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Skeleton Throne
                 if (config.esp.skeletonthrone.enable)
                 {
                     if (actor->IsA(ASkeletonThrone::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawSkeletonThrone(world, actor);
+                            ESP::SkeletonThrone::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawSkeletonThrone");
+                            throw std::runtime_error("ESP::SkeletonThrone::Draw");
                         }
+
                         continue;
                     }
                 }
 
+                // Treasure Map
                 if (config.esp.treasuremap.enable)
                 {
                     if (actor->IsA(ARiddleMap::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawRiddleMap(world, actor);
+                            ESP::TreasureMap::DrawRiddleMap(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawRiddleMap");
+                            throw std::runtime_error("ESP::TreasureMap::DrawRiddleMap");
                         }
+
                         continue;
                     }
 
@@ -523,12 +629,13 @@ namespace Hacks
                     {
                         try
                         {
-                            ESP::DrawXMarksTheSpotMap(world, actor);
+                            ESP::TreasureMap::DrawXMarksTheSpotMap(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawXMarksTheSpotMap");
+                            throw std::runtime_error("ESP::TreasureMap::DrawXMarksTheSpotMap");
                         }
+
                         continue;
                     }
 
@@ -536,28 +643,30 @@ namespace Hacks
                     {
                         try
                         {
-                            ESP::DrawTornMap(world, actor);
+                            ESP::TreasureMap::DrawTornMap(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawTornMap");
+                            throw std::runtime_error("ESP::TreasureMap::DrawTornMap");
                         }
                         continue;
                     }*/
                 }
 
+                // Enchanted Compass
                 if (config.esp.enchantedcompass.enable)
                 {
                     if (actor->IsA(AEnchantedCompass::StaticClass()))
                     {
                         try
                         {
-                            ESP::DrawEnchantedCompass(world, actor);
+                            ESP::EnchantedCompass::Draw(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawEnchantedCompass");
+                            throw std::runtime_error("ESP::EnchantedCompass::Draw");
                         }
+
                         continue;
                     }
 
@@ -565,12 +674,13 @@ namespace Hacks
                     {
                         try
                         {
-                            ESP::DrawMultiTargetEnchantedCompass(world, actor);
+                            ESP::EnchantedCompass::DrawMultiTarget(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("ESP::DrawMultiTargetEnchantedCompass");
+                            throw std::runtime_error("ESP::EnchantedCompass::DrawMultiTarget");
                         }
+
                         continue;
                     }
                 }
@@ -594,27 +704,16 @@ namespace Hacks
                 }*/
             }
 
+            // Storm
             if (config.esp.storm.enable)
             {
                 try
                 {
-                    ESP::DrawStorms(world);
+                    ESP::Storm::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("ESP::DrawStorms");
-                }
-            }
-
-            if (config.aim.cannon.path)
-            {
-                try
-                {
-                    Aimbot::CannonTrace(world);
-                }
-                catch (...)
-                {
-                    throw std::runtime_error("Aimbot::CannonTrace");
+                    throw std::runtime_error("ESP::Storm::Draw");
                 }
             }
 
@@ -622,28 +721,53 @@ namespace Hacks
             {
                 try
                 {
-                    Aimbot::AimPlayer(world);
+                    Aimbot::Player::Aim(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Aimbot::AimPlayer");
+                    throw std::runtime_error("Aimbot::Player::Aim");
                 }
             }
 
+            if (config.aim.cannon.enable)
+            {
+                try
+                {
+                    Aimbot::Cannon::Aim(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::Cannon::Aim");
+                }
+            }
+
+            if (config.aim.cannon.path)
+            {
+                try
+                {
+                    Aimbot::Cannon::TracePath(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::Cannon::TracePath");
+                }
+            }
+
+            // Crosshair
             if (config.info.crosshair)
             {
                 try
                 {
-                    const float centreX = std::trunc(Drawing::Window->Size.x * 0.5f);
-                    const float centreY = std::trunc(Drawing::Window->Size.y * 0.5f);
-                    Drawing::DrawLine(FVector2D(centreX, centreY - 5), FVector2D(centreX, centreY + 5 + 1), Drawing::Colour::White);
-                    Drawing::DrawLine(FVector2D(centreX - 5, centreY), FVector2D(centreX + 5 + 1, centreY), Drawing::Colour::White);
+                    const float centreX = std::trunc(Utilities::Drawing::Window->Size.x * 0.5f);
+                    const float centreY = std::trunc(Utilities::Drawing::Window->Size.y * 0.5f);
+                    Utilities::Drawing::DrawLine(FVector2D(centreX, centreY - 5), FVector2D(centreX, centreY + 5 + 1), Utilities::Drawing::Colour::White);
+                    Utilities::Drawing::DrawLine(FVector2D(centreX - 5, centreY), FVector2D(centreX + 5 + 1, centreY), Utilities::Drawing::Colour::White);
 
                     /*auto player = world->OwningGameInstance->LocalPlayers[0]->PlayerController->Pawn;
                     auto location = player->K2_GetActorLocation();
-                    Drawing::DrawString(std::to_string(location.X), FVector2D(200, 200), Drawing::Colour::White);
-                    Drawing::DrawString(std::to_string(location.Y), FVector2D(200, 215), Drawing::Colour::White);
-                    Drawing::DrawString(std::to_string(location.Z), FVector2D(200, 230), Drawing::Colour::White);*/
+                    Utilities::Drawing::DrawString(std::to_string(location.X), FVector2D(200, 200), Utilities::Drawing::Colour::White);
+                    Utilities::Drawing::DrawString(std::to_string(location.Y), FVector2D(200, 215), Utilities::Drawing::Colour::White);
+                    Utilities::Drawing::DrawString(std::to_string(location.Z), FVector2D(200, 230), Utilities::Drawing::Colour::White);*/
                 }
                 catch (...)
                 {
@@ -651,75 +775,81 @@ namespace Hacks
                 }
             }
 
+            // Player List
             if (config.info.playerList)
             {
                 try
                 {
-                    Info::DrawPlayerList(world);
+                    Info::PlayerList::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Info::DrawPlayerList");
+                    throw std::runtime_error("Info::PlayerList::Draw");
                 }
             }
 
+            // Compass
             if (config.info.compass)
             {
                 try
                 {
-                    Info::DrawCompass(world);
+                    Info::Compass::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Info::DrawCompass");
+                    throw std::runtime_error("Info::Compass::Draw");
                 }
             }
 
+            // Oxygen
             if (config.info.oxygen)
             {
                 try
                 {
-                    Info::DrawOxygen(world);
+                    Info::Oxygen::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Info::DrawOxygen");
+                    throw std::runtime_error("Info::Oxygen::Draw");
                 }
             }
 
+            // Water Level
             if (config.info.waterLevel)
             {
                 try
                 {
-                    Info::DrawWaterLevel(world);
+                    Info::WaterLevel::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Info::DrawWaterLevel");
+                    throw std::runtime_error("Info::WaterLevel::Draw");
                 }
             }
 
+            // Anchor
             if (config.info.anchor)
             {
                 try
                 {
-                    Info::DrawAnchor(world);
+                    Info::Anchor::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error(" Info::DrawAnchor");
+                    throw std::runtime_error("Info::Anchor::Draw");
                 }
             }
 
+            // Debug
             if (config.info.debug)
             {
                 try
                 {
-                    Info::DrawDebug(world);
+                    Info::Debug::Draw(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Info::DrawDebug");
+                    throw std::runtime_error("Info::Debug::Draw");
                 }
             }
 

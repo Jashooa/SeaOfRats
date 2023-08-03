@@ -1,5 +1,6 @@
 #include "GUI.h"
 
+#include <sstream>
 #include <string>
 
 #include "include/FontAwesome/FontAwesome.h"
@@ -7,12 +8,13 @@
 #include "include/imgui/imgui_impl_dx11.h"
 #include "include/imgui/imgui_impl_win32.h"
 #include "include/imgui/imgui_internal.h"
+#include "include/spdlog/spdlog.h"
 
 #include "Config.h"
-#include "Drawing.h"
 #include "Hooks.h"
 #include "SeaOfRats.h"
 #include "Hacks/Hacks.h"
+#include "Utilities/Drawing.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static WNDPROC originalWndProcHandler = nullptr;
@@ -90,7 +92,13 @@ LRESULT CALLBACK hookWndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lP
     if (gui->isOpen)
     {
         ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
+
+        #ifdef UNICODE
         LPWSTR win32_cursor = IDC_ARROW;
+        #else
+        LPSTR win32_cursor = IDC_ARROW;
+        #endif 
+        
         switch (imgui_cursor)
         {
             case ImGuiMouseCursor_Arrow:        win32_cursor = IDC_ARROW; break;
@@ -118,21 +126,25 @@ namespace GUI
     {
         ImGui::CreateContext();
 
-        ImGuiStyle& style = ImGui::GetStyle();
+        // ImGuiStyle& style = ImGui::GetStyle();
 
         ImGuiIO& io = ImGui::GetIO();
         io.IniFilename = nullptr;
         io.LogFilename = nullptr;
 
         io.Fonts->AddFontDefault();
+        const float baseFontSize = 13.f;
+        // const float iconFontSize = baseFontSize * 2.f / 3.f;
+        const float iconFontSize = 16.f;
 
         const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
         ImFontConfig icons_config;
         icons_config.MergeMode = true;
         icons_config.PixelSnapH = true;
+        icons_config.GlyphMinAdvanceX = iconFontSize;
         icons_config.OversampleH = 1;
-        icons_config.GlyphOffset.y += 3.f;
-        io.Fonts->AddFontFromMemoryCompressedBase85TTF(FontAwesome_compressed_data_base85, 16.f, &icons_config, icons_ranges);
+        icons_config.GlyphOffset.y += iconFontSize - baseFontSize;
+        io.Fonts->AddFontFromMemoryCompressedBase85TTF(FontAwesome_compressed_data_base85, iconFontSize, &icons_config, icons_ranges);
 
         io.Fonts->Build();
         ImGui::GetDefaultFont()->AddRemapChar(0x2019, 0x0027);
@@ -183,7 +195,7 @@ namespace GUI
         ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
         ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
 
-        Drawing::Window = ImGui::GetCurrentWindow();
+        Utilities::Drawing::Window = ImGui::GetCurrentWindow();
 
         Hooks::Lock.lock();
         Hacks::Loop();
@@ -198,7 +210,11 @@ namespace GUI
 
         if (isOpen)
         {
-            ImGui::Begin("SeaOfRats", nullptr, windowFlags);
+            std::stringstream ss;
+            ss << "SeaOfRats - 0x" << std::uppercase << std::hex << reinterpret_cast<uintptr_t>(window);
+
+            // ImGui::Begin("SeaOfRats", nullptr, windowFlags);
+            ImGui::Begin(ss.str().c_str(), nullptr, windowFlags);
 
             if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_NoTooltip))
             {

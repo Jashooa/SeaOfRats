@@ -1,6 +1,6 @@
 #include "LoreBook.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 #include "Utilities/General.h"
 
 using namespace SDK;
@@ -9,11 +9,18 @@ namespace Hacks
 {
     namespace ESP
     {
-        void DrawLoreBook(UWorld* world, AActor* actor)
+        void LoreBook::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
             const auto item = reinterpret_cast<AModalInteractionProxy*>(actor);
+
+            // Get distance
+            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            if (distance >= 1500.f)
+            {
+                return;
+            }
 
             // Check if lorebook
             if (item->GetName().find("LoreBook") == std::string::npos)
@@ -30,11 +37,10 @@ namespace Hacks
             }
 
             // Colour
-            ImU32 colour = Drawing::Colour::Yellow;
-            //Drawing::DrawCircleFilled(position, 3.f, colour);
-            Drawing::DrawString(ICON_FA_BOOK, position, colour);
+            const ImU32 colour = Utilities::Drawing::Colour::Yellow;
+            Utilities::Drawing::DrawString(ICON_FA_BOOK, position, colour);
 
-            if (!Utilities::NearCursor(position))
+            if (!Utilities::General::NearCursor(position))
             {
                 return;
             }
@@ -43,15 +49,13 @@ namespace Hacks
             std::string name = item->GetName();
             if (const auto dialog = reinterpret_cast<UNPCDialogComponent*>(item->GetComponentByClass(UNPCDialogComponent::StaticClass())))
             {
-                name = UKismetTextLibrary::Conv_TextToString(dialog->WelcomeMessage).ToString();
+                name = dialog->WelcomeMessage.DisplayString->ToString();
             }
 
-            // Get distance
-            const int32_t distance = static_cast<int32_t>(localPlayer->GetDistanceTo(actor) * 0.01f);
-            name += " [" + std::to_string(distance) + "m]";
+            name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
         }
     }
 }

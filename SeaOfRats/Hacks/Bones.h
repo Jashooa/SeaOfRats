@@ -223,67 +223,67 @@ namespace Hacks
     };
 
     const std::list<uint8_t> player_left_arm = {
-        Utilities::to_underlying(EBones::LF_FINGB__Skeleton),
-        Utilities::to_underlying(EBones::LF_ELBOW__Skeleton),
-        Utilities::to_underlying(EBones::LF_TWIST_SHOULDER__Skeleton),
-        Utilities::to_underlying(EBones::NECK1__Skeleton)
+        Utilities::General::to_underlying(EBones::LF_FINGB__Skeleton),
+        Utilities::General::to_underlying(EBones::LF_ELBOW__Skeleton),
+        Utilities::General::to_underlying(EBones::LF_TWIST_SHOULDER__Skeleton),
+        Utilities::General::to_underlying(EBones::NECK1__Skeleton)
     };
     const std::list<uint8_t> player_right_arm = {
-        Utilities::to_underlying(EBones::RT_FINGB__Skeleton),
-        Utilities::to_underlying(EBones::RT_ELBOW__Skeleton),
-        Utilities::to_underlying(EBones::RT_TWIST_SHOULDER__Skeleton),
-        Utilities::to_underlying(EBones::NECK1__Skeleton)
+        Utilities::General::to_underlying(EBones::RT_FINGB__Skeleton),
+        Utilities::General::to_underlying(EBones::RT_ELBOW__Skeleton),
+        Utilities::General::to_underlying(EBones::RT_TWIST_SHOULDER__Skeleton),
+        Utilities::General::to_underlying(EBones::NECK1__Skeleton)
     };
     const std::list<uint8_t> player_left_leg = {
-        Utilities::to_underlying(EBones::LF_ANKLE__Skeleton),
-        Utilities::to_underlying(EBones::LF_KNEE__Skeleton),
-        Utilities::to_underlying(EBones::LF_TWIST_HIP__Skeleton),
-        Utilities::to_underlying(EBones::WAIST__Skeleton)
+        Utilities::General::to_underlying(EBones::LF_ANKLE__Skeleton),
+        Utilities::General::to_underlying(EBones::LF_KNEE__Skeleton),
+        Utilities::General::to_underlying(EBones::LF_TWIST_HIP__Skeleton),
+        Utilities::General::to_underlying(EBones::WAIST__Skeleton)
     };
     const std::list<uint8_t> player_right_leg = {
-        Utilities::to_underlying(EBones::RT_ANKLE__Skeleton),
-        Utilities::to_underlying(EBones::RT_KNEE__Skeleton),
-        Utilities::to_underlying(EBones::RT_TWIST_HIP__Skeleton),
-        Utilities::to_underlying(EBones::WAIST__Skeleton)
+        Utilities::General::to_underlying(EBones::RT_ANKLE__Skeleton),
+        Utilities::General::to_underlying(EBones::RT_KNEE__Skeleton),
+        Utilities::General::to_underlying(EBones::RT_TWIST_HIP__Skeleton),
+        Utilities::General::to_underlying(EBones::WAIST__Skeleton)
     };
     const std::list<uint8_t> player_spine = {
-        Utilities::to_underlying(EBones::WAIST__Skeleton),
-        Utilities::to_underlying(EBones::TORSO__Skeleton),
-        Utilities::to_underlying(EBones::CHEST__Skeleton),
-        Utilities::to_underlying(EBones::NECK1__Skeleton),
-        Utilities::to_underlying(EBones::HEAD__Skeleton)
+        Utilities::General::to_underlying(EBones::WAIST__Skeleton),
+        Utilities::General::to_underlying(EBones::TORSO__Skeleton),
+        Utilities::General::to_underlying(EBones::CHEST__Skeleton),
+        Utilities::General::to_underlying(EBones::NECK1__Skeleton),
+        Utilities::General::to_underlying(EBones::HEAD__Skeleton)
     };
 
     const std::list<uint8_t> ai_left_arm = {
-        Utilities::to_underlying(EBonesSkeleton::LF_FINGB__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::LF_ELBOW__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::LF_TWIST_SHOULDER__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::NECK1__Skeleton)
+        Utilities::General::to_underlying(EBonesSkeleton::LF_FINGB__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::LF_ELBOW__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::LF_TWIST_SHOULDER__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::NECK1__Skeleton)
     };
     const std::list<uint8_t> ai_right_arm = {
-        Utilities::to_underlying(EBonesSkeleton::RT_FINGB__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::RT_ELBOW__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::RT_TWIST_SHOULDER__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::NECK1__Skeleton)
+        Utilities::General::to_underlying(EBonesSkeleton::RT_FINGB__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::RT_ELBOW__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::RT_TWIST_SHOULDER__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::NECK1__Skeleton)
     };
     const std::list<uint8_t> ai_left_leg = {
-        Utilities::to_underlying(EBonesSkeleton::LF_ANKLE__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::LF_KNEE__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::LF_TWIST_HIP__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::WAIST__Skeleton)
+        Utilities::General::to_underlying(EBonesSkeleton::LF_ANKLE__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::LF_KNEE__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::LF_TWIST_HIP__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::WAIST__Skeleton)
     };
     const std::list<uint8_t> ai_right_leg = {
-        Utilities::to_underlying(EBonesSkeleton::RT_ANKLE__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::RT_KNEE__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::RT_TWIST_HIP__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::WAIST__Skeleton)
+        Utilities::General::to_underlying(EBonesSkeleton::RT_ANKLE__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::RT_KNEE__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::RT_TWIST_HIP__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::WAIST__Skeleton)
     };
     const std::list<uint8_t> ai_spine = {
-        Utilities::to_underlying(EBonesSkeleton::WAIST__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::TORSO__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::CHEST__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::NECK1__Skeleton),
-        Utilities::to_underlying(EBonesSkeleton::HEAD__Skeleton)
+        Utilities::General::to_underlying(EBonesSkeleton::WAIST__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::TORSO__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::CHEST__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::NECK1__Skeleton),
+        Utilities::General::to_underlying(EBonesSkeleton::HEAD__Skeleton)
     };
 
     static const std::list<std::list<uint8_t>> player_skeleton = {

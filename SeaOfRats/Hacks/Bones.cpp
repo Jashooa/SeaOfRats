@@ -1,6 +1,6 @@
 #include "Bones.h"
 
-#include "Drawing.h"
+#include "Utilities/Drawing.h"
 
 using namespace SDK;
 
@@ -26,7 +26,7 @@ namespace Hacks
             }
 
             const FTransform boneTransform = spaceBases[static_cast<uint8_t>(bone)];
-            FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
+            const FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
             const FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
             boneLocation = worldBoneMatrix.GetOrigin();
 
@@ -82,21 +82,21 @@ namespace Hacks
                         return;
                     }
                     const FTransform boneTransform = spaceBases[static_cast<int>(bone)];
-                    FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
+                    const FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
                     const FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
                     const FVector boneLocation = worldBoneMatrix.GetOrigin();
 
-                    FVector2D screenBone;
-                    if (!playerController->ProjectWorldLocationToScreen(boneLocation, &screenBone))
+                    FVector2D bonePosition;
+                    if (!playerController->ProjectWorldLocationToScreen(boneLocation, &bonePosition))
                     {
                         continue;
                     }
 
                     if (previousBone.X != 0.f && previousBone.Y != 0.f)
                     {
-                        Drawing::DrawLine(previousBone, screenBone, Drawing::Colour::White);
+                        Utilities::Drawing::DrawLine(previousBone, bonePosition, Utilities::Drawing::Colour::White);
                     }
-                    previousBone = screenBone;
+                    previousBone = bonePosition;
                 }
             }
         }
