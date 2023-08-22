@@ -48,12 +48,12 @@ namespace Hacks
             Utilities::Drawing::DrawBoundingRect(world, actor, colour);
 
             // Draw health bar
-            if (const auto healthComponent = shark->HealthComponent)
+            /*if (const auto healthComponent = shark->HealthComponent)
             {
                 const float healthCurrent = healthComponent->GetCurrentHealth();
                 const float healthMax = healthComponent->GetMaxHealth();
                 Utilities::Drawing::DrawHealthBar({ topPosition.X, topPosition.Y -= 15.f }, healthCurrent, healthMax);
-            }
+            }*/
 
             // Get name
             auto name = std::string{ "Shark" };
