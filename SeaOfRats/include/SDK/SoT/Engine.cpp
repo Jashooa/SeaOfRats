@@ -59,6 +59,21 @@ namespace SDK
         return parms.ReturnValue;
     }
 
+    // Function Engine.Actor.GetActorRightVector
+    struct FVector AActor::GetActorRightVector()
+    {
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.Actor.GetActorRightVector");
+
+        struct
+        {
+            struct FVector ReturnValue;
+        } parms{};
+
+        UObject::ProcessEvent(this, fn, &parms);
+
+        return parms.ReturnValue;
+    }
+
     // Function Engine.Actor.GetActorUpVector
     struct FVector AActor::GetActorUpVector()
     {
@@ -404,24 +419,37 @@ namespace SDK
         return parms.ReturnValue;
     }
 
-    // Function Engine.KismetMathLibrary.NormalizedDeltaRotator
-    struct FRotator UKismetMathLibrary::NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B)
+    // Function Engine.KismetSystemLibrary.DrawDebugCircle
+    void UKismetSystemLibrary::DrawDebugCircle(class UObject* WorldContextObject, const struct FVector& Center, float Radius, int NumSegments, const struct FLinearColor& LineColor, float Duration, float Thickness, const struct FVector& YAxis, const struct FVector& ZAxis, bool bDrawAxis)
     {
-        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetMathLibrary.NormalizedDeltaRotator");
+        static auto fn = UObject::FindObject<UFunction>("Function Engine.KismetSystemLibrary.DrawDebugCircle");
 
         struct
         {
-            struct FRotator A;
-            struct FRotator B;
-            struct FRotator ReturnValue;
+            class UObject* WorldContextObject;
+            struct FVector Center;
+            float Radius;
+            int NumSegments;
+            struct FLinearColor LineColor;
+            float Duration;
+            float Thickness;
+            struct FVector YAxis;
+            struct FVector ZAxis;
+            bool bDrawAxis;
         } parms{};
-        parms.A = A;
-        parms.B = B;
+        parms.WorldContextObject = WorldContextObject;
+        parms.Center = Center;
+        parms.Radius = Radius;
+        parms.NumSegments = NumSegments;
+        parms.LineColor = LineColor;
+        parms.Duration = Duration;
+        parms.Thickness = Thickness;
+        parms.YAxis = YAxis;
+        parms.ZAxis = ZAxis;
+        parms.bDrawAxis = bDrawAxis;
 
-        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetMathLibrary");
+        static auto defaultObj = UObject::FindObject<UClass>("Class Engine.KismetSystemLibrary");
         UObject::ProcessEvent(defaultObj, fn, &parms);
-
-        return parms.ReturnValue;
     }
 
     // Function Engine.KismetSystemLibrary.LineTraceSingle_NEW

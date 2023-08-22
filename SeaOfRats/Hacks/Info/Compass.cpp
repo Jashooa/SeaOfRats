@@ -40,7 +40,7 @@ namespace Hacks
             const auto bearing = static_cast<int>(std::round(rotation.Yaw) + 450) % 360;
             const auto index = static_cast<int>(std::trunc(std::fmodf(static_cast<float>(bearing) + 11.25f, 360.f)) * 0.04444444444f);
 
-            const FVector2D centre = Utilities::Drawing::GetScreenCentre();
+            const auto centre = Utilities::Drawing::GetScreenCentre();
             Utilities::Drawing::DrawString(std::to_string(bearing), { centre.X, 10.f }, Utilities::Drawing::Colour::White);
             Utilities::Drawing::DrawString(compassDirections[index], { centre.X, 25.f }, Utilities::Drawing::Colour::White);
         }

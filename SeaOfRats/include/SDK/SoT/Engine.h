@@ -199,6 +199,7 @@ namespace SDK
 
         void GetActorBounds(bool bOnlyCollidingComponents, struct FVector* Origin, struct FVector* BoxExtent);
         struct FVector GetActorForwardVector();
+        struct FVector GetActorRightVector();
         struct FVector GetActorUpVector();
         class AActor* GetAttachParentActor();
         class UActorComponent* GetComponentByClass(class UClass* ComponentClass);
@@ -470,7 +471,6 @@ namespace SDK
     {
     public:
         static struct FRotator FindLookAtRotation(const struct FVector& Start, const struct FVector& Target);
-        static struct FRotator NormalizedDeltaRotator(const struct FRotator& A, const struct FRotator& B);
     };
 
     // Class Engine.KismetSystemLibrary
@@ -478,6 +478,7 @@ namespace SDK
     class UKismetSystemLibrary : public UBlueprintFunctionLibrary
     {
     public:
+        static void DrawDebugCircle(class UObject* WorldContextObject, const struct FVector& Center, float Radius, int NumSegments, const struct FLinearColor& LineColor, float Duration, float Thickness, const struct FVector& YAxis, const struct FVector& ZAxis, bool bDrawAxis);
         static bool LineTraceSingle_NEW(class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, TEnumAsByte<ETraceTypeQuery> TraceChannel, bool bTraceComplex, TArray<class AActor*> ActorsToIgnore, TEnumAsByte<EDrawDebugTrace> DrawDebugType, bool bIgnoreSelf, struct FHitResult* OutHit);
     };
 

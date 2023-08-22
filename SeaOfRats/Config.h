@@ -4,13 +4,6 @@
 
 class Config
 {
-    enum class BoxType : int
-    {
-        None,
-        Box2D,
-        Box3D,
-    };
-
 public:
     struct
     {
@@ -22,16 +15,18 @@ public:
             bool bones = false;
             bool name = false;
             bool health = false;
-            BoxType boxType = BoxType::None;
         } player;
 
         struct
         {
             bool enable = false;
-            bool name = false;
             bool health = false;
-            BoxType boxType = BoxType::None;
         } skeleton;
+
+        struct
+        {
+            bool enable = false;
+        } npc;
 
         struct
         {
@@ -105,6 +100,12 @@ public:
         {
             bool enable = false;
             bool name = false;
+        } island;
+
+        struct
+        {
+            bool enable = false;
+            bool name = false;
         } shipwreck;
 
         struct
@@ -136,6 +137,16 @@ public:
         {
             bool enable = false;
         } skeletonthrone;
+
+        struct
+        {
+            bool enable = false;
+        } event;
+
+        struct
+        {
+            bool enable = false;
+        } trigger;
     } esp;
 
     struct
@@ -167,11 +178,11 @@ public:
             bool enable = false;
             bool player = true;
             bool skeleton = true;
-        } player;
+        } weapon;
 
         struct
         {
-
+            bool enable = false;
         } harpoon;
 
         struct

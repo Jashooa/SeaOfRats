@@ -22,7 +22,7 @@ namespace SDK
 
         static inline float InvSqrt(float F)
         {
-            return 1.0f / std::sqrtf(F);
+            return 1.0f / std::sqrt(F);
         }
 
         template<class T>

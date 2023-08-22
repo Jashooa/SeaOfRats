@@ -37,32 +37,33 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
             // Get bounds
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            FVector2D topPosition;
+            auto topPosition = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z + extent.Z }, &topPosition))
             {
                 return;
             }
 
             // Get bottom coordinates
-            FVector2D bottomPosition;
+            auto bottomPosition = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z - extent.Z }, &bottomPosition))
             {
                 return;
             }
 
             // Colour
-            ImU32 colour = Utilities::Drawing::Colour::Red;
+            auto colour = Utilities::Drawing::Colour::Red;
 
             // Check friendly
             if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), player))
@@ -92,15 +93,15 @@ namespace Hacks
             // Draw health bar
             if (const auto healthComponent = player->HealthComponent)
             {
-                const float healthCurrent = healthComponent->GetCurrentHealth();
-                const float healthMax = healthComponent->GetMaxHealth();
+                const auto healthCurrent = healthComponent->GetCurrentHealth();
+                const auto healthMax = healthComponent->GetMaxHealth();
                 Utilities::Drawing::DrawHealthBar({ topPosition.X, topPosition.Y -= 15.f }, healthCurrent, healthMax);
             }
 
             if (const auto playerState = player->PlayerState)
             {
                 // Get name
-                std::string name = playerState->PlayerName.ToString();
+                auto name = playerState->PlayerName.ToString();
 
                 if (name.empty())
                 {
@@ -122,7 +123,7 @@ namespace Hacks
                     {
                         if (const auto itemDesc = itemInfo->Desc)
                         {
-                            const std::string itemName = itemDesc->Title.DisplayString->ToString();
+                            const auto itemName = itemDesc->Title.DisplayString->ToString();
                             Utilities::Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y += 15.f }, Utilities::Drawing::Colour::White);
                         }
                     }

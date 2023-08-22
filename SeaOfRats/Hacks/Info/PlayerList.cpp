@@ -30,13 +30,12 @@ namespace Hacks
 
             const auto crews = crewService->Crews;
 
-            float positionX = 10.f;
-            float positionY = 200.f;
-            for (auto crewIndex = 0; crewIndex < crews.Num(); ++crewIndex)
+            auto positionX = 10.f;
+            auto positionY = 200.f;
+            for (const auto& crew : crews)
             {
-                const FCrew crew = crews[crewIndex];
                 const auto players = crew.Players;
-                std::string shipType;
+                auto shipType = std::string{};
                 switch (crew.CrewSessionTemplate.MaxMatchmakingPlayers)
                 {
                     case 2:
@@ -54,16 +53,15 @@ namespace Hacks
                 }
 
                 Utilities::Drawing::DrawString(shipType, { positionX, positionY += 15.f }, Utilities::Drawing::Colour::White, false, false);
-                for (auto playerIndex = 0; playerIndex < players.Num(); ++playerIndex)
+                for (const auto& player : players)
                 {
-                    const auto player = reinterpret_cast<AAthenaPlayerState*>(players[playerIndex]);
                     if (!player)
                     {
                         continue;
                     }
 
-                    std::string activity{};
-                    switch (player->GetPlayerActivity())
+                    auto activity = std::string{};
+                    switch (reinterpret_cast<AAthenaPlayerState*>(player)->GetPlayerActivity())
                     {
                         case EPlayerActivityType::EPlayerActivityType__None:
                             break;
@@ -134,7 +132,7 @@ namespace Hacks
                             break;
                     }
 
-                    std::string name = player->PlayerName.ToString();
+                    auto name = player->PlayerName.ToString();
 
                     if (name.empty())
                     {

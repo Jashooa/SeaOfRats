@@ -28,8 +28,8 @@ namespace Utilities
 			point->x -= virtualLeft;
 			point->y -= virtualTop;
 
-			// point->x = point->x * 65535 / screenWidth;
-			// point->y = point->y * 65535 / screenHeight;
+			// point->x = (point->x * 65535.f) / screenWidth;
+			// point->y = (point->y * 65535.f) / screenHeight;
 			point->x = MulDiv(point->x, 65535, screenWidth);
 			point->y = MulDiv(point->y, 65535, screenHeight);
 		}
@@ -94,9 +94,9 @@ namespace Utilities
 
 		LPARAM GetLParam(int repeatCount, int key, int extended, int context, int previousState, int transition)
 		{
-			auto scanCode = GetScanCode(key);
+			const auto scanCode = GetScanCode(key);
 
-			int lParam = repeatCount
+			const auto lParam = repeatCount
 				| (scanCode << 16)
 				| (extended << 24)
 				| (context << 29)
@@ -146,20 +146,20 @@ namespace Utilities
 
 		void KeyPressBackground(int key)
 		{
-			HWND windowHandle = General::GetWindow();
+			const auto windowHandle = General::GetWindow();
 			SendMessage(windowHandle, WM_KEYDOWN, key, GetLParam(1, key, 0, 0, 0, 0));
 			SendMessage(windowHandle, WM_KEYUP, key, GetLParam(1, key, 0, 0, 1, 1));
 		}
 
 		void KeyDownBackground(int key)
 		{
-			HWND windowHandle = General::GetWindow();
+			const auto windowHandle = General::GetWindow();
 			SendMessage(windowHandle, WM_KEYDOWN, key, GetLParam(1, key, 0, 0, 0, 0));
 		}
 
 		void KeyUpBackground(int key)
 		{
-			HWND windowHandle = General::GetWindow();
+			const auto windowHandle = General::GetWindow();
 			SendMessage(windowHandle, WM_KEYUP, key, GetLParam(1, key, 0, 0, 1, 1));
 		}
 	}

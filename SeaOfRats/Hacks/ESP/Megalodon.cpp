@@ -23,25 +23,26 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            auto position = FVector2D{};
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
             // Get bounds
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            FVector2D topPosition;
+            auto topPosition = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z + extent.Z }, &topPosition))
             {
                 return;
             }
 
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::Orange;
+            const auto colour = Utilities::Drawing::Colour::Orange;
 
             // Draw box
             Utilities::Drawing::DrawBoundingRect(world, actor, colour);
@@ -55,8 +56,8 @@ namespace Hacks
             }
 
             // Get name
-            std::string name = "Megalodon";
-            const std::string meshName = megalodon->Mesh->MeshReference.AssetLongPathname.ToString();
+            auto name = std::string{ "Megalodon" };
+            const auto meshName = megalodon->Mesh->MeshReference.AssetLongPathname.ToString();
             name += " Mesh: " + meshName;
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 

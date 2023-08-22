@@ -109,6 +109,26 @@ namespace SDK
             return Data[i];
         }
 
+        inline T* begin()
+        {
+            return Data;
+        }
+
+        inline T* end()
+        {
+            return Data + ArrayNum;
+        }
+
+        inline const T* begin() const
+        {
+            return Data;
+        }
+
+        inline const T* end() const
+        {
+            return Data + ArrayNum;
+        }
+
         inline bool IsValidIndex(int32_t i) const
         {
             return i >= 0 && i < ArrayNum;
@@ -282,14 +302,14 @@ namespace SDK
             return ComparisonIndex >= 0 && ComparisonIndex < GetNames().Num();
         }
 
-        inline const char* GetName() const
+        inline const auto GetName() const
         {
             auto nameEntry = GetNames()[ComparisonIndex];
             if (!nameEntry)
             {
-                return nullptr;
+                return std::string{};
             }
-            return nameEntry->GetAnsiName();
+            return std::string{ nameEntry->GetAnsiName() };
         }
 
         inline bool operator==(const FName& other) const
@@ -331,7 +351,7 @@ namespace SDK
             return Data;
         }
 
-        std::string ToString() const
+        auto ToString() const
         {
             /*const auto length = std::wcslen(Data);
             std::string str(length, '\0');

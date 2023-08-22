@@ -13,16 +13,21 @@ namespace Utilities
     {
         namespace Colour
         {
-            ImU32 colour(int r, int g, int b, int a);
-            extern const ImU32 White;
-            extern const ImU32 Black;
-            extern const ImU32 Grey;
-            extern const ImU32 Red;
-            extern const ImU32 Orange;
-            extern const ImU32 Yellow;
-            extern const ImU32 Green;
-            extern const ImU32 Blue;
-            extern const ImU32 Purple;
+            inline ImU32 colour(int r, int g, int b, int a = 255)
+            {
+                return IM_COL32(r, g, b, a);
+            }
+            //inline const auto White = colour(253, 254, 254);
+            inline const auto White = colour(255, 255, 255);
+            //inline const auto Black = colour(23, 32, 42);
+            inline const auto Black = colour(0, 0, 0);
+            inline const auto Grey = colour(153, 164, 164);
+            inline const auto Red = colour(192, 57, 43);
+            inline const auto Orange = colour(230, 126, 34);
+            inline const auto Yellow = colour(241, 196, 15);
+            inline const auto Green = colour(39, 174, 96);
+            inline const auto Blue = colour(52, 152, 219);
+            inline const auto Purple = colour(142, 68, 173);
         }
 
         SDK::FVector2D GetScreenCentre();

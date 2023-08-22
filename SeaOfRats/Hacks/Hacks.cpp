@@ -1,6 +1,7 @@
 #include "Hacks.h"
 
 #include <Windows.h>
+
 #include <stdexcept>
 
 #include "include/SDK/SDK.h"
@@ -9,26 +10,32 @@
 #include "Config.h"
 #include "SeaOfRats.h"
 #include "Aimbot/Cannon.h"
-#include "Aimbot/Player.h"
+#include "Aimbot/Harpoon.h"
+#include "Aimbot/Weapon.h"
 #include "ESP/Animal.h"
 #include "ESP/Barrel.h"
 #include "ESP/EnchantedCompass.h"
+#include "ESP/Event.h"
 #include "ESP/GhostShip.h"
+#include "ESP/Island.h"
 #include "ESP/Item.h"
 #include "ESP/Kraken.h"
 #include "ESP/LoreBook.h"
 #include "ESP/MapPin.h"
 #include "ESP/Megalodon.h"
 #include "ESP/Mermaid.h"
+#include "ESP/NPC.h"
 #include "ESP/Player.h"
 #include "ESP/Rowboat.h"
 #include "ESP/Skeleton.h"
 #include "ESP/SkeletonThrone.h"
 #include "ESP/Shark.h"
 #include "ESP/Ship.h"
+#include "ESP/Shipwreck.h"
 #include "ESP/Siren.h"
 #include "ESP/Storm.h"
 #include "ESP/TreasureMap.h"
+#include "ESP/Trigger.h"
 #include "Info/Anchor.h"
 #include "Info/Compass.h"
 #include "Info/Debug.h"
@@ -60,6 +67,14 @@ namespace Hacks
         {
             return false;
         }
+        if (!world->OwningGameInstance->IsA(UAthenaGameInstance::StaticClass()))
+        {
+            return false;
+        }
+        if (!reinterpret_cast<UAthenaGameInstance*>(world->OwningGameInstance)->GameContext)
+        {
+            return false;
+        }
         if (!world->PersistentLevel)
         {
             return false;
@@ -87,24 +102,97 @@ namespace Hacks
         return true;
     }
 
+    void RunOnce(UWorld* world)
+    {
+        try
+        {
+            ESP::Item::GetPrices(world);
+        }
+        catch (...)
+        {
+            throw std::runtime_error("ESP::Item::GetPrices");
+        }
+    }
+
     void Hack()
     {
-        UWorld* world = UAthenaGameViewportClient::GAthenaGameViewportClient->World;
-
-        if (NullChecks(world))
+        UWorld* world = nullptr;
+            
+        try {
+            world = UAthenaGameViewportClient::GAthenaGameViewportClient->World;
+        }
+        catch (...)
         {
+            throw std::runtime_error("UAthenaGameViewportClient::GAthenaGameViewportClient->World");
+        } 
+
+        auto check = false;
+        try {
+            check = NullChecks(world);
+        }
+        catch (...)
+        {
+            throw std::runtime_error("NullChecks");
+        }
+
+        if (check)
+        {
+            static std::once_flag flag;
+            std::call_once(flag, [&](){ RunOnce(world); });
+
+            // Storm
+            if (config.esp.storm.enable)
+            {
+                try
+                {
+                    ESP::Storm::Draw(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("ESP::Storm::Draw");
+                }
+            }
+
+            // Island
+            if (config.esp.island.enable)
+            {
+                try
+                {
+                    ESP::Island::Draw(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("ESP::Island::Draw");
+                }
+            }
+
             // Island level actors
             const auto levels = world->Levels;
             for (int levelIndex = 6; levelIndex < levels.Num(); ++levelIndex)
             {
-                const auto actors = levels[levelIndex]->AActors;
-                for (int actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
+                for (const auto& actor : levels[levelIndex]->AActors)
                 {
-                    AActor* actor = actors[actorIndex];
-
                     if (!actor)
                     {
                         continue;
+                    }
+
+                    // NPC
+                    if (config.esp.npc.enable)
+                    {
+                        if (actor->IsA(ANPC::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::NPC::Draw(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::NPC::Draw");
+                            }
+
+                            continue;
+                        }
                     }
 
                     // Barrel
@@ -157,18 +245,104 @@ namespace Hacks
                             continue;
                         }
                     }
+
+                    // Trigger
+                    if (config.esp.trigger.enable)
+                    {
+                        if (actor->IsA(ASwitchMechanismTrigger::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::Trigger::DrawSwitch(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::Trigger::DrawSwitch");
+                            }
+
+                            continue;
+                        }
+
+                        if (actor->IsA(APressurePlateMechanismTriggerBase::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::Trigger::DrawPressurePlate(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::Trigger::DrawPressurePlate");
+                            }
+
+                            continue;
+                        }
+
+                        if (actor->IsA(ATripwireMechanismTrigger::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::Trigger::DrawTripwire(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::Trigger::DrawTripwire");
+                            }
+
+                            continue;
+                        }
+
+                        if (actor->IsA(AVolumeMechanismTrigger::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::Trigger::DrawVolume(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::Trigger::DrawVolume");
+                            }
+
+                            continue;
+                        }
+
+                        if (actor->GetComponentByClass(UMechanismTriggerComponent::StaticClass()))
+                        {
+                            try
+                            {
+                                ESP::Trigger::Draw(world, actor);
+                            }
+                            catch (...)
+                            {
+                                throw std::runtime_error("ESP::Trigger::Draw");
+                            }
+
+                            continue;
+                        }
+                    }
                 }
             }
 
-            if (config.aim.player.enable)
+            if (config.aim.weapon.enable)
             {
                 try
                 {
-                    Aimbot::Player::InitAim(world);
+                    Aimbot::Weapon::InitAim(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Aimbot::Player::InitAim");
+                    throw std::runtime_error("Aimbot::Weapon::InitAim");
+                }
+            }
+
+            if (config.aim.harpoon.enable)
+            {
+                try
+                {
+                    Aimbot::Harpoon::InitAim(world);
+                }
+                catch (...)
+                {
+                    throw std::runtime_error("Aimbot::Harpoon::InitAim");
                 }
             }
 
@@ -185,12 +359,9 @@ namespace Hacks
             }
 
             // Main level actors
-            const ULevel* level = world->PersistentLevel;
-            const auto actors = level->AActors;
-            for (int actorIndex = 0; actorIndex < actors.Num(); ++actorIndex)
+            const auto level = world->PersistentLevel;
+            for (const auto& actor : level->AActors)
             {
-                AActor* actor = actors[actorIndex];
-
                 if (!actor)
                 {
                     continue;
@@ -201,18 +372,135 @@ namespace Hacks
                     continue;
                 }
 
+                /*
+                // Class Athena.LaunchableProjectile
+                // 0x0238 (0x0600 - 0x03C8)
+                class ALaunchableProjectile : public AActor
+                {
+                public:
+                    char pad_0x03C8[0x0118];
+                    float LaunchSpeed; // 0x04E0(0x0004)
+                    float GravityScale; // 0x04E4(0x0004)
+                    char pad_0x04E8[0x0118];
+
+                    static UClass* StaticClass()
+                    {
+                        static auto ptr = UObject::FindObject<UClass>("Class Athena.LaunchableProjectile");
+                        return ptr;
+                    }
+                };
+
+                // Class Athena.CannonProjectile
+                // 0x0050 (0x0650 - 0x0600)
+                class ACannonProjectile : public ALaunchableProjectile
+                {
+                public:
+                    char pad_0x0600[0x0050];
+
+                    static UClass* StaticClass()
+                    {
+                        static auto ptr = UObject::FindObject<UClass>("Class Athena.CannonProjectile");
+                        return ptr;
+                    }
+                };
+
+                static auto found = false;
+
+                if (actor->IsA(ACannon::StaticClass()))
+                {
+                    const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+                    const auto localPlayer = reinterpret_cast<AAthenaCharacter*>(playerController->Pawn);
+                    const auto cannon = reinterpret_cast<ACannon*>(actor);
+
+                    if (const auto attachActor = localPlayer->GetAttachParentActor())
+                    {
+                        if (attachActor != actor)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    auto cannonRotation = cannon->K2_GetActorRotation();
+                    auto cameraLocation = playerController->PlayerCameraManager->GetCameraLocation();
+                    auto cannonLocation = cannon->K2_GetActorLocation();
+
+                    const auto angle = FRotator{ cannon->ServerPitch, cannon->ServerYaw, 0.f } + cannonRotation;
+                    const auto forwardVector = angle.Vector();
+                    auto location = cannon->K2_GetActorLocation();
+                    location.Z += 100.f;
+                    location += forwardVector * 150.f;
+
+                    const auto cameraAngle = playerController->PlayerCameraManager->GetCameraRotation();
+                    const auto cameraForwardVector = cameraAngle.Vector();
+                    auto adjustLocation = cannon->K2_GetActorLocation();
+                    adjustLocation += cameraForwardVector * 200.f;
+
+                    if (!found)
+                    {
+                        spdlog::info("Cannon {} {} {}", cannonLocation.X, cannonLocation.Y, cannonLocation.Z);
+                        spdlog::info("Camera {} {} {}", cameraLocation.X, cameraLocation.Y, cameraLocation.Z);
+                        spdlog::info("Adjusted {} {} {}", location.X, location.Y, location.Z);
+                        spdlog::info("Angle {} {} {}", angle.Yaw, angle.Pitch, angle.Roll);
+                        spdlog::info("Forward {} {} {}", forwardVector.X, forwardVector.Y, forwardVector.Z);
+                        spdlog::info("cameraAngle {} {} {}", cameraAngle.Yaw, cameraAngle.Pitch, cameraAngle.Roll);
+                        spdlog::info("cameraForwardVector {} {} {}", cameraForwardVector.X, cameraForwardVector.Y, cameraForwardVector.Z);
+                        spdlog::info("Camera Adjusted {} {} {}", adjustLocation.X, adjustLocation.Y, adjustLocation.Z);
+                    }
+                }
+
+                if (!found && actor->IsA(ACannonProjectile::StaticClass()))
+                {
+                    const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+                    auto ball = reinterpret_cast<ACannonProjectile*>(actor);
+
+                    static auto location = ball->K2_GetActorLocation();
+                    static auto speed = ball->LaunchSpeed;
+                    static auto gravity = ball->GravityScale;
+
+                    spdlog::info("Ball {} {} {} Speed {} Gravity {}", location.X, location.Y, location.Z, speed, gravity);
+
+                    auto position = FVector2D{};
+                    if (playerController->ProjectWorldLocationToScreen(location, &position))
+                    {
+                        Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::White);
+                    }
+
+                    if (playerController->ProjectWorldLocationToScreen(location + ball->AttachmentReplication.LocationOffset, &position))
+                    {
+                        Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::White);
+                    }
+
+                    found = true;
+                }*/
+
                 // Player
                 if (actor->IsA(AAthenaPlayerCharacter::StaticClass()))
                 {
-                    if (config.aim.player.enable && config.aim.player.player)
+                    if (config.aim.weapon.enable && config.aim.weapon.player)
                     {
                         try
                         {
-                            Aimbot::Player::CalculateAim(world, actor);
+                            Aimbot::Weapon::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("Aimbot::Player::CalculateAim");
+                            throw std::runtime_error("Aimbot::Weapon::CalculateAim");
+                        }
+                    }
+
+                    if (config.aim.harpoon.enable)
+                    {
+                        try
+                        {
+                            Aimbot::Harpoon::CalculateAim(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::Harpoon::CalculateAim");
                         }
                     }
 
@@ -234,15 +522,15 @@ namespace Hacks
                 // Skeleton
                 if (actor->IsA(AAthenaAICharacter::StaticClass()))
                 {
-                    if (config.aim.player.enable && config.aim.player.skeleton)
+                    if (config.aim.weapon.enable && config.aim.weapon.skeleton)
                     {
                         try
                         {
-                            Aimbot::Player::CalculateAim(world, actor);
+                            Aimbot::Weapon::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("Aimbot::Player::CalculateAim");
+                            throw std::runtime_error("Aimbot::Weapon::CalculateAim");
                         }
                     }
 
@@ -357,6 +645,24 @@ namespace Hacks
                     }
                 }
 
+                // NPC
+                if (config.esp.npc.enable)
+                {
+                    if (actor->IsA(ANPC::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::NPC::Draw(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::NPC::Draw");
+                        }
+
+                        continue;
+                    }
+                }
+
                 // Animal
                 if (config.esp.animal.enable)
                 {
@@ -426,15 +732,15 @@ namespace Hacks
                 // Siren
                 if (actor->IsA(ASirenPawn::StaticClass()))
                 {
-                    if (config.aim.player.enable)
+                    if (config.aim.weapon.enable)
                     {
                         try
                         {
-                            Aimbot::Player::CalculateAim(world, actor);
+                            Aimbot::Weapon::CalculateAim(world, actor);
                         }
                         catch (...)
                         {
-                            throw std::runtime_error("Aimbot::Player::CalculateAim");
+                            throw std::runtime_error("Aimbot::Weapon::CalculateAim");
                         }
                     }
 
@@ -472,9 +778,21 @@ namespace Hacks
                 }
 
                 // Item
-                if (config.esp.item.enable)
+                if (actor->IsA(AFloatingItemProxy::StaticClass()))
                 {
-                    if (actor->IsA(AFloatingItemProxy::StaticClass()))
+                    if (config.aim.harpoon.enable)
+                    {
+                        try
+                        {
+                            Aimbot::Harpoon::CalculateAim(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("Aimbot::Harpoon::CalculateAim");
+                        }
+                    }
+
+                    if (config.esp.item.enable)
                     {
                         try
                         {
@@ -484,9 +802,9 @@ namespace Hacks
                         {
                             throw std::runtime_error("ESP::Item::Draw");
                         }
-
-                        continue;
                     }
+
+                    continue;
                 }
 
                 // Barrel
@@ -608,6 +926,116 @@ namespace Hacks
                     }
                 }
 
+                // Shipwreck
+                if (config.esp.shipwreck.enable)
+                {
+                    if (actor->IsA(AShipwreck::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Shipwreck::Draw(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Shipwreck::Draw");
+                        }
+
+                        continue;
+                    }
+                }
+
+                // Event
+                if (config.esp.event.enable)
+                {
+                    if (actor->IsA(AGameplayEventSignal::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Event::Draw(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Event::Draw");
+                        }
+
+                        continue;
+                    }
+                }
+
+                // Trigger
+                if (config.esp.trigger.enable)
+                {
+                    if (actor->IsA(ASwitchMechanismTrigger::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Trigger::DrawSwitch(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Trigger::DrawSwitch");
+                        }
+
+                        continue;
+                    }
+
+                    if (actor->IsA(APressurePlateMechanismTriggerBase::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Trigger::DrawPressurePlate(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Trigger::DrawPressurePlate");
+                        }
+
+                        continue;
+                    }
+
+                    if (actor->IsA(ATripwireMechanismTrigger::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Trigger::DrawTripwire(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Trigger::DrawTripwire");
+                        }
+
+                        continue;
+                    }
+
+                    if (actor->IsA(AVolumeMechanismTrigger::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Trigger::DrawVolume(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Trigger::DrawVolume");
+                        }
+
+                        continue;
+                    }
+
+                    if (actor->GetComponentByClass(UMechanismTriggerComponent::StaticClass()))
+                    {
+                        try
+                        {
+                            ESP::Trigger::Draw(world, actor);
+                        }
+                        catch (...)
+                        {
+                            throw std::runtime_error("ESP::Trigger::Draw");
+                        }
+
+                        continue;
+                    }
+                }
+
                 // Treasure Map
                 if (config.esp.treasuremap.enable)
                 {
@@ -684,48 +1112,29 @@ namespace Hacks
                         continue;
                     }
                 }
-
-                /*if (actor->IsA(AShipwreck::StaticClass()))
-                {
-                    if (config.esp.shipwreck.enable)
-                    {
-                        ESP::DrawShipwreck(world, hud, actor);
-                    }
-                    continue;
-                }
-
-                if (actor->IsA(AGameplayEventSignal::StaticClass()))
-                {
-                    if (config->eventESP)
-                    {
-                        ESP::DrawEvent(world, hud, actor);
-                    }
-                    continue;
-                }*/
             }
 
-            // Storm
-            if (config.esp.storm.enable)
+            if (config.aim.weapon.enable)
             {
                 try
                 {
-                    ESP::Storm::Draw(world);
+                    Aimbot::Weapon::Aim(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("ESP::Storm::Draw");
+                    throw std::runtime_error("Aimbot::Weapon::Aim");
                 }
             }
 
-            if (config.aim.player.enable)
+            if (config.aim.harpoon.enable)
             {
                 try
                 {
-                    Aimbot::Player::Aim(world);
+                    Aimbot::Harpoon::Aim(world);
                 }
                 catch (...)
                 {
-                    throw std::runtime_error("Aimbot::Player::Aim");
+                    throw std::runtime_error("Aimbot::Harpoon::Aim");
                 }
             }
 
@@ -853,11 +1262,18 @@ namespace Hacks
                 }
             }
 
-            const auto onlinePlayerController = reinterpret_cast<AOnlineAthenaPlayerController*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController);
-
-            if (config.client.antiafk == onlinePlayerController->IdleDisconnectEnabled)
+            try
             {
-                onlinePlayerController->IdleDisconnectEnabled = !config.client.antiafk;
+                const auto onlinePlayerController = reinterpret_cast<AOnlineAthenaPlayerController*>(world->OwningGameInstance->LocalPlayers[0]->PlayerController);
+
+                if (config.client.antiafk == onlinePlayerController->IdleDisconnectEnabled)
+                {
+                    onlinePlayerController->IdleDisconnectEnabled = !config.client.antiafk;
+                }
+            }
+            catch (...)
+            {
+                throw std::runtime_error("IdleDisconnect");
             }
         }
     }

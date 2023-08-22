@@ -21,8 +21,8 @@ namespace Hacks
                     const auto capstan = reinterpret_cast<ACapstan*>(parentParent);
                     const auto anchorLevel = static_cast<int>(capstan->NetState.TargetRatio * 100.f);
 
-                    const std::string capstanText = "Anchor Level: " + std::to_string(anchorLevel) + "%";
-                    const FVector2D centre = Utilities::Drawing::GetScreenCentre();
+                    const auto capstanText = "Anchor Level: " + std::to_string(anchorLevel) + "%";
+                    const auto centre = Utilities::Drawing::GetScreenCentre();
                     Utilities::Drawing::DrawString(capstanText, { centre.X, centre.Y - 100.f }, Utilities::Drawing::Colour::Green);
                 }
             }

@@ -23,31 +23,34 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
             // Get bounds
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
 
+            auto topPosition = position;
+
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
+            const auto colour = Utilities::Drawing::Colour::White;
 
             // Draw tentacles remaining
-            const std::string tentaclesRemaining = "Tentacles Remaining: " + std::to_string(kraken->NumTentaclesRemaining);
-            Utilities::Drawing::DrawString(tentaclesRemaining, { position.X, position.Y - 15.f }, colour);
+            const auto tentaclesRemaining = "Tentacles Remaining: " + std::to_string(kraken->NumTentaclesRemaining);
+            Utilities::Drawing::DrawString(tentaclesRemaining, { topPosition.X, topPosition.Y -= 15.f }, colour);
 
             // Get name
-            std::string name = "Kraken";
-            const std::string actorName = actor->GetName();
+            auto name = std::string{ "Kraken" };
+            const auto actorName = actor->GetName();
             name += " " + actorName;
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Utilities::Drawing::DrawString(name, { position.X, position.Y - 30.f }, colour);
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
         }
 
         void Kraken::DrawTentacle(UWorld* world, AActor* actor)
@@ -65,33 +68,36 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
             // Get bounds
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
 
+            auto topPosition = position;
+
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
+            const auto colour = Utilities::Drawing::Colour::White;
 
             // Draw health bar
             if (const auto healthComponent = tentacle->HealthComponent)
             {
-                const float healthCurrent = healthComponent->GetCurrentHealth();
-                const float healthMax = healthComponent->GetMaxHealth();
-                Utilities::Drawing::DrawHealthBar({ position.X, position.Y - 15.f }, healthCurrent, healthMax);
+                const auto healthCurrent = healthComponent->GetCurrentHealth();
+                const auto healthMax = healthComponent->GetMaxHealth();
+                Utilities::Drawing::DrawHealthBar({ topPosition.X, topPosition.Y -= 15.f }, healthCurrent, healthMax);
             }
 
             // Get name
-            std::string name = "Kraken Tentacle";
+            auto name = std::string{ "Kraken Tentacle" };
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Utilities::Drawing::DrawString(name, { position.X, position.Y - 30.f }, colour);
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
         }
     }
 }

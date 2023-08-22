@@ -91,13 +91,9 @@ LRESULT CALLBACK hookWndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lP
 
     if (gui->isOpen)
     {
-        ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
+        const auto imgui_cursor = ImGui::GetMouseCursor();
 
-        #ifdef UNICODE
-        LPWSTR win32_cursor = IDC_ARROW;
-        #else
-        LPSTR win32_cursor = IDC_ARROW;
-        #endif 
+        auto win32_cursor = IDC_ARROW;
         
         switch (imgui_cursor)
         {
@@ -128,14 +124,14 @@ namespace GUI
 
         // ImGuiStyle& style = ImGui::GetStyle();
 
-        ImGuiIO& io = ImGui::GetIO();
+        auto& io = ImGui::GetIO();
         io.IniFilename = nullptr;
         io.LogFilename = nullptr;
 
         io.Fonts->AddFontDefault();
-        const float baseFontSize = 13.f;
-        // const float iconFontSize = baseFontSize * 2.f / 3.f;
-        const float iconFontSize = 16.f;
+        const auto baseFontSize = 13.f;
+        // const auto iconFontSize = baseFontSize * 2.f / 3.f;
+        const auto iconFontSize = 16.f;
 
         const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
         ImFontConfig icons_config;
@@ -189,7 +185,7 @@ namespace GUI
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
 
-        ImGuiIO& io = ImGui::GetIO();
+        const auto& io = ImGui::GetIO();
 
         ImGui::Begin("#1", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar);
         ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
@@ -206,7 +202,7 @@ namespace GUI
         ImGui::PopStyleColor();
         ImGui::PopStyleVar(2);
 
-        static ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize;
+        static auto windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize;
 
         if (isOpen)
         {
@@ -223,6 +219,7 @@ namespace GUI
                     ImGui::Text("Entities");
                     ImGui::Checkbox("Player##ESP", &config.esp.player.enable);
                     ImGui::Checkbox("Skeleton##ESP", &config.esp.skeleton.enable);
+                    ImGui::Checkbox("NPC##ESP", &config.esp.npc.enable);
                     ImGui::Checkbox("Animal##ESP", &config.esp.animal.enable);
                     ImGui::Checkbox("Mermaid##ESP", &config.esp.mermaid.enable);
                     ImGui::Checkbox("Siren##ESP", &config.esp.siren.enable);
@@ -247,11 +244,15 @@ namespace GUI
                     ImGui::Separator();
 
                     ImGui::Text("Misc");
+                    ImGui::Checkbox("Island##ESP", &config.esp.island.enable);
                     ImGui::Checkbox("Map Pin##ESP", &config.esp.mappin.enable);
                     ImGui::Checkbox("Storm##ESP", &config.esp.storm.enable);
                     ImGui::Checkbox("Treasure Map##ESP", &config.esp.treasuremap.enable);
                     ImGui::Checkbox("Enchanted Compass##ESP", &config.esp.enchantedcompass.enable);
                     ImGui::Checkbox("Skeleton Throne##ESP", &config.esp.skeletonthrone.enable);
+                    ImGui::Checkbox("Shipwreck##ESP", &config.esp.shipwreck.enable);
+                    ImGui::Checkbox("Event##ESP", &config.esp.event.enable);
+                    ImGui::Checkbox("Trigger##ESP", &config.esp.trigger.enable);
 
                     ImGui::EndTabItem();
                 }
@@ -278,10 +279,15 @@ namespace GUI
 
                 if (ImGui::BeginTabItem(ICON_FA_CROSSHAIRS " Aimbot"))
                 {
-                    ImGui::Text("Player");
-                    ImGui::Checkbox("Enable##PlayerAim", &config.aim.player.enable);
-                    ImGui::Checkbox("Players##PlayerAim", &config.aim.player.player);
-                    ImGui::Checkbox("Skeletons##PlayerAim", &config.aim.player.skeleton);
+                    ImGui::Text("Weapon");
+                    ImGui::Checkbox("Enable##WeaponAim", &config.aim.weapon.enable);
+                    ImGui::Checkbox("Players##WeaponAim", &config.aim.weapon.player);
+                    ImGui::Checkbox("Skeletons##WeaponAim", &config.aim.weapon.skeleton);
+
+                    ImGui::Separator();
+
+                    ImGui::Text("Harpoon");
+                    ImGui::Checkbox("Enable##HarpoonAim", &config.aim.harpoon.enable);
 
                     ImGui::Separator();
 

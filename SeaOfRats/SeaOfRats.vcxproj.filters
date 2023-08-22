@@ -108,9 +108,6 @@
     <ClCompile Include="Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hacks\ESP.cpp">
-      <Filter>Source Files\Hacks</Filter>
-    </ClCompile>
     <ClCompile Include="SeaOfRats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -180,7 +177,7 @@
     <ClCompile Include="Hacks\Info\WaterLevel.cpp">
       <Filter>Source Files\Hacks\Info</Filter>
     </ClCompile>
-    <ClCompile Include="Hacks\Aimbot\Player.cpp">
+    <ClCompile Include="Hacks\Aimbot\Weapon.cpp">
       <Filter>Source Files\Hacks\Aimbot</Filter>
     </ClCompile>
     <ClCompile Include="Hacks\Aimbot\Cannon.cpp">
@@ -241,6 +238,24 @@
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Utilities\Unreal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Shipwreck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Trigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\NPC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\Aimbot\Harpoon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hacks\ESP\Island.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -650,7 +665,7 @@
     <ClInclude Include="Hacks\Info\WaterLevel.h">
       <Filter>Header Files\Hacks\Info</Filter>
     </ClInclude>
-    <ClInclude Include="Hacks\Aimbot\Player.h">
+    <ClInclude Include="Hacks\Aimbot\Weapon.h">
       <Filter>Header Files\Hacks\Aimbot</Filter>
     </ClInclude>
     <ClInclude Include="Hacks\Aimbot\Cannon.h">
@@ -732,6 +747,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SDK\SoT\PirateGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Shipwreck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Trigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\NPC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\Aimbot\Harpoon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hacks\ESP\Island.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

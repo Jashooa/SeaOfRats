@@ -1,4 +1,4 @@
-#include "Storm.h"
+#include "Shipwreck.h"
 
 #include "Utilities/Drawing.h"
 #include "Utilities/General.h"
@@ -9,38 +9,24 @@ namespace Hacks
 {
     namespace ESP
     {
-        void Storm::Draw(UWorld* world)
-        {
-            const auto gameState = reinterpret_cast<AAthenaGameState*>(world->GameState);
-            if (const auto stormService = gameState->StormService)
-            {
-                for (const auto& storm : stormService->StormList)
-                {
-                    drawStorm(world, storm);
-                }
-            }
-        }
-
-        void Storm::drawStorm(UWorld* world, AActor* actor)
+        void Shipwreck::Draw(UWorld* world, AActor* actor)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
-            const auto storm = reinterpret_cast<AStorm*>(actor);
+            const auto shipwreck = reinterpret_cast<AShipwreck*>(actor);
 
             // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            location.Z = 500.f * 100.f;
+            const auto location = actor->K2_GetActorLocation();
             auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
-
             auto topPosition = position;
 
             // Colour
-            auto colour = Utilities::Drawing::Colour::Grey;
-            Utilities::Drawing::DrawString(ICON_FA_CLOUD_SHOWERS_HEAVY, position, colour);
+            const auto colour = Utilities::Drawing::Colour::White;
+            Utilities::Drawing::DrawString(ICON_FA_CROW, position, colour);
 
             if (!Utilities::General::NearCursor(position))
             {
@@ -48,7 +34,8 @@ namespace Hacks
             }
 
             // Get name
-            auto name = storm->SubjectName.ToString();
+            auto name = std::string{ "Shipwreck" };
+            name = shipwreck->LocalisedName.DisplayString->ToString();
 
             // Get distance
             const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;

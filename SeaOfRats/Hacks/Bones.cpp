@@ -8,7 +8,7 @@ namespace Hacks
 {
     FVector GetBoneLocation(ACharacter* player, EBones bone)
     {
-        FVector boneLocation(0.f, 0.f, 0.f);
+        auto boneLocation = FVector{};
         if (const auto mesh = player->Mesh)
         {
             if (!mesh->IsVisible())
@@ -16,7 +16,7 @@ namespace Hacks
                 return boneLocation;
             }
 
-            const FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
+            const auto worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
             const auto currentIndex = mesh->CurrentReadSpaceBases;
 
             const auto spaceBases = mesh->SpaceBasesArray[currentIndex];
@@ -25,9 +25,9 @@ namespace Hacks
                 return boneLocation;
             }
 
-            const FTransform boneTransform = spaceBases[static_cast<uint8_t>(bone)];
-            const FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
-            const FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
+            const auto& boneTransform = spaceBases[static_cast<uint8_t>(bone)];
+            const auto boneMatrix = boneTransform.ToMatrixWithScale();
+            const auto worldBoneMatrix = boneMatrix * worldMatrix;
             boneLocation = worldBoneMatrix.GetOrigin();
 
             return boneLocation;
@@ -63,7 +63,7 @@ namespace Hacks
                 return;
             }
 
-            const FMatrix worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
+            const auto worldMatrix = mesh->K2_GetComponentToWorld().ToMatrixWithScale();
             const auto currentIndex = mesh->CurrentReadSpaceBases;
             const auto spaceBases = mesh->SpaceBasesArray[currentIndex];
             if (spaceBases.Num() < 1)
@@ -73,20 +73,20 @@ namespace Hacks
 
             for (const auto& bones : skeleton)
             {
-                FVector2D previousBone;
+                auto previousBone = FVector2D{};
 
-                for (const auto bone : bones)
+                for (const auto& bone : bones)
                 {
                     if (bone >= spaceBases.Num())
                     {
                         return;
                     }
-                    const FTransform boneTransform = spaceBases[static_cast<int>(bone)];
-                    const FMatrix boneMatrix = boneTransform.ToMatrixWithScale();
-                    const FMatrix worldBoneMatrix = boneMatrix * worldMatrix;
-                    const FVector boneLocation = worldBoneMatrix.GetOrigin();
+                    const auto& boneTransform = spaceBases[static_cast<int>(bone)];
+                    const auto boneMatrix = boneTransform.ToMatrixWithScale();
+                    const auto worldBoneMatrix = boneMatrix * worldMatrix;
+                    const auto boneLocation = worldBoneMatrix.GetOrigin();
 
-                    FVector2D bonePosition;
+                    auto bonePosition = FVector2D{};
                     if (!playerController->ProjectWorldLocationToScreen(boneLocation, &bonePosition))
                     {
                         continue;

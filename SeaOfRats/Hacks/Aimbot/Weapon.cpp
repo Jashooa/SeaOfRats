@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "Weapon.h"
 
 #include "Hacks/Bones.h"
 #include "Utilities/Drawing.h"
@@ -11,13 +11,13 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        Player::BestAim Player::bestAim{};
-        SDK::FVector Player::cameraLocation;
-        SDK::FRotator Player::cameraRotation;
-        SDK::AProjectileWeapon* Player::weapon;
-        SDK::FVector2D Player::centreScreen;
+        Weapon::BestAim Weapon::bestAim{};
+        FVector Weapon::cameraLocation;
+        FRotator Weapon::cameraRotation;
+        AProjectileWeapon* Weapon::weapon;
+        FVector2D Weapon::centreScreen;
 
-        void Player::InitAim(UWorld * world)
+        void Weapon::InitAim(UWorld * world)
         {
             bestAim.target = nullptr;
             bestAim.best = FLT_MAX;
@@ -44,7 +44,7 @@ namespace Hacks
             cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
         }
 
-        void Player::CalculateAim(UWorld* world, AActor* actor)
+        void Weapon::CalculateAim(UWorld* world, AActor* actor)
         {
             if (!weapon)
             {
@@ -60,22 +60,42 @@ namespace Hacks
                 return;
             }
 
-            // Check if dead
-            if (reinterpret_cast<AAthenaCharacter*>(actor)->IsDead())
+            if (actor->IsA(AAthenaCharacter::StaticClass()))
             {
-                return;
-            }
+                // Check if dead
+                if (reinterpret_cast<AAthenaCharacter*>(actor)->IsDead())
+                {
+                    return;
+                }
 
-            // Check if same team
-            if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), reinterpret_cast<AAthenaCharacter*>(actor)))
+                // Check if same team
+                if (UCrewFunctions::AreCharactersInSameCrew(reinterpret_cast<AAthenaPlayerCharacter*>(localPlayer), reinterpret_cast<AAthenaCharacter*>(actor)))
+                {
+                    return;
+                }
+            }
+            else if (actor->IsA(ASwimmingCreaturePawn::StaticClass()))
             {
-                return;
+                // Check if dead
+                if (const auto healthComponent = reinterpret_cast<ASwimmingCreaturePawn*>(actor)->HealthComponent)
+                {
+                    if (healthComponent->GetCurrentHealth() == 0.f)
+                    {
+                        return;
+                    }
+                }
             }
 
             // Check if on screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D screen;
-            if (!playerController->ProjectWorldLocationToScreen(location, &screen))
+            auto position = FVector2D{};
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
+            {
+                return;
+            }
+
+            // Check if outside aim radius
+            if (!Utilities::Math::PointInCircle(position, centreScreen, aimRadius))
             {
                 return;
             }
@@ -93,11 +113,10 @@ namespace Hacks
                 return;
             }
 
-            FRotator rotationDelta = FRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, location) - cameraRotation);
-            rotationDelta.Normalize();
-            const float absYaw = FMath::Abs(rotationDelta.Yaw);
-            const float absPitch = FMath::Abs(rotationDelta.Pitch);
-            const float sum = absYaw + absPitch;
+            auto rotationDelta = (UKismetMathLibrary::FindLookAtRotation(cameraLocation, location) - cameraRotation).GetNormalized();
+            const auto yawDelta = FMath::Abs(rotationDelta.Yaw);
+            const auto pitchDelta = FMath::Abs(rotationDelta.Pitch);
+            const auto sum = yawDelta + pitchDelta;
 
             if (sum < bestAim.best)
             {
@@ -108,7 +127,7 @@ namespace Hacks
             }
         }
 
-        void Player::Aim(UWorld* world)
+        void Weapon::Aim(UWorld* world)
         {
             if (!bestAim.target)
             {
@@ -118,8 +137,8 @@ namespace Hacks
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
 
-            FVector aimLocation;
-            if (bestAim.target->IsA(AAthenaPlayerCharacter::StaticClass()) || bestAim.target->IsA(AAthenaAICharacter::StaticClass()))
+            auto aimLocation = FVector{};
+            if (bestAim.target->IsA(AAthenaCharacter::StaticClass()))
             {
                 aimLocation = GetBoneLocation(reinterpret_cast<ACharacter*>(bestAim.target), EBones::CHEST__Skeleton);
             }
@@ -128,44 +147,42 @@ namespace Hacks
                 aimLocation = bestAim.target->K2_GetActorLocation();
             }
 
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(aimLocation, &position))
             {
                 return;
             }
             bestAim.location = aimLocation;
 
-            if (!Utilities::Math::PointInCircle(position, centreScreen, aimRadius))
-            {
-                return;
-            }
-
             // FVector localVelocity = localPlayer->GetVelocity();
-            FVector localVelocity{ 0.f };
+            auto localVelocity = FVector::ZeroVector;
             if (const auto localShip = reinterpret_cast<AAthenaCharacter*>(localPlayer)->GetCurrentShip())
             {
                 localVelocity += localShip->GetVelocity();
             }
 
-            FVector targetVelocity = bestAim.target->GetVelocity();
-            if (const auto targetShip = reinterpret_cast<AAthenaCharacter*>(bestAim.target)->GetCurrentShip())
+            auto targetVelocity = bestAim.target->GetVelocity();
+            if (bestAim.target->IsA(AAthenaCharacter::StaticClass()))
             {
-                targetVelocity += targetShip->GetVelocity();
+                if (const auto targetShip = reinterpret_cast<AAthenaCharacter*>(bestAim.target)->GetCurrentShip())
+                {
+                    targetVelocity += targetShip->GetVelocity();
+                }
             }
 
-            const FVector relativeVelocity = targetVelocity - localVelocity;
-            const float bulletSpeed = weapon->WeaponParameters.AmmoParams.Velocity;
-            const FVector relativeLocation = localPlayer->K2_GetActorLocation() - bestAim.location;
-            const float a = relativeVelocity.Size() - bulletSpeed * bulletSpeed;
-            const float b = (relativeLocation * relativeVelocity * 2.f).Sum();
-            const float c = relativeLocation.SizeSquared();
-            const float d = b * b - 4 * a * c;
+            const auto relativeVelocity = targetVelocity - localVelocity;
+            const auto projectileSpeed = weapon->WeaponParameters.AmmoParams.Velocity;
+            const auto relativeLocation = localPlayer->K2_GetActorLocation() - bestAim.location;
+            const auto a = relativeVelocity.Size() - projectileSpeed * projectileSpeed;
+            const auto b = (relativeLocation * relativeVelocity * 2.f).Sum();
+            const auto c = relativeLocation.SizeSquared();
+            const auto d = b * b - 4 * a * c;
 
             if (d > 0)
             {
-                const float dRoot = sqrtf(d);
-                const float x1 = (-b + dRoot) / (2 * a);
-                const float x2 = (-b - dRoot) / (2 * a);
+                const auto dRoot = std::sqrt(d);
+                const auto x1 = (-b + dRoot) / (2 * a);
+                const auto x2 = (-b - dRoot) / (2 * a);
                 if (x1 >= 0 && x1 >= x2)
                 {
                     bestAim.location += relativeVelocity * x1;
@@ -186,18 +203,18 @@ namespace Hacks
 
                 if (Utilities::Input::IsKeyPressed(VK_MENU))
                 {
-                    // bestAim.delta = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location), cameraRotation);
+                    bestAim.delta = (UKismetMathLibrary::FindLookAtRotation(cameraLocation, bestAim.location) - cameraRotation).GetNormalized();
 
                     // auto aimSpeed = 5.f;
                     // auto smoothness = 1.f / aimSpeed;
                     // playerController->AddYawInput(bestAim.delta.Yaw * smoothness);
                     // playerController->AddPitchInput(bestAim.delta.Pitch * -smoothness);
 
-                    float targetX = 0;
-                    float targetY = 0;
+                    auto targetX = 0.f;
+                    auto targetY = 0.f;
 
-                    const float centreX = centreScreen.X;
-                    const float centreY = centreScreen.Y;
+                    const auto centreX = centreScreen.X;
+                    const auto centreY = centreScreen.Y;
 
                     if (position.X > centreX)
                     {

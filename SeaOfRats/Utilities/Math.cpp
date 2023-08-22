@@ -34,38 +34,5 @@ namespace Utilities
             roots[2] = (-b + Q7 - std::sqrt(4.f * Q4 / 6.f - 4.f * Q6 + Q3 / Q7)) / 4.f;
             roots[3] = (-b + Q7 + std::sqrt(4.f * Q4 / 6.f - 4.f * Q6 + Q3 / Q7)) / 4.f;
         }
-
-        float time_func(float t, float K, float L, float M, float N, float r, float w, float theta, float S2)
-        {
-            const float K2 = K * K;
-            const float L2 = L * L;
-            const float M2 = M * M;
-            const float N2 = N * N;
-            const float r2 = r * r;
-            return N2 * t * t * t * t + ((2 * M * N) - S2) * t * t + 2 * r * (K * std::cos(theta + (w * t)) + L * std::sin(theta + (w * t))) + K2 + L2 + M2 + r2;
-        }
-
-        float time_derivFunc(float t, float K, float L, float M, float N, float r, float w, float theta, float S2)
-        {
-            const float N2 = N * N;
-            return 4 * N2 * t * t * t * t + 2 * ((2 * M * N) - S2) * t + 2 * r * w * (L * std::cos(theta + (w * t)) - K * std::sin(theta + (w + t)));
-        }
-
-        float NewtonRaphson(float t, float K, float L, float M, float N, float r, float w, float theta, float S2)
-        {
-            float h = time_func(t, K, L, M, N, r, w, theta, S2) / time_derivFunc(t, K, L, M, N, r, w, theta, S2);
-            int counter = 0;
-            while (std::abs(h) >= 0.01)
-            {
-                if (counter > 200)
-                {
-                    break;
-                }
-                h = time_func(t, K, L, M, N, r, w, theta, S2) / time_derivFunc(t, K, L, M, N, r, w, theta, S2);
-                t = t - h;
-                counter++;
-            }
-            return t;
-        }
     }
 }

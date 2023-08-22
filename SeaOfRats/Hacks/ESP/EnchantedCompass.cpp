@@ -22,15 +22,14 @@ namespace Hacks
             }
 
             const auto location = enchantedCompass->Target.TargetLocation;
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
-            //Utilities::Drawing::DrawCircleFilled(position, 3.f, colour);
+            const auto colour = Utilities::Drawing::Colour::White;
             Utilities::Drawing::DrawString(ICON_FA_COMPASS, position, colour);
 
             if (!Utilities::General::NearCursor(position))
@@ -39,7 +38,7 @@ namespace Hacks
             }
 
             // Get name
-            std::string name = "Enchanted Compass Location";
+            auto name = std::string{ "Enchanted Compass Location" };
 
             // Get distance
             const auto distance = static_cast<int>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
@@ -63,18 +62,18 @@ namespace Hacks
 
             /*const auto locations = multiTargetEnchantedCompass->Locations;
 
-            for (int locationIndex = 0; locationIndex < locations.Num(); ++locationIndex)
+            for (int i = 0; i < locations.Num(); ++i)
             {
-                const auto& location = locations[locationIndex];
+                const auto location = locations[i];
 
-                FVector2D position;
+                auto position = FVector2D{};
                 if (!playerController->ProjectWorldLocationToScreen(location, &position))
                 {
                     continue;
                 }
 
                 // Colour
-                const ImU32 colour = Utilities::Drawing::Colour::White;
+                const auto colour = Utilities::Drawing::Colour::White;
                 //Utilities::Drawing::DrawCircleFilled(position, 3.f, colour);
                 Utilities::Drawing::DrawString(ICON_FA_COMPASS, position, colour);
 
@@ -84,7 +83,7 @@ namespace Hacks
                 }
 
                 // Get name
-                std::string name = "Enchanted Compass Location " + std::to_string(locationIndex + 1);
+                auto name = "Enchanted Compass Location " + std::to_string(i + 1);
 
                 // Get distance
                 const auto distance = static_cast<int>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);

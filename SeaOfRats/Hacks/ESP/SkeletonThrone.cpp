@@ -23,14 +23,16 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
+            auto topPosition = position;
+
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
+            const auto colour = Utilities::Drawing::Colour::White;
             Utilities::Drawing::DrawString(ICON_FA_COUCH, position, colour);
 
             if (!Utilities::General::NearCursor(position))
@@ -39,11 +41,11 @@ namespace Hacks
             }
 
             // Get name
-            std::string name = "Skeleton Throne";
+            auto name = std::string{ "Skeleton Throne" };
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
         }
     }
 }

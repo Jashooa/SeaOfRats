@@ -16,7 +16,7 @@ SeaOfRats::SeaOfRats(HMODULE module)
 
     char buffer[MAX_PATH];
     GetModuleFileNameA(module, buffer, MAX_PATH);
-    std::filesystem::path logPath = std::filesystem::path(buffer).remove_filename() / "log.txt";
+    const auto logPath = std::filesystem::path(buffer).remove_filename() / "log.txt";
 
     /*auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logPath.string(), true);
     auto console_sink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
@@ -46,7 +46,7 @@ static DWORD WINAPI Load()
 
 void SeaOfRats::Install()
 {
-    if (HANDLE thread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Load), nullptr, 0, nullptr))
+    if (auto thread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Load), nullptr, 0, nullptr))
     {
         CloseHandle(thread);
     }
@@ -69,7 +69,7 @@ static DWORD WINAPI Unload(HMODULE module)
 
 void SeaOfRats::Uninstall()
 {
-    if (HANDLE thread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Unload), module, 0, nullptr))
+    if (auto thread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Unload), module, 0, nullptr))
     {
         CloseHandle(thread);
     }

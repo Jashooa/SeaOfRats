@@ -17,5 +17,6 @@ namespace Utilities
 		bool IsWindowActive();
 		HWND GetWindow();
 		bool NearCursor(const SDK::FVector2D& position);
+		std::string tolower(const std::string& input);
 	}
 }

@@ -12,12 +12,12 @@ namespace Utilities
         {
             std::vector<AActor*> results;
 
-            auto components = actor->GetComponentsByClass(UChildActorComponent::StaticClass());
-            for (int i = 0; i < components.Num(); ++i)
+            const auto components = actor->GetComponentsByClass(UChildActorComponent::StaticClass());
+            for (const auto& component : components)
             {
-                if (const auto component = reinterpret_cast<UChildActorComponent*>(components[i]))
+                if (const auto actorComponent = reinterpret_cast<UChildActorComponent*>(component))
                 {
-                    if (const auto childActor = component->ChildActor)
+                    if (const auto childActor = actorComponent->ChildActor)
                     {
                         if (childActor->IsA(actorClass))
                         {
@@ -44,31 +44,28 @@ namespace Utilities
                 {"North West", FVector2D(1.f, -1.f).GetSafeNormal()}
             };
 
-            const FVector2D originPosition(origin.X, origin.Y);
+            const auto originPosition = FVector2D(origin.X, origin.Y);
 
             AActor* closest = nullptr;
-            float closestAngle = FLT_MAX;
+            auto closestAngle = FLT_MAX;
 
             if (bearings.find(bearing) == bearings.end())
             {
                 return closest;
             }
 
-            for (size_t i = 0; i < actors.size(); ++i)
+            for (const auto actor : actors)
             {
-                auto actorLocation = actors[i]->K2_GetActorLocation();
-                FVector2D actorPosition(actorLocation.X, actorLocation.Y);
-
-                FVector2D normalisedDifference = (actorPosition - originPosition).GetSafeNormal();
-
-                auto dotProduct = FVector2D::DotProduct(normalisedDifference, bearings.at(bearing));
-
-                auto angle = std::acosf(dotProduct);
+                const auto actorLocation = actor->K2_GetActorLocation();
+                const auto actorPosition = FVector2D(actorLocation.X, actorLocation.Y);
+                const auto normalisedDifference = (actorPosition - originPosition).GetSafeNormal();
+                const auto dotProduct = FVector2D::DotProduct(normalisedDifference, bearings.at(bearing));
+                const auto angle = std::acos(dotProduct);
 
                 if (angle < closestAngle)
                 {
                     closestAngle = angle;
-                    closest = actors[i];
+                    closest = actor;
                 }
             }
 

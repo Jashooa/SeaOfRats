@@ -66,6 +66,23 @@ namespace SDK
         ERiddleActions__ERiddleActions_MAX = 5
     };
 
+    // Enum Athena.EMechanismTriggerState
+    enum class EMechanismTriggerState : uint8_t
+    {
+        EMechanismTriggerState__Active = 0,
+        EMechanismTriggerState__Inactive = 1,
+        EMechanismTriggerState__Disabled = 2,
+        EMechanismTriggerState__EMechanismTriggerState_MAX = 3
+    };
+
+    // Enum Athena.EMechanismTriggerType
+    enum class EMechanismTriggerType : uint8_t
+    {
+        EMechanismTriggerType__OneShot = 0,
+        EMechanismTriggerType__Continuous = 1,
+        EMechanismTriggerType__EMechanismTriggerType_MAX = 2
+    };
+
     // Enum Athena.EAggressiveGhostShipType
     enum class EAggressiveGhostShipType : uint8_t
     {
@@ -75,6 +92,23 @@ namespace SDK
         EAggressiveGhostShipType__CaptainFormationGrunt = 3,
         EAggressiveGhostShipType__Captain = 4,
         EAggressiveGhostShipType__EAggressiveGhostShipType_MAX = 5
+    };
+
+    // ScriptStruct Athena.RewardId
+    // 0x0008
+    struct FRewardId
+    {
+        struct FName RewardId; // 0x0000(0x0008)
+    };
+
+    // ScriptStruct Athena.CompanySpecificBootyReward
+    // 0x0018
+    struct FCompanySpecificBootyReward
+    {
+        class UClass* CompanyId; // 0x0000(0x0008)
+        struct FRewardId RewardId; // 0x0008(0x0008)
+        bool RequirePirateLegend; // 0x0010(0x0001)
+        char pad_0x0011[0x0007];
     };
 
     // ScriptStruct Athena.TreasureMapTextEntry
@@ -119,6 +153,21 @@ namespace SDK
         TEnumAsByte<ELoadableState> LoadableState; // 0x0000(0x0001)
         char pad_0x0001[0x0007]; // 0x0001(0x0007)
         class UObject* LoadedItem; // 0x0008(0x0008)
+    };
+
+    // ScriptStruct Athena.NPCData
+    // 0x00B8
+    struct FNPCData
+    {
+        char pad_0x0000[0x0014];
+        struct FGuid Id; // 0x0014(0x0010)
+        char pad_0x0024[0x0004];
+        struct FText Name; // 0x0028(0x0038)
+        struct FVector Location; // 0x0060(0x000C)
+        struct FName IslandName; // 0x006C(0x0008)
+        char pad_0x0074[0x0004];
+        struct FText IslandNameLocalised; // 0x0078(0x0038)
+        char pad_0x00B0[0x0008];
     };
 
     // ScriptStruct Athena.WeaponProjectileParams
@@ -177,6 +226,16 @@ namespace SDK
         float MaxWaterAmount; // 0x0008(0x0004)
         float MaxWaterHeight; // 0x000C(0x0004)
         char pad_0x0010[0x0028];
+    };
+
+    // ScriptStruct Athena.RewardDefinition
+    // 0x0040
+    struct FRewardDefinition
+    {
+        struct FName RewardIdentifier; // 0x0000(0x0008)
+        char pad_0x0008[0x0010];
+        TArray<class UReward*> Rewards; // 0x0018(0x0010)
+        char pad_0x0028[0x0018];
     };
 
     // ScriptStruct Athena.LandmarkReaction
@@ -291,6 +350,12 @@ namespace SDK
         class UHealthComponent* HealthComponent; // 0x08A8(0x0008)
         char pad_0x08B0[0x0370];
 
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.AthenaCharacter");
+            return ptr;
+        }
+
         class AActor* GetCurrentShip();
         bool IsDead();
         bool IsInWater();
@@ -310,6 +375,38 @@ namespace SDK
         static UClass* StaticClass()
         {
             static auto ptr = UObject::FindObject<UClass>("Class Athena.AthenaPlayerCharacter");
+            return ptr;
+        }
+    };
+
+    // Class Athena.AthenaGameContext
+    // 0x07B8 (0x07E0 - 0x0028)
+    class UAthenaGameContext : public UObject
+    {
+    public:
+        char pad_0x0028[0x0240];
+        struct FGameServiceCoordinator ServiceCoordinator; // 0x0268(0x0020)
+        char pad_0x0288[0x0558];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.AthenaGameContext");
+            return ptr;
+        }
+    };
+
+    // Class Athena.AthenaGameInstance
+    // 0x0048 (0x00D0 - 0x0088)
+    class UAthenaGameInstance : public UGameInstance
+    {
+    public:
+        char pad_0x0088[0x0008];
+        class UAthenaGameContext* GameContext; // 0x00A0(0x0008)
+        char pad_0x00A8[0x0028];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.AthenaGameInstance");
             return ptr;
         }
     };
@@ -351,7 +448,8 @@ namespace SDK
         class ACrewService* CrewService; // 0x0608(0x0008)
         char pad_0x0610[0x0010];
         class AIslandService* IslandService; // 0x0620(0x0008)
-        char pad_0x0628[0x0078];
+        class ANPCService* NPCService; // 0x0628(0x0008)
+        char pad_0x0630[0x0070];
         class AKrakenService* KrakenService; // 0x06A0(0x0008)
         char pad_0x06A8[0x0588];
 
@@ -477,7 +575,10 @@ namespace SDK
     class ABootyItemInfo : public ANonStorableItemInfo
     {
     public:
-        char pad_0x0510[0x01A4];
+        char pad_0x0510[0x0188];
+        struct FRewardId HandInRewardId; // 0x0698(0x0008)
+        TArray<struct FCompanySpecificBootyReward> HandInRewardIdCompanySpecific; // 0x06A0(0x0010)
+        char pad_0x06B0[0x0004];
         struct FName Rarity; // 0x06B4(0x0008)
         char pad_0x06BC[0x006C];
 
@@ -547,7 +648,9 @@ namespace SDK
         float ProjectileGravityScale; // 0x05C0(0x0004)
         struct FFloatRange PitchRange; // 0x05C4(0x0010)
         struct FFloatRange YawRange; // 0x05D4(0x0010)
-        char pad_0x05E4[0x018C];
+        float PitchSpeed; // 0x05E4(0x0004)
+        float YawSpeed; // 0x05E8(0x0004)
+        char pad_0x05EC[0x0184];
         class AItemInfo* LoadedItemInfo; // 0x0770(0x0008)
         char pad_0x0778[0x0040];
         float ServerPitch; // 0x07B8(0x0004)
@@ -638,6 +741,22 @@ namespace SDK
         }
     };
 
+    // Class Athena.NPC
+    // 0x0190 (0x06B0 - 0x0520)
+    class ANPC : public AModalInteractionProxy
+    {
+    public:
+        char pad_0x0520[0x004C];
+        struct FGuid Id; // 0x056C(0x0010)
+        char pad_0x057C[0x0134];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.NPC");
+            return ptr;
+        }
+    };
+
     // Class Athena.CrewFunctions
     // 0x0000 (0x0028 - 0x0028)
     class UCrewFunctions : public UBlueprintFunctionLibrary
@@ -667,6 +786,33 @@ namespace SDK
 
         float GetCurrentHealth();
         float GetMaxHealth();
+    };
+
+    // Class Athena.HarpoonLauncher
+    // 0x07A0 (0x0CB0 - 0x0510)
+    class AHarpoonLauncher : public AControllableObject
+    {
+    public:
+        char pad_0x0510[0x0280];
+        struct FFloatRange PitchRange; // 0x0790(0x0010)
+        struct FFloatRange YawRange; // 0x07A0(0x0010)
+        char pad_0x07B0[0x01A8];
+        float ProjectileSpeed; // 0x0958(0x0004)
+        char pad_0x095C[0x0010];
+        float MaximumTetherLengthCm; // 0x096C(0x0004)
+        char pad_0x0970[0x02C8];
+        float PitchSpeed; // 0x0C38(0x0004)
+        float YawSpeed; // 0x0C3C(0x0004)
+        char pad_0x0C40[0x0010];
+        float ReplicatedPitch; // 0x0C50(0x0004)
+        float ReplicatedYaw; // 0x0C54(0x0004)
+        char pad_0x0C58[0x0058];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.HarpoonLauncher");
+            return ptr;
+        }
     };
 
     // Class Athena.HullDamage
@@ -757,6 +903,45 @@ namespace SDK
         static UClass* StaticClass()
         {
             static auto ptr = UObject::FindObject<UClass>("Class Athena.NPCDialogComponent");
+            return ptr;
+        }
+    };
+
+    // Class Athena.NPCService
+    // 0x0030 (0x03F8 - 0x03C8)
+    class ANPCService : public AActor
+    {
+    public:
+        char pad_0x03C8[0x0008];
+        TArray<struct FNPCData> NPCData; // 0x03D0(0x0010)
+        char pad_0x03E0[0x0018];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.NPCService");
+            return ptr;
+        }
+    };
+
+    // Class Athena.SwitchMechanismTrigger
+    // 0x01F8 (0x05F8 - 0x0400)
+    class ASwitchMechanismTrigger : public AInteractableBase
+    {
+    public:
+        char pad_0x0400[0x0030];
+        class UMechanismTriggerComponent* MechanismTriggerComponent; // 0x0430(0x0008)
+        bool ShowSwitchInteractionPrompt; // 0x0438(0x0001)
+        char pad_0x0439[0x0007];
+        struct FText SwitchInteractionPromptText; // 0x0440(0x0038)
+        struct FText SwitchInteractionBackwardsPromptText; // 0x0478(0x0038)
+        struct FText SwitchNameText; // 0x04B0(0x0038)
+        char pad_0x04E8[0x0014];
+        float TimeAfterActivationBeforeAutoDeactivating; // 0x04FC(0x0004)
+        char pad_0x0500[0x00F8];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.SwitchMechanismTrigger");
             return ptr;
         }
     };
@@ -997,6 +1182,24 @@ namespace SDK
         }
     };
 
+    // Class Athena.MechanismTriggerComponent
+    // 0x0088 (0x0150 - 0x00C8)
+    class UMechanismTriggerComponent : public UActorComponent
+    {
+    public:
+        char pad_0x00C8[0x0010];
+        TEnumAsByte<EMechanismTriggerType> TriggerType; // 0x00D8(0x0001)
+        char pad_0x00D9[0x0067];
+        TEnumAsByte<EMechanismTriggerState> TriggerState; // 0x0140(0x0001)
+        char pad_0x0141[0x000F];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.MechanismTriggerComponent");
+            return ptr;
+        }
+    };
+
     // Class Athena.WieldedItemComponent
     // 0x0160 (0x0440 - 0x02E0)
     class UWieldedItemComponent : public USceneComponent
@@ -1060,6 +1263,82 @@ namespace SDK
         char pad_0x0420[0x0200];
 
         float GetNormalizedWaterAmount();
+    };
+
+    // Class Athena.Reward
+    // 0x0000 (0x0028 - 0x0028)
+    class UReward : public UObject
+    {
+    public:
+    };
+
+    // Class Athena.GoldReward
+    // 0x0008 (0x0030 - 0x0028)
+    class UGoldReward : public UReward
+    {
+    public:
+        uint32_t MinGold; // 0x0028(0x0004)
+        uint32_t MaxGold; // 0x002C(0x0004)
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.GoldReward");
+            return ptr;
+        }
+    };
+
+    // Class Athena.PremiumCurrencyReward
+    // 0x0008 (0x0030 - 0x0028)
+    class UPremiumCurrencyReward : public UReward
+    {
+    public:
+        uint32_t MinPremiumCurrency; // 0x0028(0x0004)
+        uint32_t MaxPremiumCurrency; // 0x002C(0x0004)
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.PremiumCurrencyReward");
+            return ptr;
+        }
+    };
+
+    // Class Athena.WaywardTokensReward
+    // 0x0008 (0x0030 - 0x0028)
+    class UWaywardTokensReward : public UReward
+    {
+    public:
+        uint32_t MinWaywardTokens; // 0x0028(0x0004)
+        uint32_t MaxWaywardTokens; // 0x002C(0x0004)
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.WaywardTokensReward");
+            return ptr;
+        }
+    };
+
+    // Class Athena.RewardDefinitionAsset
+    // 0x0010 (0x0038 - 0x0028)
+    class URewardDefinitionAsset : public UDataAsset
+    {
+    public:
+        TArray<struct FRewardDefinition> RewardDefinitions; // 0x0028(0x0010)
+    };
+
+    // Class Athena.RewardService
+    // 0x0068 (0x0090 - 0x0028)
+    class URewardService : public UObject
+    {
+    public:
+        char pad_0x0028[0x0008];
+        TArray<class URewardDefinitionAsset*> RewardDefinitionAssets; // 0x0030(0x0010)
+        char pad_0x0040[0x0050];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.RewardService");
+            return ptr;
+        }
     };
 
     // Class Athena.Landmark
@@ -1128,12 +1407,42 @@ namespace SDK
         char pad_0x0070[0x0008];
     };
 
+    // Class Athena.GameplayEventSignal
+    // 0x0160 (0x0528 - 0x03C8)
+    class AGameplayEventSignal : public AActor
+    {
+    public:
+        char pad_0x03C8[0x0160];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.GameplayEventSignal");
+            return ptr;
+        }
+    };
+
     // Class Athena.Compass
     // 0x0100 (0x08E0 - 0x07E0)
     class ACompass : public APoseableMeshWieldableItem
     {
     public:
         char pad_0x07E0[0x0100];
+    };
+
+    // Class Athena.Shipwreck
+    // 0x00E8 (0x04B0 - 0x03C8)
+    class AShipwreck : public AActor
+    {
+    public:
+        char pad_0x03C8[0x0030];
+        struct FText LocalisedName; // 0x03F8(0x0038)
+        char pad_0x0430[0x0080];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.Shipwreck");
+            return ptr;
+        }
     };
 
     // Class Athena.DrowningComponent
@@ -1164,6 +1473,52 @@ namespace SDK
 
         int GetNumShotsLeftToKill();
         TEnumAsByte<EAggressiveGhostShipType> GetShipType();
+    };
+
+    // Class Athena.PressurePlateMechanismTriggerBase
+    // 0x0070 (0x0438 - 0x03C8)
+    class APressurePlateMechanismTriggerBase : public AActor
+    {
+    public:
+        char pad_0x03C8[0x0008];
+        class UMechanismTriggerComponent* MechanismTriggerComponent; // 0x03D0(0x0008)
+        char pad_0x03D8[0x0060];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.PressurePlateMechanismTriggerBase");
+            return ptr;
+        }
+    };
+
+    // Class Athena.TripwireMechanismTrigger
+    // 0x0018 (0x03E0 - 0x03C8)
+    class ATripwireMechanismTrigger : public AActor
+    {
+    public:
+        class UMechanismTriggerComponent* MechanismTriggerComponent; // 0x03C8(0x0008)
+        char pad_0x03D0[0x0010];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.TripwireMechanismTrigger");
+            return ptr;
+        }
+    };
+
+    // Class Athena.VolumeMechanismTrigger
+    // 0x0058 (0x0420 - 0x03C8)
+    class AVolumeMechanismTrigger : public AActor
+    {
+    public:
+        class UMechanismTriggerComponent* MechanismTriggerComponent; // 0x03C8(0x0008)
+        char pad_0x03D0[0x0050];
+
+        static UClass* StaticClass()
+        {
+            static auto ptr = UObject::FindObject<UClass>("Class Athena.VolumeMechanismTrigger");
+            return ptr;
+        }
     };
 
     // Class Athena.TornMap

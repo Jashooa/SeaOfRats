@@ -24,14 +24,16 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
+            auto topPosition = position;
+
             // Colour
-            ImU32 colour = Utilities::Drawing::Colour::White;
+            auto colour = Utilities::Drawing::Colour::White;
             Utilities::Drawing::DrawString(ICON_FA_LIFE_RING, position, colour);
 
             if (!Utilities::General::NearCursor(position))
@@ -40,22 +42,22 @@ namespace Hacks
             }
 
             // Get name
-            std::string name = "Mermaid";
+            auto name = std::string{ "Mermaid" };
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Check if my mermaid
             const auto localCrewId = UCrewFunctions::GetCrewIdFromActor(world, localPlayer);
             const auto crewIds = mermaid->GetCrewIdsResponsibleForSavingAsCopy();
-            for (int idIndex = 0; idIndex < crewIds.Num(); ++idIndex)
+            for (const auto& crewId : crewIds)
             {
-                if (crewIds[idIndex] == localCrewId)
+                if (crewId == localCrewId)
                 {
                     name = "My " + name;
                 }
             }
 
             // Draw name
-            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
         }
     }
 }

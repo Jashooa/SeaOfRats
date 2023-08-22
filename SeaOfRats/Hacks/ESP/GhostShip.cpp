@@ -25,11 +25,13 @@ namespace Hacks
             location.Z += 25.f * 100.f;
 
             // Check if on screen
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
+
+            auto topPosition = position;
 
             if (ship->ShipState.IsShipDead || !ship->ShipState.IsShipVisible)
             {
@@ -37,18 +39,18 @@ namespace Hacks
             }
 
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
+            const auto colour = Utilities::Drawing::Colour::White;
 
             // Draw hits remaining
-            const std::string hitsRemaining = "Hits Remaining: " + std::to_string(ship->GetNumShotsLeftToKill());
-            Utilities::Drawing::DrawString(hitsRemaining, { position.X, position.Y - 15.f }, colour);
+            const auto hitsRemaining = "Hits Remaining: " + std::to_string(ship->GetNumShotsLeftToKill());
+            Utilities::Drawing::DrawString(hitsRemaining, { topPosition.X, topPosition.Y -= 15.f }, colour);
 
             // Get name
-            std::string name = "Ghost Ship";
+            auto name = std::string{ "Ghost Ship" };
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name
-            Utilities::Drawing::DrawString(name, { position.X, position.Y - 30.f }, colour);
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
         }
     }
 }

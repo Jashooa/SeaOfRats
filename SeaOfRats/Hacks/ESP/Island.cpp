@@ -1,4 +1,4 @@
-#include "Storm.h"
+#include "Island.h"
 
 #include "Utilities/Drawing.h"
 #include "Utilities/General.h"
@@ -9,27 +9,40 @@ namespace Hacks
 {
     namespace ESP
     {
-        void Storm::Draw(UWorld* world)
+        void Island::Draw(UWorld* world)
         {
             const auto gameState = reinterpret_cast<AAthenaGameState*>(world->GameState);
-            if (const auto stormService = gameState->StormService)
+            if (const auto islandService = gameState->IslandService)
             {
-                for (const auto& storm : stormService->StormList)
+                const auto islandList = islandService->IslandDataAsset->IslandDataEntries;
+                for (const auto& island : islandList)
                 {
-                    drawStorm(world, storm);
+                    drawIsland(world, island);
                 }
             }
         }
 
-        void Storm::drawStorm(UWorld* world, AActor* actor)
+        void Island::drawIsland(UWorld* world, UIslandDataAssetEntry* island)
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             const auto localPlayer = playerController->Pawn;
-            const auto storm = reinterpret_cast<AStorm*>(actor);
+
+            const auto worldMapData = island->WorldMapData;
+
+            if (!worldMapData)
+            {
+                return;
+            }
 
             // Check if on-screen
-            auto location = actor->K2_GetActorLocation();
-            location.Z = 500.f * 100.f;
+            const auto location = worldMapData->CaptureParams.WorldSpaceCameraPosition;
+
+            // Remove islands at 0,0,0
+            if (location.Size() * 0.01f < 50.f)
+            {
+                return;
+            }
+
             auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
@@ -39,8 +52,8 @@ namespace Hacks
             auto topPosition = position;
 
             // Colour
-            auto colour = Utilities::Drawing::Colour::Grey;
-            Utilities::Drawing::DrawString(ICON_FA_CLOUD_SHOWERS_HEAVY, position, colour);
+            auto colour = Utilities::Drawing::Colour::Green;
+            Utilities::Drawing::DrawString(ICON_FA_MOUNTAIN_SUN, position, colour);
 
             if (!Utilities::General::NearCursor(position))
             {
@@ -48,10 +61,10 @@ namespace Hacks
             }
 
             // Get name
-            auto name = storm->SubjectName.ToString();
+            auto name = island->LocalisedName.DisplayString->ToString();
 
             // Get distance
-            const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
+            const auto distance = static_cast<int>((localPlayer->K2_GetActorLocation() - location).Size() * 0.01f);
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             // Draw name

@@ -10,44 +10,25 @@ namespace Utilities
 {
     namespace Drawing
     {
-        namespace Colour
-        {
-            ImU32 colour(int r, int g, int b, int a = 255)
-            {
-                return IM_COL32(r, g, b, a);
-            }
-            //const ImU32 White = colour(253, 254, 254);
-            const ImU32 White = colour(255, 255, 255);
-            //const ImU32 Black = colour(23, 32, 42);
-            const ImU32 Black = colour(0, 0, 0);
-            const ImU32 Grey = colour(153, 164, 164);
-            const ImU32 Red = colour(192, 57, 43);
-            const ImU32 Orange = colour(230, 126, 34);
-            const ImU32 Yellow = colour(241, 196, 15);
-            const ImU32 Green = colour(39, 174, 96);
-            const ImU32 Blue = colour(52, 152, 219);
-            const ImU32 Purple = colour(142, 68, 173);
-        }
-
         FVector2D GetScreenCentre()
         {
-            const float centreX = std::trunc(Window->Size.x * 0.5f);
-            const float centreY = std::trunc(Window->Size.y * 0.5f);
+            const auto centreX = std::trunc(Window->Size.x * 0.5f);
+            const auto centreY = std::trunc(Window->Size.y * 0.5f);
 
-            return FVector2D(centreX, centreY);
+            return FVector2D{ centreX, centreY };
         }
 
         void DrawLine(const FVector2D& start, const FVector2D& end, ImU32 colour, float thickness)
         {
-            Window->DrawList->AddLine(ImVec2(start.X, start.Y), ImVec2(end.X, end.Y), colour, thickness);
+            Window->DrawList->AddLine({ start.X, start.Y }, { end.X, end.Y }, colour, thickness);
         }
 
         void DrawString(const std::string& string, const FVector2D& position, ImU32 colour, bool centreX, bool centreY)
         {
-            ImVec2 newPosition(position.X, position.Y);
+            auto newPosition = ImVec2{ position.X, position.Y };
             if (centreX || centreY)
             {
-                auto textSize = ImGui::CalcTextSize(string.c_str());
+                const auto textSize = ImGui::CalcTextSize(string.c_str());
                 if (centreX)
                 {
                     newPosition.x -= textSize.x * 0.5f;
@@ -59,28 +40,28 @@ namespace Utilities
                 }
             }
 
-            Window->DrawList->AddText(ImVec2(newPosition.x + 1.f, newPosition.y + 1.f), Colour::Black, string.c_str());
+            Window->DrawList->AddText({ newPosition.x + 1.f, newPosition.y + 1.f }, Colour::Black, string.c_str());
             Window->DrawList->AddText(newPosition, colour, string.c_str());
         }
 
         void DrawCircle(const FVector2D& position, float radius, ImU32 colour, float thickness)
         {
-            Window->DrawList->AddCircle(ImVec2(position.X, position.Y), radius, colour, 0, thickness);
+            Window->DrawList->AddCircle({ position.X, position.Y }, radius, colour, 0, thickness);
         }
 
         void DrawCircleFilled(const FVector2D& position, float radius, ImU32 colour)
         {
-            Window->DrawList->AddCircleFilled(ImVec2(position.X, position.Y), radius, colour, 0);
+            Window->DrawList->AddCircleFilled({ position.X, position.Y }, radius, colour, 0);
         }
 
         void DrawRect(const FVector2D& minPosition, const FVector2D& maxPosition, ImU32 colour, float thickness)
         {
-            Window->DrawList->AddRect(ImVec2(minPosition.X, minPosition.Y), ImVec2(maxPosition.X, maxPosition.Y), colour, 0.f, 0, thickness);
+            Window->DrawList->AddRect({ minPosition.X, minPosition.Y }, { maxPosition.X, maxPosition.Y }, colour, 0.f, 0, thickness);
         }
 
         void DrawRectFilled(const FVector2D& minPosition, const FVector2D& maxPosition, ImU32 colour)
         {
-            Window->DrawList->AddRectFilled(ImVec2(minPosition.X, minPosition.Y), ImVec2(maxPosition.X, maxPosition.Y), colour, 0.f, 0);
+            Window->DrawList->AddRectFilled({ minPosition.X, minPosition.Y }, { maxPosition.X, maxPosition.Y }, colour, 0.f, 0);
         }
 
         void DrawHealthBar(const FVector2D& position, float currentHealth, float maxHealth)
@@ -89,17 +70,17 @@ namespace Utilities
             {
                 currentHealth = maxHealth;
             }
-            std::string text = std::to_string(static_cast<int>(currentHealth)) + "/" + std::to_string(static_cast<int>(maxHealth));
-            auto textSize = ImGui::CalcTextSize(text.c_str());
-            float health = currentHealth / maxHealth;
-            float x = position.X - 50.f;
-            float y = std::truncf(position.Y - (textSize.y * 0.5f) + 2.f);
-            float w = 100.f;
-            float h = textSize.y - 2.f;
+            const auto text = std::to_string(static_cast<int>(currentHealth)) + "/" + std::to_string(static_cast<int>(maxHealth));
+            const auto textSize = ImGui::CalcTextSize(text.c_str());
+            const auto health = currentHealth / maxHealth;
+            const auto x = position.X - 50.f;
+            const auto y = std::trunc(position.Y - (textSize.y * 0.5f) + 2.f);
+            const auto w = 100.f;
+            const auto h = textSize.y - 2.f;
 
-            Window->DrawList->AddRectFilled(ImVec2(x - 1.f, y - 1.f), ImVec2(x + w + 1.f, y + h + 1.f), Colour::Black);
-            Window->DrawList->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), Colour::Red);
-            Window->DrawList->AddRectFilled(ImVec2(x, y), ImVec2(x + w * health, y + h), Colour::Green);
+            Window->DrawList->AddRectFilled({ x - 1.f, y - 1.f }, { x + w + 1.f, y + h + 1.f }, Colour::Black);
+            Window->DrawList->AddRectFilled({ x, y }, { x + w, y + h }, Colour::Red);
+            Window->DrawList->AddRectFilled({ x, y }, { x + w * health, y + h }, Colour::Green);
             DrawString(text, position, Colour::White);
         }
 
@@ -107,7 +88,8 @@ namespace Utilities
         {
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
 
-            /*FVector origin, extent;
+            /*auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
             origin = actor->K2_GetActorLocation();
             FRotator rotation = actor->K2_GetActorRotation();
@@ -128,9 +110,10 @@ namespace Utilities
                 return;
             }*/
 
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
-            FRotator rotation = actor->K2_GetActorRotation();
+            const auto rotation = actor->K2_GetActorRotation();
             origin = actor->K2_GetActorLocation();
 
             FVector vertices[2][4];
@@ -145,7 +128,7 @@ namespace Utilities
             vertices[1][3] = { -extent.X, extent.Y, extent.Z }; // Left Front Top
 
             FVector2D screen[2][4];
-            const FTransform transform(rotation);
+            const auto transform = FTransform{ rotation };
 
             for (int i = 0; i < 2; ++i)
             {
@@ -160,10 +143,10 @@ namespace Utilities
                 }
             }
 
-            float left = screen[0][3].X;
-            float top = screen[0][3].Y;
-            float right = screen[0][3].X;
-            float bottom = screen[0][3].Y;
+            auto left = screen[0][3].X;
+            auto top = screen[0][3].Y;
+            auto right = screen[0][3].X;
+            auto bottom = screen[0][3].Y;
 
             for (int i = 0; i < 2; ++i)
             {
@@ -191,19 +174,20 @@ namespace Utilities
                 }
             }
 
-            FVector2D topLeftScreen(left, top);
-            FVector2D bottomRightScreen(right, bottom);
+            const auto topLeftScreen = FVector2D{ left, top };
+            const auto bottomRightScreen = FVector2D{ right, bottom };
 
             DrawRect(topLeftScreen, bottomRightScreen, colour);
         }
 
         void DrawBoundingBox(UWorld* world, AActor* actor, ImU32 colour)
         {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
 
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
-            FRotator rotation = actor->K2_GetActorRotation();
+            const auto rotation = actor->K2_GetActorRotation();
             origin = actor->K2_GetActorLocation();
 
             FVector vertices[2][4];
@@ -218,7 +202,7 @@ namespace Utilities
             vertices[1][3] = { -extent.X, extent.Y, extent.Z }; // Left Front Top
 
             FVector2D screen[2][4];
-            const FTransform transform(rotation);
+            const auto transform = FTransform{ rotation };
 
             for (int i = 0; i < 2; ++i)
             {
@@ -243,16 +227,16 @@ namespace Utilities
 
         void DrawPath(UWorld* world, const std::vector<FVector>& path, ImU32 colour)
         {
-            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+            const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
 
-            for (auto& point : path)
+            for (const auto& point : path)
             {
-                FVector2D screen{};
+                auto screen = FVector2D{};
                 if (!playerController->ProjectWorldLocationToScreen(point, &screen))
                 {
                     break;
                 }
-                Window->DrawList->PathLineTo(ImVec2(screen.X, screen.Y));
+                Window->DrawList->PathLineTo({ screen.X, screen.Y });
             }
             Window->DrawList->PathStroke(colour);
         }

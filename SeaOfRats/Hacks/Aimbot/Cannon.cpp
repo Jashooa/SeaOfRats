@@ -14,9 +14,10 @@ namespace Hacks
     namespace Aimbot
     {
         Cannon::BestAim Cannon::bestAim{};
-        SDK::FVector Cannon::cameraLocation;
-        SDK::ACannon* Cannon::cannon;
-        SDK::FVector2D Cannon::centreScreen;
+        FVector Cannon::cannonLocation;
+        FRotator Cannon::cannonRotation;
+        ACannon* Cannon::cannon;
+        FVector2D Cannon::centreScreen;
 
         void Cannon::InitAim(UWorld* world)
         {
@@ -35,9 +36,84 @@ namespace Hacks
                 {
                     cannon = reinterpret_cast<ACannon*>(attachActor);
                 }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
             }
 
-            cameraLocation = playerController->PlayerCameraManager->GetCameraLocation();
+            cannonLocation = playerController->PlayerCameraManager->GetCameraLocation();
+            cannonRotation = cannon->K2_GetActorRotation();
+
+            /*const auto angle = FRotator{cannon->ServerPitch, cannon->ServerYaw, 0.f} + cannonRotation;
+            cannonLocation = cannon->K2_GetActorLocation();
+            cannonLocation.Z += 100.f;
+            cannonLocation += angle.Vector() * 150.f;*/
+
+            /*float x = 600.f;
+            float y = 200.f;
+            auto serverAngles = FRotator{ cannon->ServerPitch, cannon->ServerYaw, 0.f };
+            Utilities::Drawing::DrawString("Server Angles", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(serverAngles.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(serverAngles.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            FRotator actorRotation = cannon->K2_GetActorRotation();
+            Utilities::Drawing::DrawString("Actor Rotation", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(actorRotation.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(actorRotation.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            FRotator combinedRotation = serverAngles += actorRotation;
+            combinedRotation.Normalize();
+            Utilities::Drawing::DrawString("Combined Rotation", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(combinedRotation.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(combinedRotation.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            FRotator cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
+            Utilities::Drawing::DrawString("Camera Rotation", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(cameraRotation.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(cameraRotation.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            FRotator rotationDifference = combinedRotation - cameraRotation;
+            Utilities::Drawing::DrawString("Rotation Difference", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(rotationDifference.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(rotationDifference.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            Utilities::Drawing::DrawString("Speed", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(cannon->PitchSpeed), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(cannon->YawSpeed), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            Utilities::Drawing::DrawString("Projectile speed: " + std::to_string(cannon->ProjectileSpeed), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Projectile gravity: " + std::to_string(cannon->ProjectileGravityScale), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            if (const auto loadedItem = cannon->LoadedItemInfo)
+            {
+                Utilities::Drawing::DrawString("Loaded item: " + loadedItem->Desc->Title.DisplayString->ToString(), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            }
+
+            Utilities::Drawing::DrawString("Camera Location", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("X: " + std::to_string(cannonLocation.X), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Y: " + std::to_string(cannonLocation.Y), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Z: " + std::to_string(cannonLocation.Z), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            FVector cannonLocation2 = cannon->K2_GetActorLocation();
+            Utilities::Drawing::DrawString("Cannon Location", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("X: " + std::to_string(cannonLocation2.X), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Y: " + std::to_string(cannonLocation2.Y), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Z: " + std::to_string(cannonLocation2.Z), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            Utilities::Drawing::DrawString("Location", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("X: " + std::to_string(location.X), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Y: " + std::to_string(location.Y), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Z: " + std::to_string(location.Z), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+
+            Utilities::Drawing::DrawString("Location Difference", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("X: " + std::to_string(cannonLocation.X - cannonLocation2.X), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Y: " + std::to_string(cannonLocation.Y - cannonLocation2.Y), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Z: " + std::to_string(cannonLocation.Z - cannonLocation2.Z), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);*/
         }
 
         void Cannon::CalculateAim(UWorld* world, AActor* actor)
@@ -63,7 +139,9 @@ namespace Hacks
             }
 
             auto location = actor->K2_GetActorLocation();
-            auto velocity = actor->GetVelocity();
+            auto velocity = actor->ReplicatedMovement.LinearVelocity;
+            auto projectileGravityScale = cannon->ProjectileGravityScale;
+            auto projectileSpeed = cannon->ProjectileSpeed;
 
             if (actor->IsA(AShip::StaticClass()))
             {
@@ -87,13 +165,14 @@ namespace Hacks
                 const auto loadedItem = cannon->LoadedItemInfo;
                 if (loadedItem && loadedItem->Desc && loadedItem->Desc->Title.DisplayString->ToString() == "Chainshot")
                 {
+                    projectileGravityScale = 1.f;
                     auto masts = Utilities::Unreal::GetActorComponentsByClass(actor, AMast::StaticClass());
-                    for (auto mast : masts)
+                    for (const auto mast : masts)
                     {
                         if (!reinterpret_cast<AMast*>(mast)->IsMastFullyDamaged())
                         {
                             location = mast->K2_GetActorLocation();
-                            const FVector up = mast->GetActorUpVector();
+                            const auto up = mast->GetActorUpVector();
                             location += up * 1000.f;
 
                             break;
@@ -104,7 +183,7 @@ namespace Hacks
                 {
                     if (damage)
                     {
-                        FVector holeLocation = pickHoleToAim(damage, localPlayer);
+                        const auto holeLocation = pickHoleToAim(damage, localPlayer);
                         if (holeLocation.Sum() != 9999.f)
                         {
                             location = holeLocation;
@@ -115,24 +194,29 @@ namespace Hacks
             else if (actor->IsA(AAggressiveGhostShip::StaticClass()))
             {
                 const auto ghostShip = reinterpret_cast<AAggressiveGhostShip*>(actor);
-
-                auto forward = actor->GetActorForwardVector();
-                velocity = forward * ghostShip->ShipState.ShipSpeed;
+                velocity = actor->GetActorForwardVector() * ghostShip->ShipState.ShipSpeed;
             }
 
-            FRotator low, high;
+            auto low = FRotator{};
+            auto high = FRotator{};
             const auto angularVelocity = actor->ReplicatedMovement.AngularVelocity;
-            if (AimAtShip(location, velocity, angularVelocity, cameraLocation, cannon->GetVelocity(), cannon->ProjectileSpeed, cannon->ProjectileGravityScale, low, high) < 1)
+            if (AimAtShip(world, location, velocity, angularVelocity, cannonLocation, cannon->GetVelocity(), projectileSpeed, projectileGravityScale, low, high) < 1)
+            // if (AimAtMovingTarget(world, location, velocity, cannonLocation, cannon->GetVelocity(), projectileSpeed, projectileGravityScale, low, high) < 1)
+            // if (GetAimAngles(world, location, cannonLocation, projectileSpeed, projectileGravityScale, low, high) < 1)
             {
                 return;
             }
 
-            FRotator rotationDelta = low.GetNormalized();
-            rotationDelta -= cannon->K2_GetActorRotation();
-            rotationDelta.Normalize();
-            const float absYaw = FMath::Abs(rotationDelta.Yaw);
-            const float absPitch = FMath::Abs(rotationDelta.Pitch);
-            const float sum = absYaw + absPitch;
+            auto rotationDelta = (low - cannonRotation).GetNormalized();
+            const auto yawDelta = FMath::Abs(rotationDelta.Yaw - cannon->ServerYaw);
+            const auto pitchDelta = FMath::Abs(rotationDelta.Pitch - cannon->ServerPitch);
+            const auto sum = yawDelta + pitchDelta;
+
+            auto position = FVector2D{};
+            if (playerController->ProjectWorldLocationToScreen(location, &position))
+            {
+                Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::Red);
+            }
 
             if (sum < bestAim.best)
             {
@@ -150,53 +234,63 @@ namespace Hacks
                 return;
             }
 
-            // bestAim.delta = FRotator(30.f, 0.f, 0.f);
-
             const auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
             // const auto localPlayer = playerController->Pawn;
 
-            FVector2D position;
-            if (!playerController->ProjectWorldLocationToScreen(bestAim.location, &position))
+            auto position = FVector2D{};
+            /*if (!playerController->ProjectWorldLocationToScreen(bestAim.location, &position))
             {
                 return;
-            }
+            }*/
+            playerController->ProjectWorldLocationToScreen(bestAim.location, &position);
 
             /*float x = 200.f;
             float y = 200.f;
-            Utilities::Drawing::DrawString("BestAim", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-            Utilities::Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-            Utilities::Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("BestAim", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(bestAim.delta.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(bestAim.delta.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
 
-            Utilities::Drawing::DrawString("Rotation Limits", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-            Utilities::Drawing::DrawString("Pitch: " + std::to_string(cannon->PitchRange.LowerBound.Value) + " to " + std::to_string(cannon->PitchRange.UpperBound.Value), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-            Utilities::Drawing::DrawString("Yaw: " + std::to_string(cannon->YawRange.LowerBound.Value) + " to " + std::to_string(cannon->YawRange.UpperBound.Value), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);*/
+            Utilities::Drawing::DrawString("Rotation Limits", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Pitch: " + std::to_string(cannon->PitchRange.LowerBound.Value) + " to " + std::to_string(cannon->PitchRange.UpperBound.Value), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+            Utilities::Drawing::DrawString("Yaw: " + std::to_string(cannon->YawRange.LowerBound.Value) + " to " + std::to_string(cannon->YawRange.UpperBound.Value), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);*/
+
+            // bestAim.delta = FRotator(30.f, 0.f, 0.f);
 
             if (bestAim.delta.Pitch > cannon->PitchRange.UpperBound.Value
                 || bestAim.delta.Pitch < cannon->PitchRange.LowerBound.Value
                 || bestAim.delta.Yaw > cannon->YawRange.UpperBound.Value
                 || bestAim.delta.Yaw < cannon->YawRange.LowerBound.Value)
             {
-                Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::Red);
+                if (!position.IsZero())
+                {
+                    Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::Red);
+                }
             }
             else
             {
-                Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::Green);
+                if (!position.IsZero())
+                {
+                    Utilities::Drawing::DrawString("x", position, Utilities::Drawing::Colour::Green);
+                }
 
-                /*Utilities::Drawing::DrawString("Difference", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(cannon->ServerPitch - bestAim.delta.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(cannon->ServerYaw - bestAim.delta.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);*/
-
-                /*Utilities::Drawing::DrawString("Target", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Y: " + std::to_string(targetY), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("X: " + std::to_string(targetX), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);*/
+                /*Utilities::Drawing::DrawString("Difference", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+                Utilities::Drawing::DrawString("Pitch: " + std::to_string(cannon->ServerPitch - bestAim.delta.Pitch), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+                Utilities::Drawing::DrawString("Yaw: " + std::to_string(cannon->ServerYaw - bestAim.delta.Yaw), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);*/
 
                 if (Utilities::Input::IsKeyPressed(VK_MENU))
                 {
                     // cannon->ForceAimCannon(bestAim.delta.Pitch, bestAim.delta.Yaw);
                     // mouse_event(MOUSEEVENTF_MOVE, 0, 1, NULL, NULL);
                     
-                    float targetX = (cannon->ServerYaw - bestAim.delta.Yaw) * -30.f;
-                    float targetY = (cannon->ServerPitch - bestAim.delta.Pitch) * 20.f;
+                    // const auto targetX = -1.f * ((cannon->ServerYaw - bestAim.delta.Yaw) / 64.f) * centreScreen.X;
+                    // const auto targetY = 3.f * ((cannon->ServerPitch - bestAim.delta.Pitch) / 75.f) * centreScreen.Y;
+                    const auto targetX = -1.f * (30.f / cannon->YawSpeed) * ((cannon->ServerYaw - bestAim.delta.Yaw) / 64.f) * centreScreen.X;
+                    const auto targetY = 1.f * (30.f / cannon->PitchSpeed) * ((cannon->ServerPitch - bestAim.delta.Pitch) / 75.f) * centreScreen.X * centreScreen.X / centreScreen.Y;
+
+                    /*Utilities::Drawing::DrawString("Target", { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+                    Utilities::Drawing::DrawString("Y: " + std::to_string(targetY), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);
+                    Utilities::Drawing::DrawString("X: " + std::to_string(targetX), { x, y += 15.f }, Utilities::Drawing::Colour::Red, false);*/
+
                     Utilities::Input::MouseMove(static_cast<int>(targetX), static_cast<int>(targetY));
                 }
             }
@@ -209,68 +303,53 @@ namespace Hacks
 
             if (cannon)
             {
-                const float gravityScale = cannon->ProjectileGravityScale;
-                const float gravity = 981.f * gravityScale;
-                const float launchSpeed = cannon->ProjectileSpeed;
+                auto projectileGravityScale = cannon->ProjectileGravityScale;
 
-                FRotator angle = FRotator(cannon->ServerPitch, cannon->ServerYaw, 0.f);
-                const FRotator compAngle = cannon->K2_GetActorRotation();
-                angle += compAngle;
+                const auto loadedItem = cannon->LoadedItemInfo;
+                if (loadedItem && loadedItem->Desc && loadedItem->Desc->Title.DisplayString->ToString() == "Chainshot")
+                {
+                    projectileGravityScale = 1.0f;
+                }
 
-                // const FRotator angle = playerController->PlayerCameraManager->GetCameraRotation();
+                const auto gravity = 981.f * projectileGravityScale;
+                const auto launchSpeed = cannon->ProjectileSpeed;
 
-                const FVector forwardVector = angle.Vector();
-                FVector location = cannon->K2_GetActorLocation();
+                const auto angle = FRotator{ cannon->ServerPitch, cannon->ServerYaw, 0.f } + cannonRotation;
+                const auto forwardVector = angle.Vector();
+
+                auto location = cannon->K2_GetActorLocation();
                 location.Z += 100.f;
                 location += forwardVector * 150.f;
 
-                float x = 600.f;
-                float y = 200.f;
-                Utilities::Drawing::DrawString("Location", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("X: " + std::to_string(location.X), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Y: " + std::to_string(location.Y), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Z: " + std::to_string(location.Z), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                Utilities::Drawing::DrawString("Camera Location", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("X: " + std::to_string(cameraLocation.X), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Y: " + std::to_string(cameraLocation.Y), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Z: " + std::to_string(cameraLocation.Z), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FVector cannonLocation = cannon->K2_GetActorLocation();
-                Utilities::Drawing::DrawString("Cannon Location", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("X: " + std::to_string(cannonLocation.X), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Y: " + std::to_string(cannonLocation.Y), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Z: " + std::to_string(cannonLocation.Z), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FVector velocity = forwardVector * launchSpeed;
+                auto velocity = forwardVector * launchSpeed;
                 if (const auto parentShip = cannon->GetAttachParentActor())
                 {
                     velocity += parentShip->GetVelocity();
                 }
 
-                std::vector<FVector> path;
-                const float interval = 0.1f;
-                TArray<AActor*> ignoreList;
+                auto path = std::vector<FVector>{};
+                auto ignoreList = TArray<AActor*>{};
                 ignoreList.Push(localPlayer);
+                const auto interval = 0.1f;
                 for (int i = 0; i < 500; ++i)
                 {
                     path.push_back(location);
-                    float newZ = velocity.Z - (gravity * interval);
-                    FVector move(
+                    auto newZ = velocity.Z - (gravity * interval);
+                    auto move = FVector{
                         velocity.X * interval,
                         velocity.Y * interval,
                         ((velocity.Z + newZ) * 0.5f) * interval
-                    );
+                    };
                     velocity.Z = newZ;
-                    FVector nextLocation = location + move;
-                    FHitResult hitResult;
+                    auto nextLocation = location + move;
+                    auto hitResult = FHitResult{};
 
-                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, location, nextLocation, ETraceTypeQuery::TraceTypeQuery3, true, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
+                    if (UKismetSystemLibrary::LineTraceSingle_NEW(cannon, location, nextLocation, ETraceTypeQuery::TraceTypeQuery3, false, ignoreList, EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
                     {
-                        FVector2D position{};
+                        auto position = FVector2D{};
                         if (world->OwningGameInstance->LocalPlayers[0]->PlayerController->ProjectWorldLocationToScreen(nextLocation, &position))
                         {
-                            ImU32 colour = Utilities::Drawing::Colour::Red;
+                            auto colour = Utilities::Drawing::Colour::Red;
 
                             AActor* hitActor = nullptr;
                             if (hitResult.Actor.Get())
@@ -299,60 +378,20 @@ namespace Hacks
                     location = nextLocation;
                 }
 
-                /*float x = 600.f;
-                float y = 200.f;
-                FRotator serverAngles = FRotator(cannon->ServerPitch, cannon->ServerYaw, 0.f);
-                Utilities::Drawing::DrawString("Server Angles", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(serverAngles.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(serverAngles.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FRotator actorRotation = cannon->K2_GetActorRotation();
-                Utilities::Drawing::DrawString("Actor Rotation", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(actorRotation.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(actorRotation.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FRotator combinedRotation = serverAngles += actorRotation;
-                combinedRotation.Normalize();
-                Utilities::Drawing::DrawString("Combined Rotation", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(combinedRotation.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(combinedRotation.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FRotator cameraRotation = playerController->PlayerCameraManager->GetCameraRotation();
-                Utilities::Drawing::DrawString("Camera Rotation", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(cameraRotation.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(cameraRotation.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FRotator rotationDifference = combinedRotation - cameraRotation;
-                Utilities::Drawing::DrawString("Rotation Difference", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(rotationDifference.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(rotationDifference.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                FRotator replicatedRotation = cannon->ReplicatedMovement.Rotation;
-                Utilities::Drawing::DrawString("Replicated Rotation", FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Pitch: " + std::to_string(replicatedRotation.Pitch), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                Utilities::Drawing::DrawString("Yaw: " + std::to_string(replicatedRotation.Yaw), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-
-                if (const auto loadedItem = cannon->LoadedItemInfo)
-                {
-                    Utilities::Drawing::DrawString("Loaded item: " + UKismetTextLibrary::Conv_TextToString(loadedItem->Desc->Title).ToString(), FVector2D(x, y += 15.f), Utilities::Drawing::Colour::Red, false);
-                }*/
-
                 Utilities::Drawing::DrawPath(world, path, Utilities::Drawing::Colour::White);
             }
         }
 
         FVector Cannon::pickHoleToAim(AHullDamage* damage, APawn* localPlayer)
         {
-            FVector foundLocation = { 0.f, 0.f, 9999.f };
-            float currentDist = 55000.f;
-            const auto bottomHoles = damage->BottomDeckDamageZones;
+            auto foundLocation = FVector{ 0.f, 0.f, 9999.f };
+            auto currentDist = 55000.f;
 
-            for (int i = 0; i < bottomHoles.Num(); ++i)
+            for (const auto& hole : damage->BottomDeckDamageZones)
             {
-                const auto hole = bottomHoles[i];
                 if (hole->DamageLevel < 3)
                 {
-                    const float dist = localPlayer->GetDistanceTo(hole);
+                    const auto dist = localPlayer->GetDistanceTo(hole);
                     if (dist <= currentDist)
                     {
                         currentDist = dist;
@@ -366,14 +405,11 @@ namespace Hacks
                 return foundLocation;
             }
 
-            const auto middleHoles = damage->MiddleDeckDamageZones;
-
-            for (int i = 0; i < middleHoles.Num(); ++i)
+            for (const auto& hole : damage->MiddleDeckDamageZones)
             {
-                const auto hole = middleHoles[i];
                 if (hole->DamageLevel < 3)
                 {
-                    const float dist = localPlayer->GetDistanceTo(hole);
+                    const auto dist = localPlayer->GetDistanceTo(hole);
                     if (dist <= currentDist)
                     {
                         currentDist = dist;

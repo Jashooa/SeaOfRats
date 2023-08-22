@@ -42,9 +42,40 @@ namespace SDK
             return FVector2D(X / V.X, Y / V.Y);
         }
 
+        inline FVector2D operator+(float A) const
+        {
+            return FVector2D(X + A, Y + A);
+        }
+
+        inline FVector2D operator-(float A) const
+        {
+            return FVector2D(X - A, Y - A);
+        }
+
+        inline FVector2D operator*(float Scale) const
+        {
+            return FVector2D(X * Scale, Y * Scale);
+        }
+
+        inline FVector2D operator/(float Scale) const
+        {
+            const float RScale = 1.f / Scale;
+            return FVector2D(X * RScale, Y * RScale);
+        }
+
         inline float operator|(const FVector2D& V) const
         {
             return X * V.X + Y * V.Y;
+        }
+
+        inline bool operator==(const FVector2D& V) const
+        {
+            return X == V.X && Y == V.Y;
+        }
+
+        inline bool operator!=(const FVector2D& V) const
+        {
+            return X != V.X || Y != V.Y;
         }
 
         inline FVector2D GetRotated(const float AngleDeg) const
@@ -96,6 +127,11 @@ namespace SDK
                 return FVector2D(X * Scale, Y * Scale);
             }
             return FVector2D(0.f, 0.f);
+        }
+
+        inline bool IsZero() const
+        {
+            return X == 0.f && Y == 0.f;
         }
     };
 }

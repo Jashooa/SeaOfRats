@@ -34,8 +34,6 @@ ID3D11Device* device = nullptr;
 ID3D11DeviceContext* immediateContext = nullptr;
 ID3D11RenderTargetView* renderTargetView = nullptr;
 
-static std::once_flag isInitialised;
-
 void HookGame()
 {
     MODULEINFO modInfo{};
@@ -106,14 +104,15 @@ void CreateRenderTarget(IDXGISwapChain* swapChain)
 
 HRESULT __stdcall HookedPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)
 {
-    std::call_once(isInitialised, [&]()
+    static std::once_flag flag;
+    std::call_once(flag, [&]()
         {
             swapChain->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&device));
             device->GetImmediateContext(&immediateContext);
 
             CreateRenderTarget(swapChain);
 
-            DXGI_SWAP_CHAIN_DESC desc;
+            auto desc = DXGI_SWAP_CHAIN_DESC{};
             swapChain->GetDesc(&desc);
 
             gui->Initialise(desc.OutputWindow, device, immediateContext);
@@ -131,7 +130,7 @@ HRESULT __stdcall HookedResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCoun
     gui->BeforeResize();
     renderTargetView->Release();
 
-    HRESULT result = OriginalResizeBuffers(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
+    const auto result = OriginalResizeBuffers(swapChain, bufferCount, width, height, newFormat, swapChainFlags);
 
     gui->AfterResize();
     CreateRenderTarget(swapChain);
@@ -162,7 +161,7 @@ void HookD3D11()
     ID3D11Device* tempDevice = nullptr;
     ID3D11DeviceContext* tempContext = nullptr;
 
-    HRESULT result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &sd, &swapChain, &tempDevice, &featureLevel, &tempContext);
+    const auto result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, &sd, &swapChain, &tempDevice, &featureLevel, &tempContext);
     if (FAILED(result))
     {
         spdlog::error("Failed to create device and swapchain");

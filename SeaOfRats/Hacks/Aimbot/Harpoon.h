@@ -6,7 +6,7 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        class Player
+        class Harpoon
         {
         public:
             static void InitAim(SDK::UWorld* world);
@@ -25,9 +25,9 @@ namespace Hacks
             static constexpr float aimRadius = 100.f;
 
             static BestAim bestAim;
-            static SDK::FVector cameraLocation;
-            static SDK::FRotator cameraRotation;
-            static SDK::AProjectileWeapon* weapon;
+            static SDK::FVector harpoonLocation;
+            static SDK::FRotator harpoonRotation;
+            static SDK::AHarpoonLauncher* harpoon;
             static SDK::FVector2D centreScreen;
         };
     }

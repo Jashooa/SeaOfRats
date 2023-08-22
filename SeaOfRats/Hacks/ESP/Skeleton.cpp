@@ -31,32 +31,33 @@ namespace Hacks
 
             // Check if on-screen
             const auto location = actor->K2_GetActorLocation();
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
             // Get bounds
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
 
             // Get top coordinates
-            FVector2D topPosition;
+            auto topPosition = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z + extent.Z }, &topPosition))
             {
                 return;
             }
 
             // Get bottom coordinates
-            FVector2D bottomPosition;
+            auto bottomPosition = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen({ location.X, location.Y, location.Z - extent.Z }, &bottomPosition))
             {
                 return;
             }
 
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::Orange;
+            const auto colour = Utilities::Drawing::Colour::Orange;
 
             // Draw box
             Utilities::Drawing::DrawBoundingRect(world, actor, colour);
@@ -70,25 +71,48 @@ namespace Hacks
             }*/
 
             // Get name
-            std::string name = "Skeleton";
+            auto name = std::string{ "Skeleton" };
             if (skeleton->AssignedMesh)
             {
-                std::string meshName = skeleton->AssignedMesh->GetName();
-                if (meshName.find("skellyshadow") != std::string::npos)
+                auto meshName = skeleton->AssignedMesh->GetName();
+
+                if (meshName.find("_crawler_") != std::string::npos)
+                {
+                    name = "Ocean Crawler";
+
+                    if (meshName.find("_eel_") != std::string::npos)
+                    {
+                        name += " Eel";
+                    }
+                    else if (meshName.find("_hermit_") != std::string::npos)
+                    {
+                        name += " Hermit";
+                    }
+                    else if (meshName.find("_crab_") != std::string::npos)
+                    {
+                        name += " Crab";
+                    }
+                }
+
+                if (meshName.find("_skellyshadow_") != std::string::npos)
                 {
                     name = "Shadow " + name;
                 }
-                else if (meshName.find("skellymetal") != std::string::npos)
+                else if (meshName.find("_skellymetal_") != std::string::npos)
                 {
                     name = "Gold " + name;
                 }
-                else if (meshName.find("skellyplant") != std::string::npos)
+                else if (meshName.find("_skellyplant_") != std::string::npos)
                 {
                     name = "Plant " + name;
                 }
-                else if (meshName.find("skellyash") != std::string::npos)
+                else if (meshName.find("_skellyash_") != std::string::npos)
                 {
                     name = "Ashen " + name;
+                }
+                else if (meshName.find("_skellyancient_") != std::string::npos)
+                {
+                    name = "Ancient " + name;
                 }
                 else if (meshName.find("_goldhoarder_") != std::string::npos)
                 {
@@ -100,7 +124,7 @@ namespace Hacks
                     name += " Captain";
                 }
 
-                if (meshName.find("_lord_") != std::string::npos)
+                if (meshName.find("_lord_") != std::string::npos || meshName.find("_skellylord_") != std::string::npos)
                 {
                     name += " Lord";
                 }
@@ -182,7 +206,7 @@ namespace Hacks
                     {
                         if (const auto itemDesc = itemInfo->Desc)
                         {
-                            const std::string itemName = itemDesc->Title.DisplayString->ToString();
+                            const auto itemName = itemDesc->Title.DisplayString->ToString();
                             Utilities::Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y += 15.f }, Utilities::Drawing::Colour::White);
                         }
                     }

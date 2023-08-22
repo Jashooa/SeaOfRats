@@ -187,14 +187,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Hacks\Aimbot\Harpoon.cpp" />
+    <ClCompile Include="Hacks\ESP\Event.cpp" />
+    <ClCompile Include="Hacks\ESP\Island.cpp" />
+    <ClCompile Include="Hacks\ESP\Trigger.cpp" />
+    <ClCompile Include="Hacks\ESP\NPC.cpp" />
+    <ClCompile Include="Hacks\ESP\Shipwreck.cpp" />
     <ClCompile Include="Utilities\Drawing.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hacks\Aimbot\Aim.cpp" />
     <ClCompile Include="Hacks\Aimbot\Cannon.cpp" />
-    <ClCompile Include="Hacks\Aimbot\Player.cpp" />
+    <ClCompile Include="Hacks\Aimbot\Weapon.cpp" />
     <ClCompile Include="Hacks\Bones.cpp" />
     <ClCompile Include="Config.cpp" />
-    <ClCompile Include="Hacks\ESP.cpp" />
     <ClCompile Include="Hacks\ESP\Animal.cpp" />
     <ClCompile Include="Hacks\ESP\Barrel.cpp" />
     <ClCompile Include="Hacks\ESP\EnchantedCompass.cpp" />
@@ -242,12 +247,18 @@
     <ClCompile Include="Utilities\Unreal.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hacks\Aimbot\Harpoon.h" />
+    <ClInclude Include="Hacks\ESP\Event.h" />
+    <ClInclude Include="Hacks\ESP\Island.h" />
+    <ClInclude Include="Hacks\ESP\Trigger.h" />
+    <ClInclude Include="Hacks\ESP\NPC.h" />
+    <ClInclude Include="Hacks\ESP\Shipwreck.h" />
     <ClInclude Include="include\SDK\SoT\PirateGenerator.h" />
     <ClInclude Include="Utilities\Drawing.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hacks\Aimbot\Aim.h" />
     <ClInclude Include="Hacks\Aimbot\Cannon.h" />
-    <ClInclude Include="Hacks\Aimbot\Player.h" />
+    <ClInclude Include="Hacks\Aimbot\Weapon.h" />
     <ClInclude Include="Hacks\Bones.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Hacks\ESP\Animal.h" />

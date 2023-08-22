@@ -29,20 +29,20 @@ namespace Hacks
             }
 
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
+            const auto colour = Utilities::Drawing::Colour::White;
 
-            const auto pins = table->MapPins;
-            for (int pinIndex = 0; pinIndex < pins.Num(); ++pinIndex)
+            for (const auto& pin : table->MapPins)
             {
-                const auto& pin = pins[pinIndex];
-                const FVector location((pin.X * 100.f), (pin.Y * 100.f), 0.f);
+                const auto location = FVector{ (pin.X * 100.f), (pin.Y * 100.f), 0.f };
 
                 // Check if on-screen
-                FVector2D position;
+                auto position = FVector2D{};
                 if (!playerController->ProjectWorldLocationToScreen(location, &position))
                 {
                     continue;
                 }
+
+                auto topPosition = position;
 
                 Utilities::Drawing::DrawString(ICON_FA_MAP_PIN, position, colour);
 
@@ -55,10 +55,10 @@ namespace Hacks
                 const auto distance = FVector::Dist(localPlayer->K2_GetActorLocation(), location) * 0.01f;
 
                 // Draw
-                std::string name = "Map Pin";
+                auto name = std::string{ "Map Pin" };
                 name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
-                Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+                Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
             }
         }
     }

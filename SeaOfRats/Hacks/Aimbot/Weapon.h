@@ -6,13 +6,12 @@ namespace Hacks
 {
     namespace Aimbot
     {
-        class Cannon
+        class Weapon
         {
         public:
             static void InitAim(SDK::UWorld* world);
             static void CalculateAim(SDK::UWorld* world, SDK::AActor* actor);
             static void Aim(SDK::UWorld* world);
-            static void TracePath(SDK::UWorld* world);
 
         private:
             struct BestAim
@@ -23,12 +22,12 @@ namespace Hacks
                 float best = FLT_MAX;
             };
 
-            static SDK::FVector pickHoleToAim(SDK::AHullDamage* damage, SDK::APawn* localPlayer);
+            static constexpr float aimRadius = 100.f;
 
             static BestAim bestAim;
-            static SDK::FVector cannonLocation;
-            static SDK::FRotator cannonRotation;
-            static SDK::ACannon* cannon;
+            static SDK::FVector cameraLocation;
+            static SDK::FRotator cameraRotation;
+            static SDK::AProjectileWeapon* weapon;
             static SDK::FVector2D centreScreen;
         };
     }

@@ -14,33 +14,32 @@ namespace Hacks
             const auto localPlayer = reinterpret_cast<AAthenaPlayerCharacter*>(playerController->Pawn);
             const auto playerCamera = playerController->PlayerCameraManager;
 
-            const FRotator rotation = playerCamera->GetCameraRotation();
-            const FVector forwardVector = rotation.Vector();
-            const FVector location = playerCamera->GetCameraLocation() + forwardVector;
-            const FVector lookLocation = playerCamera->GetCameraLocation() + (forwardVector * 10000.f);
-            FHitResult hitResult;
-            if (UKismetSystemLibrary::LineTraceSingle_NEW(localPlayer, location, lookLocation, ETraceTypeQuery::TraceTypeQuery4, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
+            const auto rotation = playerCamera->GetCameraRotation();
+            const auto forwardVector = rotation.Vector();
+            const auto location = playerCamera->GetCameraLocation() + forwardVector;
+            const auto lookLocation = playerCamera->GetCameraLocation() + (forwardVector * 10000.f);
+            auto hitResult = FHitResult{};
+            if (UKismetSystemLibrary::LineTraceSingle_NEW(localPlayer, location, lookLocation, ETraceTypeQuery::TraceTypeQuery2, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
             {
                 const auto actor = hitResult.Actor.Get();
                 const auto hitLocation = hitResult.Location;
-                FVector2D hitPosition;
+                auto hitPosition = FVector2D{};
                 if (!playerController->ProjectWorldLocationToScreen(location, &hitPosition))
                 {
                     return;
                 }
 
-                float x = 200.f;
-                float y = 10.f;
-                ImU32 colour = Utilities::Drawing::Colour::White;
+                auto x = 200.f;
+                auto y = 10.f;
+                auto colour = Utilities::Drawing::Colour::White;
 
-                Utilities::Drawing::DrawString("X", { hitPosition.X, hitPosition.Y }, colour);
-                Utilities::Drawing::DrawString("Name: " + actor->GetName(), { x, y }, colour, false);
+                Utilities::Drawing::DrawString("Name: " + actor->GetFullName(), { x, y }, colour, false);
                 if (actor->InstanceComponents.Num() > 0)
                 {
-                    std::string tags = "Tags: ";
-                    for (int i = 0; i < actor->Tags.Num(); ++i)
+                    auto tags = std::string{ "Tags: " };
+                    for (const auto& tag : actor->Tags)
                     {
-                        tags += actor->Tags[i].GetName();
+                        tags += tag.GetName();
                     }
                     Utilities::Drawing::DrawString(tags, { x, y += 15.f }, colour, false);
                 }
@@ -74,9 +73,9 @@ namespace Hacks
                 if (actor->Children.Num() > 0)
                 {
                     Utilities::Drawing::DrawString("Children:", { x, y += 15.f }, colour, false);
-                    for (int i = 0; i < actor->Children.Num(); ++i)
+                    for (const auto& item : actor->Children)
                     {
-                        if (const auto item = actor->Children[i])
+                        if (item)
                         {
                             Utilities::Drawing::DrawString(item->GetName(), { x + 10.f, y += 15.f }, colour, false);
                         }
@@ -92,11 +91,11 @@ namespace Hacks
                 if (actor->ChildComponentActors.Num() > 0)
                 {
                     Utilities::Drawing::DrawString("ChildComponentActors:", { x, y += 15.f }, colour, false);
-                    for (int i = 0; i < actor->ChildComponentActors.Num(); ++i)
+                    for (const auto& item : actor->ChildComponentActors)
                     {
-                        if (const auto item = actor->ChildComponentActors[i].Get())
+                        if (const auto itemActor = item.Get())
                         {
-                            Utilities::Drawing::DrawString(item->GetName(), { x + 10.f, y += 15.f }, colour, false);
+                            Utilities::Drawing::DrawString(itemActor->GetName(), { x + 10.f, y += 15.f }, colour, false);
                         }
 
                         if (y > 1000.f)
@@ -110,9 +109,9 @@ namespace Hacks
                 if (actor->BlueprintCreatedComponents.Num() > 0)
                 {
                     Utilities::Drawing::DrawString("BlueprintCreatedComponents:", { x, y += 15.f }, colour, false);
-                    for (int i = 0; i < actor->BlueprintCreatedComponents.Num(); ++i)
+                    for (const auto& item : actor->BlueprintCreatedComponents)
                     {
-                        if (const auto item = actor->BlueprintCreatedComponents[i])
+                        if (item)
                         {
                             Utilities::Drawing::DrawString(item->GetName(), { x + 10.f, y += 15.f }, colour, false);
                         }
@@ -128,9 +127,9 @@ namespace Hacks
                 if (actor->InstanceComponents.Num() > 0)
                 {
                     Utilities::Drawing::DrawString("InstanceComponents:", { x, y += 15.f }, colour, false);
-                    for (int i = 0; i < actor->InstanceComponents.Num(); ++i)
+                    for (const auto& item : actor->InstanceComponents)
                     {
-                        if (const auto item = actor->InstanceComponents[i])
+                        if (item)
                         {
                             Utilities::Drawing::DrawString(item->GetName(), { x + 10.f, y += 15.f }, colour, false);
                         }
@@ -146,9 +145,9 @@ namespace Hacks
                 if (actor->ChildActorInterfaceProviders.Num() > 0)
                 {
                     Utilities::Drawing::DrawString("ChildActorInterfaceProviders:", { x, y += 15.f }, colour, false);
-                    for (int i = 0; i < actor->ChildActorInterfaceProviders.Num(); ++i)
+                    for (const auto& item : actor->ChildActorInterfaceProviders)
                     {
-                        if (const auto item = actor->ChildActorInterfaceProviders[i])
+                        if (item)
                         {
                             Utilities::Drawing::DrawString(item->GetName(), { x + 10.f, y += 15.f }, colour, false);
                         }
@@ -162,5 +161,75 @@ namespace Hacks
                 }
             }
         }
+
+        /*void DrawDebug(UWorld* world, AActor* actor)
+        {
+            auto playerController = world->OwningGameInstance->LocalPlayers[0]->PlayerController;
+
+            auto location = actor->K2_GetActorLocation();
+            auto position = FVector2D{};
+            if (!playerController->ProjectWorldLocationToScreen(location, &position))
+            {
+                return;
+            }
+
+            std::string name = actor->GetName();
+            if (name.find("_") != std::string::npos)
+                return;
+            if (name.find("cmn") != std::string::npos)
+                return;
+            if (name.find("wsp") != std::string::npos)
+                return;
+            if (name.find("vfx") != std::string::npos)
+                return;
+            if (name.find("ske") != std::string::npos)
+                return;
+            if (name.find("dvr") != std::string::npos)
+                return;
+            if (name.find("ref") != std::string::npos)
+                return;
+            if (name.find("bp") != std::string::npos)
+                return;
+            if (name.find("bld") != std::string::npos)
+                return;
+            if (name.find("bsp") != std::string::npos)
+                return;
+            if (name.find("wpn") != std::string::npos)
+                return;
+            if (name.find("tls") != std::string::npos)
+                return;
+            if (name.find("wld_feature") != std::string::npos)
+                return;
+            if (name.find("Copied") != std::string::npos)
+                return;
+            if (name.find("NavBlocker") != std::string::npos)
+                return;
+            if (name.find("NavMesh") != std::string::npos)
+                return;
+            if (name.find("Light") != std::string::npos)
+                return;
+            if (name.find("water") != std::string::npos)
+                return;
+            if (name.find("Water") != std::string::npos)
+                return;
+            if (name.find("rocks") != std::string::npos)
+                return;
+            if (name.find("jetty") != std::string::npos)
+                return;
+            if (name.find("shop") != std::string::npos)
+                return;
+            if (name.find("volume") != std::string::npos)
+                return;
+            if (name.find("Volume") != std::string::npos)
+                return;
+            if (name.find("NulVol") != std::string::npos)
+                return;
+            if (name.find("PhasedClusterRoot") != std::string::npos)
+                return;
+            if (name.find("StaticMeshActor") != std::string::npos)
+                return;
+            //name = actor->GetFullName();
+            Utilities::Drawing::DrawString(name, screen, Utilities::Drawing::Colour::Red);
+        }*/
     }
 }

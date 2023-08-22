@@ -6,11 +6,10 @@ namespace Hacks
 {
     namespace ESP
     {
-        class Item
+        class Event
         {
         public:
             static void Draw(SDK::UWorld* world, SDK::AActor* actor);
-            static void GetPrices(SDK::UWorld* world);
         };
     }
 }

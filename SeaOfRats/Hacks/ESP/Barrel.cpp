@@ -15,6 +15,12 @@ namespace Hacks
             const auto localPlayer = playerController->Pawn;
             const auto barrel = reinterpret_cast<AStorageContainer*>(actor);
 
+            // Ignore if ship component
+            if (actor->ParentComponentActor.Actor && actor->ParentComponentActor.Actor->IsA(AShip::StaticClass()))
+            {
+                return;
+            }
+
             // Get distance
             const auto distance = localPlayer->GetDistanceTo(actor) * 0.01f;
             if (distance >= 500.f)
@@ -26,22 +32,26 @@ namespace Hacks
             auto location = actor->K2_GetActorLocation();
 
             // Get bounds
-            FVector origin, extent;
+            auto origin = FVector{};
+            auto extent = FVector{};
             actor->GetActorBounds(true, &origin, &extent);
 
-            if (!barrel->IsA(ABuoyantStorageContainer::StaticClass()))
+            if (!actor->IsA(ABuoyantStorageContainer::StaticClass()))
             {
                 location = origin;
             }
 
-            FVector2D position;
+            auto position = FVector2D{};
             if (!playerController->ProjectWorldLocationToScreen(location, &position))
             {
                 return;
             }
 
+            auto topPosition = position;
+            auto bottomPosition = position;
+
             // Colour
-            const ImU32 colour = Utilities::Drawing::Colour::White;
+            const auto colour = Utilities::Drawing::Colour::White;
             Utilities::Drawing::DrawString(ICON_FA_BOX_OPEN, position, colour);
 
             if (!Utilities::General::NearCursor(position))
@@ -50,7 +60,7 @@ namespace Hacks
             }
 
             // Get name
-            std::string name = "Barrel";
+            auto name = std::string{ "Barrel" };
             name += " [" + std::to_string(static_cast<int>(distance)) + "m]";
 
             if (actor->IsA(ABuoyantStorageContainer::StaticClass()))
@@ -59,24 +69,23 @@ namespace Hacks
             }
 
             // Draw name
-            Utilities::Drawing::DrawString(name, { position.X, position.Y - 15.f }, colour);
+            Utilities::Drawing::DrawString(name, { topPosition.X, topPosition.Y -= 15.f }, colour);
 
+            // Draw contents
             if (const auto storageComponent = reinterpret_cast<UStorageContainerComponent*>(barrel->GetComponentByClass(UStorageContainerComponent::StaticClass())))
             {
-                const auto nodes = storageComponent->ContainerNodes.ContainerNodes;
-                for (int nodeIndex = 0; nodeIndex < nodes.Num(); ++nodeIndex)
+                for (const auto& node : storageComponent->ContainerNodes.ContainerNodes)
                 {
-                    const auto& node = nodes[nodeIndex];
                     if (const UItemDesc* itemDesc = node.ItemDesc->CreateDefaultObject<UItemDesc>())
                     {
-                        std::string itemName = itemDesc->Title.DisplayString->ToString();
+                        auto itemName = itemDesc->Title.DisplayString->ToString();
                         if (itemName.empty())
                         {
                             continue;
                         }
                         itemName = std::to_string(node.NumItems) + "x " + itemName;
 
-                        Utilities::Drawing::DrawString(itemName, { position.X, position.Y + 15.f * (nodeIndex + 1) }, colour);
+                        Utilities::Drawing::DrawString(itemName, { bottomPosition.X, bottomPosition.Y += 15.f }, colour);
                     }
                 }
             }

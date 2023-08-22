@@ -2,6 +2,10 @@
 
 #include <Windows.h>
 
+#include <algorithm>
+#include <cctype>
+#include <string>
+
 #include "Utilities/Drawing.h"
 #include "Utilities/Input.h"
 #include "Utilities/Math.h"
@@ -14,7 +18,7 @@ namespace Utilities
 	{
 		bool IsWindowActive()
 		{
-			HWND windowHandle = GetForegroundWindow();
+			const auto windowHandle = GetForegroundWindow();
 			if (windowHandle == NULL)
 			{
 				return false;
@@ -31,10 +35,10 @@ namespace Utilities
 
 		HWND GetWindow()
 		{
-			static const std::string className = "UnrealWindow";
-			static const std::string windowName = "Sea of Thieves";
+			static const auto className = "UnrealWindow";
+			static const auto windowName = "Sea of Thieves";
 
-			HWND windowHandle = FindWindow(className.c_str(), windowName.c_str());
+			HWND windowHandle = FindWindow(className, windowName);
 
 			DWORD windowProcessId{};
 			GetWindowThreadProcessId(windowHandle, &windowProcessId);
@@ -50,6 +54,13 @@ namespace Utilities
 		bool NearCursor(const FVector2D& position)
 		{
 			return Math::PointInCircle(position, Drawing::GetScreenCentre(), 32.f) || Utilities::Input::IsKeyPressed('R');
+		}
+
+		std::string tolower(const std::string& input)
+		{
+			std::string result = input;
+			std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return static_cast<unsigned char>(std::tolower(static_cast<int>(c))); });
+			return result;
 		}
 	}
 }
