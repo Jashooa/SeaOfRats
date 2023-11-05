@@ -17,9 +17,9 @@ namespace Hacks
             const auto rotation = playerCamera->GetCameraRotation();
             const auto forwardVector = rotation.Vector();
             const auto location = playerCamera->GetCameraLocation() + forwardVector;
-            const auto lookLocation = playerCamera->GetCameraLocation() + (forwardVector * 10000.f);
+            const auto lookLocation = playerCamera->GetCameraLocation() + (forwardVector * 200000.f);
             auto hitResult = FHitResult{};
-            if (UKismetSystemLibrary::LineTraceSingle_NEW(localPlayer, location, lookLocation, ETraceTypeQuery::TraceTypeQuery2, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
+            if (UKismetSystemLibrary::LineTraceSingle_NEW(localPlayer, location, lookLocation, ETraceTypeQuery::TraceTypeQuery4, false, TArray<AActor*>(), EDrawDebugTrace::EDrawDebugTrace__None, true, &hitResult))
             {
                 const auto actor = hitResult.Actor.Get();
                 const auto hitLocation = hitResult.Location;
@@ -34,12 +34,12 @@ namespace Hacks
                 auto colour = Utilities::Drawing::Colour::White;
 
                 Utilities::Drawing::DrawString("Name: " + actor->GetFullName(), { x, y }, colour, false);
-                if (actor->InstanceComponents.Num() > 0)
+                if (actor->Tags.Num() > 0)
                 {
-                    auto tags = std::string{ "Tags: " };
+                    auto tags = std::string{ "Tags:" };
                     for (const auto& tag : actor->Tags)
                     {
-                        tags += tag.GetName();
+                        tags += " " + tag.GetName();
                     }
                     Utilities::Drawing::DrawString(tags, { x, y += 15.f }, colour, false);
                 }

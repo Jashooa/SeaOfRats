@@ -30,8 +30,7 @@ namespace Hacks
 
             const auto crews = crewService->Crews;
 
-            auto positionX = 10.f;
-            auto positionY = 200.f;
+            auto position = FVector2D{ 10.f, 200.f };
             for (const auto& crew : crews)
             {
                 const auto players = crew.Players;
@@ -52,7 +51,7 @@ namespace Hacks
                         break;
                 }
 
-                Utilities::Drawing::DrawString(shipType, { positionX, positionY += 15.f }, Utilities::Drawing::Colour::White, false, false);
+                Utilities::Drawing::DrawString(shipType, { position.X, position.Y += 15.f }, Utilities::Drawing::Colour::White, false, false);
                 for (const auto& player : players)
                 {
                     if (!player)
@@ -143,9 +142,9 @@ namespace Hacks
                     {
                         name += " - " + activity;
                     }
-                    Utilities::Drawing::DrawString(name, { positionX + 10.f, positionY += 15.f }, Utilities::Drawing::Colour::White, false, false);
+                    Utilities::Drawing::DrawString(name, { position.X + 10.f, position.Y += 15.f }, Utilities::Drawing::Colour::White, false, false);
                 }
-                positionY += 10.f;
+                position.Y += 10.f;
             }
         }
     }

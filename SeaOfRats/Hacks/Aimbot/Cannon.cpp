@@ -167,7 +167,7 @@ namespace Hacks
                 {
                     projectileGravityScale = 1.f;
                     auto masts = Utilities::Unreal::GetActorComponentsByClass(actor, AMast::StaticClass());
-                    for (const auto mast : masts)
+                    for (const auto& mast : masts)
                     {
                         if (!reinterpret_cast<AMast*>(mast)->IsMastFullyDamaged())
                         {
