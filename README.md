@@ -20,6 +20,7 @@ To get started with SeaOfRats, follow these steps:
 1. Clone the repository to your local machine.
 2. Build the project.
 3. Start game and run Loader.exe.
+4. Access in-game GUI using Insert key.
 
 ## Disclaimer
 This project is intended for educational purposes and should be used responsibly and ethically. Be aware of Sea of Thieves' terms of service and follow them while using this project.
